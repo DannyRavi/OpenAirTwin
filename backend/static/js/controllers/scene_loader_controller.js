@@ -284,6 +284,20 @@ export function createSceneLoaderController(context, {
       await syncRtSceneSelection(selectedTiles);
       syncViewerMarkers();
       getViewer().focusOnTiles([...selectedTiles]);
+      // Decorative map underlay: viewer-only, never part of the RT scene.
+      // It is limited to flat generated scenes so terrain meshes are not
+      // visually covered by a constant-height plane.
+      const sceneMetadata = state.manifest.scene || {};
+      const basemapUnderlay = sceneMetadata.basemap_underlay
+        ?? sceneMetadata.source_format === "geojson";
+      if (basemapUnderlay) {
+        getViewer().setBasemapSelection?.(
+          [...selectedTiles],
+          state.entry.coverage?.tiles || [],
+        );
+      } else {
+        getViewer().clearBasemap?.();
+      }
     } finally {
       state.tileLoadBusy = false;
       hideOverlay(null, true);

@@ -61,13 +61,28 @@ function setEntrySearchHint(message, isError = false) {
 
 
 function tileIdAtLatLng(latLng) {
-  const point = latLngToHk(latLng);
   for (const [tileId, tileEntry] of entryMap.tilesById.entries()) {
-    if (pointInHkBounds(point, tileEntry.bounds)) {
+    if (tileEntry.latLngBounds?.contains(latLng)) {
       return tileId;
     }
   }
   return null;
+}
+
+function sceneSearchPlaceLabel() {
+  return state.entry.overview?.scene?.search_place_label || "Hong Kong";
+}
+
+function sceneLabel() {
+  return state.entry.overview?.scene?.label || "HKU Wireless Digital Twin";
+}
+
+function sceneSearchViewbox() {
+  const bounds = state.entry.overview?.latLngBounds;
+  if (!bounds?.isValid()) {
+    return entrySearchViewbox();
+  }
+  return `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`;
 }
 
 function coverageTileCorners(coverageTile) {
@@ -129,7 +144,7 @@ function placeResultDetail(result) {
     .split(",")
     .map((part) => part.trim())
     .filter(Boolean);
-  return parts.slice(1, 5).join(", ") || "Hong Kong";
+  return parts.slice(1, 5).join(", ") || sceneSearchPlaceLabel();
 }
 
 function placeResultMeta(result) {
@@ -236,7 +251,12 @@ function focusEntryPlaceResult(index) {
       setEntrySearchHint(`Located in ${toDisplayTileId(tileId)}. Click the tile on the map to download it.`);
     }
   } else {
-    setEntrySearchHint("Located the place, but Open3DHK has no downloadable tile at that point.", true);
+    setEntrySearchHint(
+      sceneSearchPlaceLabel() === "Hong Kong"
+        ? "Open3DHK has no downloadable tile at that point."
+        : `Located the place, but ${sceneSearchPlaceLabel()} has no downloadable tile at that point.`,
+      true,
+    );
   }
 }
 
@@ -247,8 +267,11 @@ function buildEntryPlaceSearchUrl(query) {
   url.searchParams.set("q", query);
   url.searchParams.set("limit", String(NOMINATIM_RESULT_LIMIT));
   url.searchParams.set("addressdetails", "1");
-  url.searchParams.set("countrycodes", NOMINATIM_HK_COUNTRYCODES);
-  url.searchParams.set("viewbox", entrySearchViewbox());
+  url.searchParams.set(
+    "countrycodes",
+    state.entry.overview?.scene?.nominatim_countrycodes || NOMINATIM_HK_COUNTRYCODES,
+  );
+  url.searchParams.set("viewbox", sceneSearchViewbox());
   url.searchParams.set("bounded", "1");
   url.searchParams.set("accept-language", "en");
   return url;
@@ -256,8 +279,9 @@ function buildEntryPlaceSearchUrl(query) {
 
 async function runEntryPlaceSearch() {
   const query = ui.entryPlaceInput.value.trim();
+  const placeLabel = sceneSearchPlaceLabel();
   if (!query) {
-    setEntrySearchHint("Enter a Hong Kong place name, for example HKU or Central.", true);
+    setEntrySearchHint(`Enter a ${placeLabel} place name, for example a landmark or district.`, true);
     clearEntryPlaceResults();
     return;
   }
@@ -272,7 +296,7 @@ async function runEntryPlaceSearch() {
   state.entry.search.lastRequestAt = now;
   state.entry.search.inFlight = true;
   syncEntryOverviewUi();
-  setEntrySearchHint(`Searching Hong Kong for "${query}"...`);
+  setEntrySearchHint(`Searching ${placeLabel} for "${query}"...`);
   clearEntryPlaceResults();
 
   try {
@@ -290,7 +314,7 @@ async function runEntryPlaceSearch() {
       : [];
 
     if (!usableResults.length) {
-      setEntrySearchHint(`No Hong Kong place found for "${query}".`, true);
+      setEntrySearchHint(`No ${placeLabel} place found for "${query}".`, true);
       return;
     }
 
@@ -307,6 +331,7 @@ function buildEntryOverview(manifest, coverage = null) {
   const tileById = new Map();
   const coverageById = new Map();
   const grouped = new Map();
+  const scene = manifest?.scene && typeof manifest.scene === "object" ? manifest.scene : {};
 
   for (const tile of coverage?.tiles || []) {
     if (!tile?.id || !Array.isArray(tile.wgs84_corners)) {
@@ -317,21 +342,18 @@ function buildEntryOverview(manifest, coverage = null) {
 
   for (const tile of manifest.tiles) {
     const parsed = parseTileId(tile.id);
-    if (!parsed) {
-      continue;
-    }
-
     tileById.set(tile.id, tile);
-    const existing = grouped.get(parsed.regionKey) || {
-      regionKey: parsed.regionKey,
-      label: formatRegionLabel(parsed.regionKey),
+    const regionKey = parsed?.regionKey || scene.scene_id || "scene";
+    const existing = grouped.get(regionKey) || {
+      regionKey,
+      label: parsed ? formatRegionLabel(parsed.regionKey) : (scene.label || "Scene"),
       tileCount: 0,
       meshCount: 0,
     };
 
     existing.tileCount += 1;
     existing.meshCount += tile.mesh_count;
-    grouped.set(parsed.regionKey, existing);
+    grouped.set(regionKey, existing);
   }
 
   const availableTileIds = [...tileById.keys()].sort(compareTileIds);
@@ -345,12 +367,32 @@ function buildEntryOverview(manifest, coverage = null) {
     return right.tileCount - left.tileCount;
   });
 
+  let latLngBounds = null;
+  const corners = [];
+  for (const tile of coverageById.values()) {
+    for (const corner of tile.wgs84_corners) {
+      const lon = Number(corner?.[0]);
+      const lat = Number(corner?.[1]);
+      if (Number.isFinite(lon) && Number.isFinite(lat)) {
+        corners.push([lat, lon]);
+      }
+    }
+  }
+  if (corners.length >= 2 && window.L?.latLngBounds) {
+    latLngBounds = window.L.latLngBounds(corners);
+    if (!latLngBounds.isValid()) {
+      latLngBounds = null;
+    }
+  }
+
   return {
     tileById,
     coverageById,
     availableTileIds,
     regions,
     primaryRegion: regions[0] || null,
+    latLngBounds,
+    scene,
   };
 }
 function enableEntryMapFallback(reason = "tile unavailable") {
@@ -370,13 +412,21 @@ function enableEntryMapFallback(reason = "tile unavailable") {
   console.info(`Entry map using local fallback basemap: ${reason}`);
 }
 
+function entryMapFitBounds() {
+  const bounds = state.entry.overview?.latLngBounds;
+  if (bounds?.isValid()) {
+    return bounds;
+  }
+  return latLngBoundsFromHk(entryModelBounds());
+}
+
 function fitEntryMapToView() {
   if (!state.entry.visible || !entryMap.initialized || !entryMap.map) {
     return;
   }
 
   entryMap.map.invalidateSize();
-  entryMap.map.fitBounds(latLngBoundsFromHk(entryModelBounds()), {
+  entryMap.map.fitBounds(entryMapFitBounds(), {
     animate: false,
     padding: [24, 24],
   });
@@ -388,20 +438,23 @@ function focusEntryMapTiles(tileIds) {
     return false;
   }
 
-  const hkBounds = tileIds
-    .map((tileId) => entryMap.tilesById.get(tileId)?.bounds)
-    .filter(Boolean);
+  const latLngBounds = tileIds
+    .map((tileId) => entryMap.tilesById.get(tileId)?.latLngBounds)
+    .filter((bounds) => bounds?.isValid());
 
-  if (!hkBounds.length) {
+  if (!latLngBounds.length) {
     return false;
   }
 
-  const bounds = mergeHkBounds(hkBounds);
+  const bounds = latLngBounds.slice(1).reduce(
+    (combined, next) => combined.extend(next),
+    window.L.latLngBounds(latLngBounds[0].getSouthWest(), latLngBounds[0].getNorthEast()),
+  );
   entryMap.map.invalidateSize();
-  entryMap.map.fitBounds(latLngBoundsFromHk(bounds), {
+  entryMap.map.fitBounds(bounds, {
     animate: true,
     padding: [84, 84],
-    maxZoom: hkBounds.length === 1 ? 16 : 14,
+    maxZoom: latLngBounds.length === 1 ? 16 : 14,
   });
   return true;
 }
@@ -590,13 +643,14 @@ function bindEntryTileLayerEvents(layerGroup) {
   });
 }
 
-function ensureEntryMap() {
+function ensureEntryMap(overview = null) {
   if (entryMap.initialized) {
     return;
   }
 
   assertEntryMapDeps();
   ui.entryMapScene.replaceChildren();
+  const overviewBounds = overview?.latLngBounds?.isValid() ? overview.latLngBounds : null;
 
   entryMap.map = window.L.map(ui.entryMapScene, {
     zoomControl: false,
@@ -614,8 +668,13 @@ function ensureEntryMap() {
     wheelPxPerZoomLevel: 90,
     maxBoundsViscosity: 0.45,
   });
-  entryMap.map.setMaxBounds(latLngBoundsFromHk(ENTRY_MAP_GRID).pad(0.35));
-  entryMap.map.setView(entryMapCenter(), ENTRY_MAP_INITIAL_ZOOM);
+  if (overviewBounds) {
+    entryMap.map.setMaxBounds(overviewBounds.pad(0.35));
+    entryMap.map.fitBounds(overviewBounds, {animate: false, padding: [24, 24]});
+  } else {
+    entryMap.map.setMaxBounds(latLngBoundsFromHk(ENTRY_MAP_GRID).pad(0.35));
+    entryMap.map.setView(entryMapCenter(), ENTRY_MAP_INITIAL_ZOOM);
+  }
   entryMap.map.createPane("entryTilePane");
   entryMap.map.getPane("entryTilePane").style.zIndex = "650";
   entryMap.map.getPane("entryTilePane").style.pointerEvents = "auto";
@@ -629,21 +688,25 @@ function ensureEntryMap() {
   entryMap.tileLayerGroup = window.L.featureGroup().addTo(entryMap.map);
   bindEntryTileLayerEvents(entryMap.tileLayerGroup);
 
-  entryMap.fallbackLayer = window.L.imageOverlay(
-    ENTRY_MAP_IMAGE.path,
-    latLngBoundsFromHk(entryFallbackImageBounds()),
-    {
-      className: "entryFallbackImageLayer",
-      interactive: false,
-      opacity: 1,
-    },
-  );
+  const hasSceneMetadata = Boolean(overview?.scene && Object.keys(overview.scene).length);
+  const fallbackImage = hasSceneMetadata ? overview.scene.fallback_image : ENTRY_MAP_IMAGE.path;
+  if (fallbackImage) {
+    entryMap.fallbackLayer = window.L.imageOverlay(
+      fallbackImage,
+      overviewBounds || latLngBoundsFromHk(entryFallbackImageBounds()),
+      {
+        className: "entryFallbackImageLayer",
+        interactive: false,
+        opacity: 1,
+      },
+    );
 
-  entryMap.fallbackTimer = window.setTimeout(() => {
-    if (!entryMap.basemapReady) {
-      enableEntryMapFallback("online basemap timeout");
-    }
-  }, 15000);
+    entryMap.fallbackTimer = window.setTimeout(() => {
+      if (!entryMap.basemapReady) {
+        enableEntryMapFallback("online basemap timeout");
+      }
+    }, 15000);
+  }
   import("/@oat/runtime/entry-basemap.ts").then(({createEntryBasemap}) => {
     if (entryMap.fallbackEnabled) return;
     entryMap.tileLayer = createEntryBasemap(entryMap.map, {
@@ -677,7 +740,7 @@ function ensureEntryMap() {
 }
 
 function buildEntryMap(overview) {
-  ensureEntryMap();
+  ensureEntryMap(overview);
   entryMap.tilesById.clear();
   entryMap.hoveredTileId = null;
   entryMap.tileLayerGroup.clearLayers();
@@ -689,8 +752,14 @@ function buildEntryMap(overview) {
   for (const tileId of [...interactiveTileIds].sort(compareTileIds)) {
     const coverageTile = overview.coverageById.get(tileId);
     const corners = coverageTileCorners(coverageTile);
-    const bounds = boundsForTileId(tileId) || (corners ? hkBoundsFromLatLngCorners(corners) : null);
-    if (!bounds) {
+    const hkBounds = boundsForTileId(tileId);
+    let latLngBounds = null;
+    if (corners) {
+      latLngBounds = window.L.latLngBounds(corners);
+    } else if (hkBounds) {
+      latLngBounds = latLngBoundsFromHk(hkBounds);
+    }
+    if (!latLngBounds?.isValid()) {
       continue;
     }
     const tileEntry = {
@@ -701,8 +770,9 @@ function buildEntryMap(overview) {
       selected: false,
       loaded: false,
       downloading: state.entry.downloadingTileIds.has(tileId),
-      bounds,
+      bounds: hkBounds,
       corners,
+      latLngBounds,
       layer: null,
     };
     tileEntry.layer = createEntryTileLayer(tileEntry);
@@ -720,6 +790,7 @@ function showEntryScreen({syncOverview = true} = {}) {
     return;
   }
   state.entry.visible = true;
+  getViewer().setBasemapAttributionVisible?.(false);
   ui.entryScreen.classList.remove("hidden");
   syncEntrySidebarUi();
   syncControlSidebarUi();
@@ -741,6 +812,7 @@ function showEntryScreen({syncOverview = true} = {}) {
 
 function hideEntryScreen() {
   state.entry.visible = false;
+  getViewer().setBasemapAttributionVisible?.(true);
   ui.entryScreen.classList.add("hidden");
   syncControlSidebarUi();
   syncPerformanceUi();
@@ -956,7 +1028,7 @@ function renderEntryOverview() {
     return;
   }
 
-  ui.entryMapTitle.textContent = "HKU Wireless Digital Twin";
+  ui.entryMapTitle.textContent = sceneLabel();
 
   buildEntryMap(overview);
   syncEntryOverviewUi();

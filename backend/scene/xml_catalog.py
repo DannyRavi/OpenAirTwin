@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 from collections import Counter, defaultdict
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path, PurePosixPath
 
+from backend.scene.scene_catalog import load_scene_metadata
 from backend.scene.tile_bundles import TileBundleRecord, build_tile_bundle_records
 from backend.scene.tile_scene_xml import load_tile_scene_xml_source, resolve_scene_filename
 
@@ -36,6 +37,7 @@ class SceneManifest:
     tiles: dict[str, dict[str, int]]
     bsdfs: dict[str, int]
     integrity: dict[str, object]
+    metadata: dict[str, object] = field(default_factory=dict)
 
     @property
     def mesh_lookup(self) -> dict[str, MeshRecord]:
@@ -62,6 +64,7 @@ class SceneManifest:
             ],
             "bsdfs": self.bsdfs,
             "integrity": self.integrity,
+            "scene": dict(self.metadata),
             "bundles": [bundle.to_api_dict() for bundle in self.bundles],
             "meshes": [mesh.to_api_dict() for mesh in self.meshes],
         }
@@ -129,12 +132,17 @@ def load_scene_manifest(scene_root: Path) -> SceneManifest:
     }
 
     bundles = build_tile_bundle_records(meshes, scene_root)
+    metadata = load_scene_metadata(scene_root)
+    scene_id = metadata.get("scene_id")
+    if not isinstance(scene_id, str) or not scene_id:
+        scene_id = "hku_main"
 
     return SceneManifest(
-        scene_id="hku_main",
+        scene_id=scene_id,
         meshes=meshes,
         bundles=bundles,
         tiles={tile: dict(sorted(categories.items())) for tile, categories in sorted(tile_counts.items())},
         bsdfs=dict(sorted(bsdf_counts.items())),
         integrity=integrity,
+        metadata=metadata,
     )

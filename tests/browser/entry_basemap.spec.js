@@ -70,6 +70,9 @@ async function openEntryMap(page) {
       },
     }),
   );
+  await page.route("**/api/scene/coverage", (route) =>
+    route.fulfill({ json: { scene_id: "browser_fixture", tile_count: 0, tiles: [] } }),
+  );
   await page.route("**/assets/open3dhk_tile_coverage.json", (route) =>
     route.fulfill({ json: { tiles: [] } }),
   );

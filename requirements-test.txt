@@ -1,7 +1,9 @@
 # Lightweight dependencies required by the CPU-only unit and contract suite.
 # Full runtime and GPU dependencies remain pinned in requirements.txt.
-numpy==2.2.6
-trimesh==4.12.2
+numpy==2.2.6; python_version < "3.14"
+numpy==2.5.4; python_version >= "3.14"
+trimesh==4.12.2; python_version < "3.14"
+trimesh==5.1.1; python_version >= "3.14"
 defusedxml==0.7.1
 pytest==8.4.2
 pip-audit==2.10.1

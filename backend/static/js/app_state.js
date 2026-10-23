@@ -44,6 +44,10 @@ function createViewerStub() {
     setLightweightMaterials() {},
     setPerformanceMode() {},
     async syncBundles() {},
+    async setBasemapSelection() { return false; },
+    clearBasemap() {},
+    setBasemapAttributionVisible() {},
+    getBasemapActive() { return false; },
     resetView() {},
     pickOnSurface() { return null; },
   };

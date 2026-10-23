@@ -25,6 +25,7 @@ PORT = int(os.environ.get("OAT_PORT", "8090"))
 MAX_REQUEST_BODY_BYTES = max(0, int(os.environ.get("OAT_MAX_REQUEST_BODY_BYTES", str(16 * 1024 * 1024))))
 
 DEFAULT_FREQUENCY_HZ = float(os.environ.get("OAT_DEFAULT_FREQUENCY_HZ", "3500000000"))
+RT_DEVICE = os.environ.get("OAT_RT_DEVICE", "auto")
 DEFAULT_MAX_DEPTH = int(os.environ.get("OAT_DEFAULT_MAX_DEPTH", "4"))
 DEFAULT_LINK_SAMPLES = int(os.environ.get("OAT_DEFAULT_LINK_SAMPLES", "30000"))
 DEFAULT_LINK_MAX_NUM_PATHS_PER_SRC = int(os.environ.get("OAT_DEFAULT_LINK_MAX_NUM_PATHS_PER_SRC", "1000000"))

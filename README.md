@@ -202,6 +202,31 @@ OpenAirTwin's Apache-2.0 license does not cover third-party government spatial
 data. Review [Scene data and third-party terms](docs/data-licenses.md) before
 redistributing scene data or derived products.
 
+### Building scenes from GeoJSON
+
+You can build a complete Sionna RT scene from a building-footprint GeoJSON
+FeatureCollection expressed in EPSG:3857. The importer extrudes every footprint,
+tiles the result in true metres, and writes the standard per-tile XML/PLY layout
+plus `coverage.json` and `scene_metadata.json`:
+
+```bash
+python3 -m backend.tools.import_geojson_buildings \
+  --input gba/tehran-building-formatted.geojson \
+  --scene-root scene \
+  --replace
+```
+
+The bundled Tehran dataset is generated this way. The default tile contains the
+scene origin and is selected automatically, so pressing **Load Selected Tiles**
+immediately opens 3D buildings around central Tehran. Every Link, Mobility,
+Radiomap, DeepMIMO and Radar workflow then uses that scene. Larger areas can be
+selected on the entry map; tile bundles are built lazily on first request.
+
+Useful importer options include `--tile-size-m`, `--ground-cell-size-m`,
+`--center-lon`, `--center-lat`, `--max-features` and `--no-ground`. See
+[GeoJSON building scenes](docs/geojson-scenes.md) for the output contract and
+radio-map/device-coordinate details.
+
 ## Configuration
 
 Runtime behavior is configured with `OAT_*` environment variables. Common
@@ -216,6 +241,7 @@ options include:
 | `OAT_DEFAULT_MAX_DEPTH` | Default RT path depth |
 | `OAT_DEFAULT_LINK_SAMPLES` | Default Link sample budget |
 | `OAT_DEFAULT_RADIOMAP_SAMPLES` | Default Radiomap sample budget |
+| `OAT_RT_DEVICE` | RT backend: `auto` (default), `cpu` or `cuda`; `auto` falls back to LLVM when a GPU is below OptiX's compute-capability requirement |
 | `OAT_DEEPMIMO_ENV_PYTHON` | Python executable used by DeepMIMO workers |
 | `OAT_MAP_DOWNLOAD_BASE_URL`, `OAT_MAP_DOWNLOAD_FORMAT`, `OAT_MAP_DOWNLOAD_KEY` | Optional tile-download source |
 

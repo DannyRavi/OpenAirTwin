@@ -362,13 +362,17 @@ async function bootstrap() {
   solverControls.applyRtCapabilities(state.rtCapabilities);
   sceneRenderState.showOverlay({title: "Loading Scene", message: "Loading scene manifest...", percent: 18, force: true});
   state.manifest = manifest;
-  sceneRenderState.showOverlay({title: "Loading Scene", message: "Loading Open3DHK coverage...", percent: 22, force: true});
+  sceneRenderState.showOverlay({title: "Loading Scene", message: "Loading tile coverage...", percent: 22, force: true});
   state.entry.coverage = coverage;
   sceneRenderState.populateTileList(state.manifest);
   performancePanel.populatePerformanceControls(state.manifest);
+  const sceneTileIds = new Set(state.manifest.tiles.map((tile) => tile.id));
+  const defaultTileIds = Array.isArray(state.manifest.scene?.default_tile_ids)
+    ? state.manifest.scene.default_tile_ids.filter((tileId) => sceneTileIds.has(tileId))
+    : [];
+  sceneRenderState.setTileSelection(defaultTileIds);
   state.entry.overview = entryMapController.buildEntryOverview(state.manifest, state.entry.coverage);
   entryMapController.renderEntryOverview();
-  sceneRenderState.setTileSelection([]);
   sceneRenderState.hideOverlay(null, true);
 
   sceneRenderState.renderAll();

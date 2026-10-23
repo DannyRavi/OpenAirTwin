@@ -1567,5 +1567,22 @@ class FrontendRegressionTests(unittest.TestCase):
         self.assertNotIn(".deepMimoProgressTrack", css_source)
 
 
+    def test_3d_basemap_is_decorative_and_outside_model_group(self) -> None:
+        viewer_source = read_static_js("viewer.js")
+        basemap_source = read_static_js("viewer/basemap.js")
+        controller_source = read_static_js("controllers/scene_loader_controller.js")
+
+        self.assertIn(
+            "new ViewerBasemap({scene: this.scene, renderer: this.renderer})",
+            viewer_source,
+        )
+        self.assertIn("this.scene.add(this.group);", basemap_source)
+        self.assertIn('this.group.name = "viewer-basemap";', basemap_source)
+        self.assertIn("mesh.userData.viewerBasemap = true;", basemap_source)
+        self.assertNotIn("modelGroup.add", basemap_source)
+        self.assertIn("setBasemapSelection?.(", controller_source)
+        self.assertIn("setBasemapAttributionVisible?.(true)", read_static_js("entry_map.js"))
+
+
 if __name__ == "__main__":
     unittest.main()

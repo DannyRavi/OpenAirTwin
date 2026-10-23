@@ -42,3 +42,10 @@ __pycache__/
 /backend/static/js/radar-demo.js
 /backend/static/css/radar-demo.css
 /tests/browser/radar_demo.spec.js
+
+
+# Local CPU-only Python toolchain (uv-managed CPython + installer tooling)
+/.python/
+/.tooling/
+/.home/
+gba/tehran-building-formatted.geojson

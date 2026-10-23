@@ -7,6 +7,7 @@ import {LineMaterial} from "/lib/LineMaterial.js";
 import {colorForColormap} from "/js/colormaps.js";
 import {AssetManager} from "/js/viewer/asset_manager.js";
 import {SceneLayerManager} from "/js/viewer/layer_manager.js";
+import {ViewerBasemap} from "/js/viewer/basemap.js";
 import {PrimitiveRenderer} from "/js/viewer/primitives.js";
 
 const DEFAULT_VIEW = {
@@ -294,6 +295,7 @@ export class Viewer {
     this.overlayGroup = new THREE.Group();
     this.markerGroup = new THREE.Group();
     this.scene.add(this.modelGroup);
+    this.basemap = new ViewerBasemap({scene: this.scene, renderer: this.renderer});
     this.layers = new SceneLayerManager(this.scene);
     this.pathLayer = this.layers.create("shared", "paths");
     this.radiomapLayer = this.layers.create("radiomap", "heatmap", {order: 12});
@@ -478,6 +480,35 @@ export class Viewer {
 
   isCategoryVisible(category) {
     return !this.hiddenCategories.has(category);
+  }
+
+  /**
+   * Update the decorative map underlay for the currently selected tiles.
+   *
+   * The basemap is retained in its own group and is never added to the model
+   * group, so ray picking, scene bounds and Sionna RT calculations ignore it.
+   */
+  async setBasemapSelection(tileIds = [], coverageTiles = []) {
+    if (!this.basemap) {
+      return false;
+    }
+    return this.basemap.update({
+      tileIds,
+      coverageTiles,
+      modelEntries: this.modelEntries,
+    });
+  }
+
+  clearBasemap() {
+    this.basemap?.clear?.();
+  }
+
+  setBasemapAttributionVisible(visible) {
+    this.basemap?.setAttributionVisible?.(Boolean(visible));
+  }
+
+  getBasemapActive() {
+    return Boolean(this.basemap?.active);
   }
 
   getLoadedCategoryStats() {
@@ -1590,5 +1621,10 @@ export class Viewer {
     }
     this.#refreshLoadedTileIds();
     this.#refreshPerformanceStats();
+  }
+
+  dispose() {
+    this.basemap?.dispose?.();
+    this.basemap = null;
   }
 }

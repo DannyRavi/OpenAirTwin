@@ -5,6 +5,22 @@ All notable changes to OpenAirTwin are recorded here. This project follows
 
 ## [Unreleased]
 
+### Added
+
+- Added `backend.tools.import_geojson_buildings` to extrude a tiled Sionna RT
+  scene from an EPSG:3857 building GeoJSON, including ground meshes, per-tile
+  coverage, scene metadata and automatic default-tile selection.
+- Added `/api/scene/coverage` and scene metadata in `/api/scene/manifest` so the
+  entry map can display any generated scene rather than only Open3DHK coverage.
+- Added automatic RT backend selection: GPUs below OptiX compute capability 7.0
+  fall back to the LLVM CPU backend instead of aborting, with `OAT_RT_DEVICE`
+  overrides.
+- Added compatibility normalization for DeepMIMO 4.0.1 scalar material and RT
+  parameters under NumPy 2.x.
+- Added a viewer-only OpenFreeMap basemap underlay in 3D mode. It is rendered
+  in a separate Three.js group, so it is never ray-cast, never sent to Sionna RT
+  and never affects scene bounds or calculations.
+
 ### Changed
 
 - Replaced the entry map's unauthenticated CARTO raster tiles with OpenFreeMap
@@ -12,6 +28,9 @@ All notable changes to OpenAirTwin are recorded here. This project follows
   local fallback map are retained.
 - Applied a custom light basemap palette with smaller gray-blue place labels,
   regular typography and fewer minor labels at overview zoom levels.
+- The entry map, tile coverage, place-search viewbox and default selection now
+  follow the loaded scene, so the bundled Tehran GeoJSON scene and the Open3DHK
+  Hong Kong scene share the same workflows.
 
 ## [1.1.0] - 2026-08-01
 

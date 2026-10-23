@@ -612,6 +612,14 @@ def run_install(args: argparse.Namespace) -> int:
     python_path = ensure_venv(VENV_DIR, recreate=args.recreate_venv, dry_run=args.dry_run)
     run_command([str(python_path), "-m", "pip", "install", "--upgrade", "pip", "setuptools", "wheel"], dry_run=args.dry_run)
     run_command([str(python_path), "-m", "pip", "install", "-r", str(REQUIREMENTS_FILE)], dry_run=args.dry_run)
+    if sys.version_info >= (3, 14):
+        # DeepMIMO 4.0.1 declares numpy<2.3, but no Python 3.14 NumPy 2.2 wheel
+        # exists. Its runtime code works with the pinned NumPy 2.5 build used for
+        # Python 3.14, so install it without letting pip downgrade the runtime.
+        run_command(
+            [str(python_path), "-m", "pip", "install", "--no-deps", "DeepMIMO==4.0.1"],
+            dry_run=args.dry_run,
+        )
 
     gpus, gpu_detail = detect_nvidia_gpus()
     if gpu_detail:

@@ -22,9 +22,11 @@ from backend.features.core import (
 )
 from backend.jobs.tile_download_jobs import TileDownloadBusy, TileDownloadJobManager
 from backend.rt.common import antenna_array_capabilities
+from backend.rt.device import rt_device_status
 from backend.rt.runtime import RTRuntime, SceneNotReady
 from backend.scene.incremental_tiles import download_stage_and_integrate_tile, normalize_tile_id
 from backend.scene.open3dhk_coverage import is_open3dhk_download_base_url, open3dhk_tile_is_downloadable
+from backend.scene.scene_catalog import load_scene_coverage, load_scene_metadata
 from backend.scene.tile_bundles import (
     compressed_tile_bundle_path,
     ensure_tile_bundle,
@@ -517,12 +519,16 @@ class RequestHandler(BaseHTTPRequestHandler):
             return
 
         if path == "/api/health":
+            scene_metadata = load_scene_metadata(config.SCENE_ROOT)
             self.send_json(
                 {
                     "ok": True,
                     "version": __version__,
                     "radar_build_id": config.RADAR_BUILD_ID,
                     "radar_contract_version": 1,
+                    "rt_device": rt_device_status(),
+                    "scene_id": self.app_state.manifest.scene_id,
+                    "scene_label": scene_metadata.get("label"),
                     "scene_source_mode": "per_tile",
                     "scene_root": str(config.SCENE_ROOT),
                     "common_scene_xml": str(config.SCENE_ROOT / COMMON_SCENE_RELATIVE_PATH),
@@ -530,6 +536,10 @@ class RequestHandler(BaseHTTPRequestHandler):
                     "mesh_root": str(config.MESH_ROOT),
                 }
             )
+            return
+
+        if path == "/api/scene/coverage":
+            self.send_json(load_scene_coverage(config.SCENE_ROOT))
             return
 
         if path == "/api/rt/capabilities":

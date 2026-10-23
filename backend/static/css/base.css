@@ -25,6 +25,26 @@ html,body {
   inset:0;
   pointer-events:none;
 }
+
+.viewerBasemapAttribution {
+  position:fixed;
+  top:12px;
+  right:14px;
+  z-index:4;
+  padding:3px 7px;
+  border-radius:var(--oat-radius-sm);
+  background:var(--oat-surface-panel);
+  color:var(--oat-text-muted);
+  font-size:var(--oat-font-size-10);
+  line-height:1.4;
+  pointer-events:none;
+  backdrop-filter:blur(6px);
+}
+
+.viewerBasemapAttribution a {
+  color:inherit;
+  pointer-events:auto;
+}
 }
 
 @layer utilities {

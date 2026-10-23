@@ -193,7 +193,7 @@ export function ShellLayout({
                     id="entryPlaceInput"
                     className="entryManualInput oat-input"
                     type="text"
-                    placeholder="e.g. HKU, Pok Fu Lam, Central"
+                    placeholder="e.g. a landmark, street or district"
                     autoComplete="off"
                   />
                   <button

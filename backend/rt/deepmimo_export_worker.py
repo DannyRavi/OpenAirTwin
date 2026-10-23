@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 import json
 import os
 from pathlib import Path
+import pickle
 import shutil
 import traceback
 from uuid import uuid4
@@ -123,9 +124,47 @@ def _deepmimo_output_dir(job_dir: Path, rt_export_dir: Path, converted_name: obj
     raise FileNotFoundError("DeepMIMO converter did not create a scenario directory")
 
 
+def _scalarize_one_element_arrays(value):
+    if isinstance(value, np.ndarray) and value.size == 1:
+        return value.reshape(-1)[0].item()
+    if isinstance(value, dict):
+        return {key: _scalarize_one_element_arrays(item) for key, item in value.items()}
+    if isinstance(value, list):
+        return [_scalarize_one_element_arrays(item) for item in value]
+    return value
+
+
+def _normalize_sionna_export_pickles(rt_export_dir: Path) -> None:
+    """Normalize shape-(1,) Sionna tensors that DeepMIMO converts with ``int()``.
+
+    DeepMIMO 4.0.1 reads scalar material properties and RT parameters from
+    pickles and converts them with ``int()``/``float()``. Sionna 2.0.1
+    serializes those fields as one-element NumPy arrays, which NumPy 2.x no
+    longer converts implicitly.
+    """
+
+    export_dir = Path(rt_export_dir)
+    for filename in ("sionna_rt_params.pkl", "sionna_materials.pkl"):
+        pickle_path = export_dir / filename
+        if not pickle_path.is_file():
+            continue
+        with open(pickle_path, "rb") as handle:
+            payload = pickle.load(handle)
+        normalized = _scalarize_one_element_arrays(payload)
+        temp_path = pickle_path.with_name(f"{pickle_path.name}.{uuid4().hex}.tmp")
+        try:
+            with open(temp_path, "wb") as handle:
+                pickle.dump(normalized, handle)
+            temp_path.replace(pickle_path)
+        except Exception:
+            temp_path.unlink(missing_ok=True)
+            raise
+
+
 def _convert_to_deepmimo(rt_export_dir: Path, scenario_name: str, *, convert_scene_geometry: bool) -> object:
     from deepmimo.converters.sionna_rt import sionna_converter
 
+    _normalize_sionna_export_pickles(rt_export_dir)
     original_read_scene = sionna_converter.read_scene
     if not convert_scene_geometry:
         sionna_converter.read_scene = lambda *args, **kwargs: None

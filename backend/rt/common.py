@@ -7,6 +7,10 @@ from typing import Iterable
 import numpy as np
 
 from backend import config
+from backend.rt.device import configure_rt_device
+
+
+configure_rt_device()
 
 MIN_WAYPOINT_SEPARATION_M = 1e-3
 

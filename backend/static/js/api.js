@@ -111,8 +111,14 @@ export function getManifest() {
   return requestJson("/api/scene/manifest", {timeoutMs: API_TIMEOUTS.metadata});
 }
 
+export function getSceneCoverage() {
+  return requestJson("/api/scene/coverage", {timeoutMs: API_TIMEOUTS.metadata});
+}
+
 export function getOpen3dHkTileCoverage() {
-  return requestJson("/assets/open3dhk_tile_coverage.json", {timeoutMs: API_TIMEOUTS.metadata});
+  return getSceneCoverage().catch(() =>
+    requestJson("/assets/open3dhk_tile_coverage.json", {timeoutMs: API_TIMEOUTS.metadata}),
+  );
 }
 
 export function getRtCapabilities() {
