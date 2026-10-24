@@ -275,6 +275,18 @@ npm test
 npm run build
 ```
 
+for run first time:
+
+```bash
+cd workbench
+npx -y npm@11.9.0 ci
+npx -y npm@11.9.0 run build
+cd ..
+set -a; . ./.oat-env; set +a
+./.venv/bin/python -m backend.server
+```
+
+
 See the [development guide](docs/development.md) before changing Feature
 registration, REST contracts, viewer layers or shared settings.
 
