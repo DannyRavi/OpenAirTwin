@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build a deterministic, self-contained OpenAirTwin application archive."""
+"""Build a deterministic, self-contained Hammurabi application archive."""
 
 from __future__ import annotations
 
@@ -224,7 +224,7 @@ def write_sbom(path: Path, *, version: str, git_commit: str, build_id: str, arch
         "metadata": {
             "component": {
                 "type": "application",
-                "name": "OpenAirTwin",
+                "name": "Hammurabi",
                 "version": version,
                 "bom-ref": f"pkg:generic/openairtwin@{version}?commit={git_commit}",
                 "hashes": [{"alg": "SHA-256", "content": archive_hash}],

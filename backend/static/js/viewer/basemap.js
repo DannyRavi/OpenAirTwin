@@ -166,6 +166,30 @@ export class ViewerBasemap {
     return snapshot;
   }
 
+  async #offlineSnapshot(url) {
+    const key = `offline:${url}`;
+    const cached = this.snapshotCache.get(key);
+    if (cached) {
+      return cached;
+    }
+    const image = await new Promise((resolve, reject) => {
+      const texture = new THREE.TextureLoader().load(
+        url,
+        () => resolve(texture),
+        undefined,
+        () => reject(new Error(`Offline basemap unavailable: ${url}`)),
+      );
+      texture.colorSpace = THREE.SRGBColorSpace;
+    });
+    this.snapshotCache.set(key, image);
+    while (this.snapshotCache.size > 4) {
+      const oldest = this.snapshotCache.keys().next().value;
+      if (oldest === undefined) break;
+      this.snapshotCache.delete(oldest);
+    }
+    return image;
+  }
+
   async update({tileIds = [], coverageTiles = [], modelEntries = new Map()} = {}) {
     const generation = ++this.generation;
     this.#clearPlanes();
@@ -210,11 +234,23 @@ export class ViewerBasemap {
       {west: 180, east: -180, south: 90, north: -90},
     );
 
+    const offlineRuntime = window.__HAMMURABI_OFFLINE__;
+    const offlineMode = offlineRuntime?.mode === "offline";
+    const activeRegion = offlineRuntime?.activeRegion;
+    const cachedBasemap = activeRegion?.basemapUrl;
     let snapshot = null;
-    try {
-      snapshot = await this.#snapshot(wgs84Union);
-    } catch (error) {
-      console.warn("3D basemap snapshot unavailable", error);
+    if (cachedBasemap && (offlineMode || offlineRuntime?.mode === "automatic")) {
+      try {
+        snapshot = await this.#offlineSnapshot(cachedBasemap);
+      } catch (error) {
+        console.warn("Offline 3D basemap unavailable", error);
+      }
+    } else if (!offlineMode) {
+      try {
+        snapshot = await this.#snapshot(wgs84Union);
+      } catch (error) {
+        console.warn("3D basemap snapshot unavailable", error);
+      }
     }
     if (generation !== this.generation) {
       return false;
@@ -223,7 +259,7 @@ export class ViewerBasemap {
       return false;
     }
 
-    const texture = new THREE.CanvasTexture(snapshot);
+    const texture = snapshot.isTexture ? snapshot : new THREE.CanvasTexture(snapshot);
     texture.colorSpace = THREE.SRGBColorSpace;
     texture.anisotropy = Math.min(
       8,

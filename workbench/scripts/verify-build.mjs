@@ -12,6 +12,7 @@ const CORE_STYLE_ORDER = [
   "entry-map.css",
   "results.css",
   "radar.css",
+  "hammurabi.css",
 ];
 const EXCLUDED_PRODUCTION_NAMES = [
   "ui-catalog",
@@ -54,7 +55,9 @@ const BUDGETS = {
   basemapWorkerRaw: 512 * 1024,
   initialGzip: 352 * 1024,
   applicationJavaScriptGzip: 384 * 1024,
-  applicationCssGzip: 24 * 1024,
+  // Hammurabi adds a dedicated workspace-chrome stylesheet (offline panel,
+  // toolbar, navigation and dark floating instruments).
+  applicationCssGzip: 28 * 1024,
   reactRuntimeGzip: 68 * 1024,
   singleFeatureGzip: 30 * 1024,
   htmlGzip: 3 * 1024,

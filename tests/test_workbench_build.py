@@ -126,7 +126,7 @@ def test_python_server_prefers_build_and_applies_split_cache_policy(tmp_path: Pa
             origin = f"http://{host}:{port}"
             with urllib.request.urlopen(f"{origin}/") as response:
                 assert response.headers["Cache-Control"] == "no-store"
-                assert response.headers["X-OpenAirTwin-Frontend-Build-ID"] == "development"
+                assert response.headers["X-Hammurabi-Frontend-Build-ID"] == "development"
                 assert b"/workbench/assets/app-abcdefgh.js" in response.read()
             with urllib.request.urlopen(f"{origin}/workbench/assets/app-abcdefgh.js") as response:
                 assert response.headers["Cache-Control"] == "public, max-age=31536000, immutable"

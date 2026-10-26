@@ -133,8 +133,10 @@ class DeepMIMOJobManager:
         max_pending_jobs: int = config.DEEPMIMO_MAX_PENDING_JOBS,
         max_stored_jobs: int = config.DEEPMIMO_MAX_STORED_JOBS,
         job_ttl_seconds: float = config.DEEPMIMO_JOB_TTL_SECONDS,
+        scene_root: Path = config.SCENE_ROOT,
     ) -> None:
         self.job_root = Path(job_root)
+        self.scene_root = Path(scene_root).resolve()
         self.python_executable = str(python_executable)
         self.max_pending_jobs = int(max_pending_jobs)
         self.max_stored_jobs = int(max_stored_jobs)
@@ -361,7 +363,7 @@ class DeepMIMOJobManager:
                 cwd=str(config.PROJECT_ROOT),
                 env={
                     **dict(__import__("os").environ),
-                    "OAT_SCENE_ROOT": str(config.SCENE_ROOT),
+                    "OAT_SCENE_ROOT": str(self.scene_root),
                 },
                 stdout=log_handle,
                 stderr=subprocess.STDOUT,

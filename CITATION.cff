@@ -1,8 +1,8 @@
 cff-version: 1.2.0
-message: "If you use OpenAirTwin in your work, please cite the software version you used."
+message: "Hammurabi is a derivative of OpenAirTwin. Cite the upstream OpenAirTwin version you use and identify this fork."
 type: software
-title: "OpenAirTwin"
-abstract: "An open-source digital twin platform for interactive wireless research."
+title: "Hammurabi"
+abstract: "A 3D geospatial and RF simulation workspace with persistent offline maps, derived from the OpenAirTwin digital twin platform."
 authors:
   - family-names: "Wang"
     given-names: "Zhaolin"
@@ -13,7 +13,7 @@ authors:
 version: 1.1.0
 date-released: 2026-08-01
 license: Apache-2.0
-repository-code: "https://github.com/HKUOpenSource/OpenAirTwin"
+repository-code: "https://github.com/DannyRavi/OpenAirTwin"
 url: "https://github.com/HKUOpenSource/OpenAirTwin/releases/tag/v1.1.0"
 keywords:
   - "digital twin"

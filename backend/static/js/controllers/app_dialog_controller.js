@@ -1,4 +1,4 @@
-const DEFAULT_ALERT_TITLE = "OpenAirTwin";
+const DEFAULT_ALERT_TITLE = "Hammurabi";
 const DEFAULT_CONFIRM_TITLE = "Confirm Action";
 
 function toText(value) {

@@ -959,6 +959,30 @@ export class Viewer {
     event.stopPropagation();
   }
 
+  getCameraState() {
+    return {
+      position: this.camera.position.toArray(),
+      target: this.controls.target.toArray(),
+    };
+  }
+
+  setCameraState(state) {
+    const position = Array.isArray(state?.position) ? state.position.map(Number) : null;
+    const target = Array.isArray(state?.target) ? state.target.map(Number) : null;
+    if (!position || position.length !== 3 || !target || target.length !== 3) {
+      return false;
+    }
+    if (![...position, ...target].every(Number.isFinite)) {
+      return false;
+    }
+    this.camera.position.set(position[0], position[1], position[2]);
+    this.controls.target.set(target[0], target[1], target[2]);
+    this.#clampViewAboveGround();
+    this.camera.lookAt(this.controls.target);
+    this.controls.update();
+    return true;
+  }
+
   resetView() {
     this.stopTxOrbit();
     this.camera.position.copy(DEFAULT_VIEW.position);

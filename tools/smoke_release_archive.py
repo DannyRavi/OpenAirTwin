@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify, optionally install, and smoke-test an OpenAirTwin release archive."""
+"""Verify, optionally install, and smoke-test an Hammurabi release archive."""
 
 from __future__ import annotations
 
@@ -252,7 +252,7 @@ def smoke_service(root: Path, python: Path, build_id: str) -> None:
         status, headers, html = request(port, "/")
         if status != 200 or headers.get("cache-control") != "no-store":
             raise ReleaseSmokeError("Release homepage response is invalid")
-        if headers.get("x-openairtwin-frontend-build-id") != build_id:
+        if headers.get("x-hammurabi-frontend-build-id") != build_id:
             raise ReleaseSmokeError("Release homepage Build ID is invalid")
         if b"/workbench/assets/" not in html:
             raise ReleaseSmokeError("Release homepage does not reference hashed assets")

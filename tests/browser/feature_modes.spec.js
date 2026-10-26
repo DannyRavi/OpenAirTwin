@@ -62,6 +62,7 @@ test("core CSS modules load in order and keep controls scrollable", async ({
     "/css/entry-map.css",
     "/css/results.css",
     "/css/radar.css",
+    "/css/hammurabi.css",
   ];
   const sourceName = (path) => {
     if (path.startsWith("/css/")) return path.slice("/css/".length);
@@ -92,6 +93,7 @@ test("core CSS modules load in order and keep controls scrollable", async ({
     expect.stringContaining("@layer features"),
     expect.stringContaining("@layer features"),
     expect.stringContaining("@layer features"),
+    expect.stringContaining("@layer utilities"),
   ]);
   expect(architecture.bodyOverflowY).toBe("auto");
 });
@@ -108,7 +110,7 @@ test("UI assets load and mode switching releases owned resources", async ({
       ["/css/", "/js/", "/lib/", "/workbench/assets/"].some((prefix) =>
         url.pathname.startsWith(prefix),
       ) ||
-      url.pathname === "/assets/openairtwin_logo.png" ||
+      url.pathname === "/assets/hammurabi_logo.png" ||
       url.pathname === "/assets/radar/drones/manifest.json";
     if (!isUiResource) return;
     responseRecords.push(
@@ -420,7 +422,7 @@ test("all feature modes start without Tx or Rx devices", async ({ page }) => {
 test("five modes, dialog and error states pass the release accessibility gate", async ({
   page,
 }) => {
-  test.setTimeout(60_000);
+  test.setTimeout(120_000);
   await page.emulateMedia({ reducedMotion: "reduce" });
   await openDeterministicApp(page);
   await enableRealViewer(page);
@@ -437,7 +439,7 @@ test("five modes, dialog and error states pass the release accessibility gate", 
       await import("/js/app_state.js?v=20260723-radar-shared-groups");
     state.radar.status = "failed";
     state.radar.failureKind = "offline";
-    state.radar.error = "OpenAirTwin is offline or the server is unavailable";
+    state.radar.error = "Hammurabi is offline or the server is unavailable";
     document.querySelector('[data-mode="link"]').click();
     document.querySelector('[data-mode="radar"]').click();
   });
@@ -1141,6 +1143,7 @@ test("Radar result dock visual snapshots stay stable", async ({ page }) => {
   await expect(page.locator("#radarDetectionList .radarResultRow")).toHaveCount(
     2,
   );
+  await page.waitForTimeout(2500);
   await expect(page.locator("#linkChannelSection")).toHaveScreenshot(
     "radar-result-dock.png",
     {

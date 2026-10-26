@@ -1,5 +1,5 @@
 {
-  "name": "openairtwin-browser-regression-tests",
+  "name": "hammurabi-browser-regression-tests",
   "private": true,
   "type": "module",
   "scripts": {

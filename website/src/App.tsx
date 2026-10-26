@@ -136,7 +136,7 @@ function HeroTitleMedia() {
 
   return (
     <div className={className}>
-      <h1 className="srOnly">OpenAirTwin</h1>
+      <h1 className="srOnly">Hammurabi</h1>
       <video
         aria-hidden="true"
         autoPlay={!reduceMotion}
@@ -159,7 +159,7 @@ function HeroTitleMedia() {
 function Header() {
   return (
     <header className="topNav">
-      <a className="brand" href="#home" aria-label="OpenAirTwin tutorial home">
+      <a className="brand" href="#home" aria-label="Hammurabi tutorial home">
         <BrandLogo decorative priority />
       </a>
       <nav aria-label="Tutorial navigation">

@@ -24,7 +24,7 @@ export class ApiRequestError extends Error {
 const FAILURE_PRESENTATIONS = Object.freeze({
   cancelled: {status: "Cancelled", label: "Request cancelled"},
   timeout: {status: "Timed Out", label: "Request timed out"},
-  offline: {status: "Offline", label: "OpenAirTwin is offline"},
+  offline: {status: "Offline", label: "Hammurabi is offline"},
   server: {status: "Server Error", label: "Server error"},
   request: {status: "Failed", label: "Request failed"},
 });
@@ -99,7 +99,7 @@ export async function requestJson(url, options = {}) {
       throw new ApiRequestError("Request cancelled", {kind: "cancelled", cause: error});
     }
     if (error instanceof TypeError) {
-      throw new ApiRequestError("OpenAirTwin is offline or the server is unavailable", {kind: "offline", cause: error});
+      throw new ApiRequestError("Hammurabi is offline or the server is unavailable", {kind: "offline", cause: error});
     }
     throw new ApiRequestError(error?.message || "Request failed", {cause: error});
   } finally {
@@ -294,4 +294,96 @@ export function cancelDeepMimoJob(jobId, options = {}) {
 
 export function deepMimoDownloadUrl(jobId) {
   return `/api/deepmimo/jobs/${encodeURIComponent(jobId)}/download`;
+}
+
+export function getOfflineStatus() {
+  return requestJson("/api/offline/status", {timeoutMs: API_TIMEOUTS.metadata});
+}
+
+export function setOfflineMode(mode) {
+  return requestJson("/api/offline/mode", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({mode}),
+    timeoutMs: API_TIMEOUTS.action,
+  });
+}
+
+export function estimateOfflineRegion(payload) {
+  return requestJson("/api/offline/estimate", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(payload),
+    timeoutMs: API_TIMEOUTS.action,
+  });
+}
+
+export function createOfflineRegion(payload) {
+  return requestJson("/api/offline/regions", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(payload),
+    timeoutMs: API_TIMEOUTS.action,
+  });
+}
+
+export function getOfflineRegions() {
+  return requestJson("/api/offline/regions", {timeoutMs: API_TIMEOUTS.metadata});
+}
+
+export function getOfflineRegion(regionId) {
+  return requestJson(`/api/offline/regions/${encodeURIComponent(regionId)}`, {
+    timeoutMs: API_TIMEOUTS.metadata,
+  });
+}
+
+export function cancelOfflineRegion(regionId) {
+  return requestJson(`/api/offline/regions/${encodeURIComponent(regionId)}/cancel`, {
+    method: "POST",
+    timeoutMs: API_TIMEOUTS.action,
+  });
+}
+
+export function verifyOfflineRegion(regionId) {
+  return requestJson(`/api/offline/regions/${encodeURIComponent(regionId)}/verify`, {
+    method: "POST",
+    timeoutMs: API_TIMEOUTS.solver,
+  });
+}
+
+export function openOfflineRegion(regionId) {
+  return requestJson(`/api/offline/regions/${encodeURIComponent(regionId)}/open`, {
+    method: "POST",
+    timeoutMs: API_TIMEOUTS.solver,
+  });
+}
+
+export function deleteOfflineRegion(regionId) {
+  return requestJson(`/api/offline/regions/${encodeURIComponent(regionId)}/delete`, {
+    method: "POST",
+    timeoutMs: API_TIMEOUTS.action,
+  });
+}
+
+export function resumeOfflineRegion(regionId) {
+  return requestJson(`/api/offline/regions/${encodeURIComponent(regionId)}/resume`, {
+    method: "POST",
+    timeoutMs: API_TIMEOUTS.action,
+  });
+}
+
+export function deactivateOfflineRegion() {
+  return requestJson("/api/offline/deactivate", {
+    method: "POST",
+    timeoutMs: API_TIMEOUTS.solver,
+  });
+}
+
+export function saveOfflineBasemap(regionId, pngBase64) {
+  return requestJson(`/api/offline/regions/${encodeURIComponent(regionId)}/basemap`, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({png_base64: pngBase64}),
+    timeoutMs: API_TIMEOUTS.action,
+  });
 }

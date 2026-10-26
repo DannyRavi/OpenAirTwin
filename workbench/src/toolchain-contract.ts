@@ -8,6 +8,7 @@ export const CORE_STYLE_ORDER = [
   "entry-map.css",
   "results.css",
   "radar.css",
+  "hammurabi.css",
 ] as const;
 
 export const LEGACY_PUBLIC_PREFIXES = [

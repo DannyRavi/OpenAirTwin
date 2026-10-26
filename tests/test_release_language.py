@@ -51,7 +51,7 @@ def release_document_paths() -> list[Path]:
 
 def test_release_language_gate_accepts_english_text_and_binary_data() -> None:
     entries = [
-        TextEntry("index.html", b'<!doctype html><html lang="en"><title>OpenAirTwin</title>'),
+        TextEntry("index.html", b'<!doctype html><html lang="en"><title>Hammurabi</title>'),
         TextEntry("README.md", b"English release documentation"),
         TextEntry("logo.png", b"\x89PNG\x00\xe5\x90\x8d"),
     ]
@@ -62,7 +62,7 @@ def test_release_language_gate_accepts_english_text_and_binary_data() -> None:
 def test_release_language_gate_rejects_cjk_and_non_english_html() -> None:
     entries = [
         TextEntry("notes.md", "Release \u8bf4\u660e".encode()),
-        TextEntry("index.html", b'<!doctype html><html lang="fr"><title>OpenAirTwin</title>'),
+        TextEntry("index.html", b'<!doctype html><html lang="fr"><title>Hammurabi</title>'),
     ]
 
     assert text_violations(entries) == [

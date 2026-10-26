@@ -1,8 +1,8 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="backend/static/assets/openairtwin_logo_dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="backend/static/assets/openairtwin_logo.png">
-    <img src="backend/static/assets/openairtwin_logo.png" alt="OpenAirTwin" width="620">
+    <source media="(prefers-color-scheme: dark)" srcset="backend/static/assets/hammurabi_logo_dark.png">
+    <source media="(prefers-color-scheme: light)" srcset="backend/static/assets/hammurabi_logo.png">
+    <img src="backend/static/assets/hammurabi_logo.png" alt="Hammurabi" width="620">
   </picture>
 </p>
 
@@ -12,7 +12,7 @@
   <img alt="Sionna RT" src="https://img.shields.io/badge/Sionna_RT-2.0.1-brightgreen">
   <img alt="React 19" src="https://img.shields.io/badge/React-19.2.8-61DAFB?logo=react&logoColor=black">
   <img alt="WebGL rendering" src="https://img.shields.io/badge/rendering-WebGL-4b8bbe">
-  <a href="https://github.com/HKUOpenSource/OpenAirTwin/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/HKUOpenSource/OpenAirTwin/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/DannyRavi/OpenAirTwin/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/DannyRavi/OpenAirTwin/actions/workflows/ci.yml/badge.svg"></a>
 </p>
 
 <p align="center">
@@ -24,27 +24,33 @@
   <a href="LICENSE">License</a>
 </p>
 
-OpenAirTwin is an open-source digital twin platform for interactive wireless
-research. It combines a Python backend, a static browser frontend, tile-based
-city scenes, and Sionna RT workflows for link analysis, mobility simulation,
-radio-map generation, DeepMIMO dataset export, and radar sensing.
+Hammurabi is a professional 3D geospatial and RF simulation workspace for urban
+digital twins, wireless network planning and radio propagation. This repository
+is an independent derivative of the open-source
+[OpenAirTwin](https://github.com/HKUOpenSource/OpenAirTwin) research platform.
+It retains the Python/Sionna RT backend, the tile-based Three.js city viewer and
+all existing Link, Mobility, Radio Map, DeepMIMO and Radar workflows, and adds a
+map-first workspace plus persistent offline regions that reopen without
+internet access.
 
 <p align="center">
-  <img src="backend/static/assets/openairtwin_showcase.png" alt="OpenAirTwin browser interface" width="100%">
+  <img src="backend/static/assets/hammurabi_workspace.png" alt="Hammurabi 3D geospatial workspace" width="100%">
 </p>
 
 > [!IMPORTANT]
-> OpenAirTwin is research software. The server has no authentication and binds
-> to `127.0.0.1` by default. Do not expose it to an untrusted network without an
-> appropriate authenticated reverse proxy and additional hardening.
+> Hammurabi inherits OpenAirTwin's research-software security model. The server
+> has no authentication and binds to `127.0.0.1` by default. Do not expose it to
+> an untrusted network without an appropriate authenticated reverse proxy and
+> additional hardening.
 
 ## Quick Start
 
 ### macOS or Linux
 
 ```bash
-git clone https://github.com/HKUOpenSource/OpenAirTwin.git
-cd OpenAirTwin
+git clone https://github.com/DannyRavi/OpenAirTwin.git
+cd Hammurabi
+git checkout gba
 python3 install.py --with-sample-scene
 set -a; . ./.oat-env; set +a
 ./.venv/bin/python -m backend.server
@@ -53,8 +59,9 @@ set -a; . ./.oat-env; set +a
 ### Windows PowerShell
 
 ```powershell
-git clone https://github.com/HKUOpenSource/OpenAirTwin.git
+git clone https://github.com/DannyRavi/OpenAirTwin.git
 Set-Location OpenAirTwin
+git checkout gba
 py -3.11 install.py --with-sample-scene
 . .\.oat-env.ps1
 .\.venv\Scripts\python.exe -m backend.server
@@ -62,17 +69,19 @@ py -3.11 install.py --with-sample-scene
 
 The installer creates `.oat-env` on every platform and also creates
 `.oat-env.ps1` on Windows. These files preserve the selected CPU/GPU and local
-runtime configuration.
+runtime configuration. Hammurabi keeps the `OAT_*` environment namespace for
+backward compatibility with existing installations.
 
 Open [http://127.0.0.1:8090](http://127.0.0.1:8090), then verify the
-installation. For tutorials, use the
+installation. The upstream tutorial remains useful for the shared workflows:
 [OpenAirTwin tutorial](https://hkuopensource.github.io/OpenAirTwin/).
 
 ## Features
 
 | Feature | Workflow | Main output |
 | --- | --- | --- |
-| Map and scene management | Select Hong Kong map tiles, download scene data, and load only the required city geometry | Incremental 3D scene |
+| Map and scene management | Select map tiles, download scene data, and load only the required city geometry | Incremental 3D scene |
+| Offline maps | Define a geographic area, persist its tile snapshots, meshes, render bundles and map image, then reopen it after a restart with the network disabled | Self-contained offline region |
 | Link analysis | Place Tx/Rx points and configure the shared RT solver | Paths, received power, channel taps, CIR and frequency response |
 | Radar sensing | Place monostatic or bistatic Radar Tx/Rx, add moving drone targets, and configure OFDM, CA-CFAR and propagation parameters | Range–Doppler and range-profile plots, detections, target truth and classified propagation paths |
 | Mobility | Define Rx waypoints, speed and sampling parameters | Trajectory, sample markers and time-varying channel results |
@@ -82,7 +91,7 @@ installation. For tutorials, use the
 
 ## Documentation
 
-- [Interactive architecture map](https://hkuopensource.github.io/OpenAirTwin/architecture/):
+- [Interactive architecture map](docs/openairtwin-architecture.html):
   current frontend, transport, backend service, job and renderer relationships;
   its versioned source is [`docs/openairtwin-architecture.html`](docs/openairtwin-architecture.html).
 - [Development guide](docs/development.md): repository structure, tests,
@@ -90,6 +99,8 @@ installation. For tutorials, use the
 - [Changelog](CHANGELOG.md) and [release checklist](docs/release-checklist.md):
   the v1.1.0 release record, production gates and maintainer
   publication sequence.
+- [Offline maps and persistent scenes](docs/offline-maps.md): storage layout,
+  connectivity modes, download pipeline and what remains online-only.
 - [Scene data and third-party terms](docs/data-licenses.md): Open3Dhk/CSDI data
   responsibilities, bundled sample-scene attribution and Radar drone-model
   licensing.
@@ -198,7 +209,7 @@ Build or refresh frontend tile bundles with:
 python3 -m backend.tools.build_tile_bundles --help
 ```
 
-OpenAirTwin's Apache-2.0 license does not cover third-party government spatial
+Hammurabi's Apache-2.0 license does not cover third-party government spatial
 data. Review [Scene data and third-party terms](docs/data-licenses.md) before
 redistributing scene data or derived products.
 
@@ -340,8 +351,8 @@ relevant Python and Playwright suites before submitting a change.
 
 ## Citation
 
-If OpenAirTwin contributes to your work, cite the version used. For this
-release:
+Hammurabi is a derivative of OpenAirTwin. If the platform contributes to your
+work, cite the upstream software version this fork is based on:
 
 > Wang, Z., Zhou, Z., & Zhao, Z. (2026). OpenAirTwin (Version 1.1.0)
 > [Computer software]. https://github.com/HKUOpenSource/OpenAirTwin/releases/tag/v1.1.0
@@ -350,6 +361,7 @@ Machine-readable citation metadata is available in [`CITATION.cff`](CITATION.cff
 
 ## License
 
-OpenAirTwin source code is released under the Apache License 2.0. See
-[`LICENSE`](LICENSE) for details. Scene data and other third-party assets remain
+Hammurabi source code is released under the Apache License 2.0. See
+[`LICENSE`](LICENSE) for details. Upstream OpenAirTwin copyright and attribution
+notices are preserved. Scene data and other third-party assets remain
 subject to their respective terms.

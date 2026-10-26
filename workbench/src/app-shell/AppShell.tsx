@@ -16,6 +16,7 @@ import type { ShellUiModel } from "./shell-ui-model.ts";
 
 const shellButtonCommands = new Map<string, string>([
   ["panelToggle", "workbench.controls.toggle"],
+  ["btnWorkspacePanelCollapse", "workbench.controls.toggle"],
   ["btnEntrySidebarToggle", "entry.sidebar.toggle"],
   ["btnEntryReturnScene", "entry.scene.return"],
   ["btnEntrySearch", "entry.search.submit"],

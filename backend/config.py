@@ -124,6 +124,12 @@ DEEPMIMO_ENV_PYTHON = os.environ.get(
     sys.executable,
 )
 GENERATED_ROOT = Path(os.environ.get("OAT_GENERATED_ROOT", str(PROJECT_ROOT / "generated"))).resolve()
+OFFLINE_REGION_ROOT = Path(
+    os.environ.get("OAT_OFFLINE_REGION_ROOT", str(GENERATED_ROOT / "offline_regions"))
+).resolve()
+OFFLINE_BASEMAP_MAX_BYTES = max(
+    1024, int(os.environ.get("OAT_OFFLINE_BASEMAP_MAX_BYTES", str(8 * 1024 * 1024)))
+)
 MAP_DOWNLOAD_KEY = os.environ.get("OAT_MAP_DOWNLOAD_KEY", "ad5940a63bd344c48b0351ef1c7a905e")
 MAP_DOWNLOAD_FORMAT = os.environ.get("OAT_MAP_DOWNLOAD_FORMAT", "GLTF")
 MAP_DOWNLOAD_BASE_URL = os.environ.get("OAT_MAP_DOWNLOAD_BASE_URL", "https://data11.map.gov.hk/api/3d-zip")

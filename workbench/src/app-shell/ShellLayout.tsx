@@ -1,3 +1,6 @@
+import { useState } from "react";
+
+import { useFeatureSnapshot } from "../runtime/observable-state.ts";
 import { ControlSurface } from "../features/controls/ControlSurface.tsx";
 import type { ControlSurfaceModel } from "../features/controls/control-surface-model.ts";
 import { DeepMimoDatasetTray } from "../features/deepmimo/DeepMimoDatasetTray.tsx";
@@ -10,6 +13,16 @@ import {
   TileSelectionList,
 } from "./ShellCollections.tsx";
 import type { ShellUiModel } from "./shell-ui-model.ts";
+import {
+  BrandMark,
+  MapToolbar,
+  OfflinePanel,
+  ProjectPanel,
+  ScenePanel,
+  WorkspaceNav,
+  WorkspaceStatus,
+  type WorkspaceView,
+} from "./HammurabiWorkspace.tsx";
 
 export function ShellLayout({
   controlModel,
@@ -22,6 +35,8 @@ export function ShellLayout({
   readonly resultModel: ResultDockModel;
   readonly shellModel: ShellUiModel;
 }) {
+  const [view, setView] = useState<WorkspaceView>("analysis");
+  const shellSnapshot = useFeatureSnapshot(shellModel.store);
   return (
     <>
       <div
@@ -124,7 +139,7 @@ export function ShellLayout({
           </button>
           <div className="appDialogTone" aria-hidden="true"></div>
           <h2 className="appDialogTitle" id="appDialogTitle">
-            {"OpenAirTwin"}
+            {"Hammurabi"}
           </h2>
           <p className="appDialogMessage" id="appDialogMessage"></p>
           <pre className="appDialogDetail hidden" id="appDialogDetail"></pre>
@@ -176,12 +191,8 @@ export function ShellLayout({
           <div className="entrySidebarStack">
             <section className="entryIntro oat-panel" id="entrySidebar">
               <div className="entrySidebarHead">
-                <div className="entrySidebarBrand" aria-label="OpenAirTwin">
-                  <img
-                    className="brandLogo openAirTwinLogo"
-                    src="/assets/openairtwin_logo.png"
-                    alt="OpenAirTwin logo"
-                  />
+                <div className="entrySidebarBrand">
+                  <BrandMark variant="full" />
                 </div>
               </div>
               <div className="entryManual">
@@ -347,104 +358,153 @@ export function ShellLayout({
           </svg>
         </span>
       </button>
+      <MapToolbar
+        onOpenOffline={() => {
+          setView("offline");
+        }}
+      />
+      <WorkspaceStatus
+        offline={shellSnapshot.offline}
+        scene={shellSnapshot.scene}
+      />
       <div id="ui" className="oat-panel">
         <div className="uiHead">
-          <div className="uiTitleBlock" aria-label="OpenAirTwin">
-            <img
-              className="brandLogo openAirTwinLogo"
-              src="/assets/openairtwin_logo.png"
-              alt="OpenAirTwin logo"
-            />
+          <BrandMark />
+          <div className="hx-ui-head-actions">
+            <button
+              className="hx-icon-btn"
+              id="btnWorkspacePanelCollapse"
+              type="button"
+              aria-label="Collapse control panel"
+              title="Collapse control panel"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="m15 18-6-6 6-6" />
+              </svg>
+            </button>
           </div>
         </div>
+        <WorkspaceNav active={view} onChange={setView} />
         <div id="uiBody" className="oat-scroll-region">
-          <details className="paramGroup modeSelector" id="modeSelector">
-            <summary
-              className="paramGroupSummary modeSelectButton"
-              id="modeSelectButton"
-              aria-haspopup="listbox"
-              aria-expanded="false"
-              aria-controls="modeMenu"
-            >
-              <span className="modeSelectTitle" id="modeSelectTitle">
-                {"Mode (Link Analysis)"}
-              </span>
-            </summary>
-            <div className="paramGroupBody modeSelectBody">
-              <div
-                className="modeMenu"
-                id="modeMenu"
-                role="listbox"
-                aria-label="Analysis mode"
+          <div className="hx-view" data-view="scene" hidden={view !== "scene"}>
+            <ScenePanel
+              scene={shellSnapshot.scene}
+              offline={shellSnapshot.offline}
+              onOpenOffline={() => {
+                setView("offline");
+              }}
+            />
+          </div>
+          <div
+            className="hx-view"
+            data-view="analysis"
+            hidden={view !== "analysis"}
+          >
+            <details className="paramGroup modeSelector" id="modeSelector">
+              <summary
+                className="paramGroupSummary modeSelectButton"
+                id="modeSelectButton"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="modeMenu"
               >
-                <button
-                  className="modeMenuItem active"
-                  data-mode="link"
-                  id="tabLink"
-                  type="button"
-                  role="option"
-                  aria-selected="true"
+                <span className="modeSelectTitle" id="modeSelectTitle">
+                  {"Mode (Link Analysis)"}
+                </span>
+              </summary>
+              <div className="paramGroupBody modeSelectBody">
+                <div
+                  className="modeMenu"
+                  id="modeMenu"
+                  role="listbox"
+                  aria-label="Analysis mode"
                 >
-                  <span className="modeMenuDot" aria-hidden="true"></span>
-                  <span className="modeMenuTitle">{"Link Analysis"}</span>
-                </button>
-                <button
-                  className="modeMenuItem"
-                  data-mode="mobility"
-                  id="tabMobility"
-                  type="button"
-                  role="option"
-                  aria-selected="false"
-                >
-                  <span className="modeMenuDot" aria-hidden="true"></span>
-                  <span className="modeMenuTitle">{"Mobility Analysis"}</span>
-                </button>
-                <button
-                  className="modeMenuItem"
-                  data-mode="radiomap"
-                  id="tabRadiomap"
-                  type="button"
-                  role="option"
-                  aria-selected="false"
-                >
-                  <span className="modeMenuDot" aria-hidden="true"></span>
-                  <span className="modeMenuTitle">{"Radio Map"}</span>
-                </button>
-                <button
-                  className="modeMenuItem"
-                  data-mode="deepmimo"
-                  id="tabDeepMimo"
-                  type="button"
-                  role="option"
-                  aria-selected="false"
-                >
-                  <span className="modeMenuDot" aria-hidden="true"></span>
-                  <span className="modeMenuTitle">{"DeepMIMO"}</span>
-                </button>
-                <button
-                  className="modeMenuItem"
-                  data-mode="radar"
-                  id="tabRadar"
-                  type="button"
-                  role="option"
-                  aria-selected="false"
-                >
-                  <span className="modeMenuDot" aria-hidden="true"></span>
-                  <span className="modeMenuTitle">{"Radar Sensing"}</span>
-                </button>
+                  <button
+                    className="modeMenuItem active"
+                    data-mode="link"
+                    id="tabLink"
+                    type="button"
+                    role="option"
+                    aria-selected="true"
+                  >
+                    <span className="modeMenuDot" aria-hidden="true"></span>
+                    <span className="modeMenuTitle">{"Link Analysis"}</span>
+                  </button>
+                  <button
+                    className="modeMenuItem"
+                    data-mode="mobility"
+                    id="tabMobility"
+                    type="button"
+                    role="option"
+                    aria-selected="false"
+                  >
+                    <span className="modeMenuDot" aria-hidden="true"></span>
+                    <span className="modeMenuTitle">{"Mobility Analysis"}</span>
+                  </button>
+                  <button
+                    className="modeMenuItem"
+                    data-mode="radiomap"
+                    id="tabRadiomap"
+                    type="button"
+                    role="option"
+                    aria-selected="false"
+                  >
+                    <span className="modeMenuDot" aria-hidden="true"></span>
+                    <span className="modeMenuTitle">{"Radio Map"}</span>
+                  </button>
+                  <button
+                    className="modeMenuItem"
+                    data-mode="deepmimo"
+                    id="tabDeepMimo"
+                    type="button"
+                    role="option"
+                    aria-selected="false"
+                  >
+                    <span className="modeMenuDot" aria-hidden="true"></span>
+                    <span className="modeMenuTitle">{"DeepMIMO"}</span>
+                  </button>
+                  <button
+                    className="modeMenuItem"
+                    data-mode="radar"
+                    id="tabRadar"
+                    type="button"
+                    role="option"
+                    aria-selected="false"
+                  >
+                    <span className="modeMenuDot" aria-hidden="true"></span>
+                    <span className="modeMenuTitle">{"Radar Sensing"}</span>
+                  </button>
+                </div>
+              </div>
+            </details>
+            <div className="tileStateCache" aria-hidden="true">
+              <div id="tileSummary" className="tileSummary hidden">
+                {"0 selected · 0 loaded · 0 pending"}
+              </div>
+              <div id="tileList" className="tileList hidden">
+                <TileSelectionList store={shellModel.store} />
               </div>
             </div>
-          </details>
-          <div className="tileStateCache" aria-hidden="true">
-            <div id="tileSummary" className="tileSummary hidden">
-              {"0 selected · 0 loaded · 0 pending"}
-            </div>
-            <div id="tileList" className="tileList hidden">
-              <TileSelectionList store={shellModel.store} />
+            <div
+              className="oat-react-mount"
+              data-oat-react-owner="control-form"
+            >
+              <ControlSurface section="form" store={controlModel.store} />
             </div>
           </div>
-          <div className="oat-react-mount" data-oat-react-owner="control-form">
-            <ControlSurface section="form" store={controlModel.store} />
+          <div
+            className="hx-view"
+            data-view="offline"
+            hidden={view !== "offline"}
+          >
+            <OfflinePanel offline={shellSnapshot.offline} />
+          </div>
+          <div
+            className="hx-view"
+            data-view="project"
+            hidden={view !== "project"}
+          >
+            <ProjectPanel scene={shellSnapshot.scene} />
           </div>
         </div>
       </div>

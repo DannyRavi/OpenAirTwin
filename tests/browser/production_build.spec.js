@@ -8,6 +8,7 @@ const CORE_STYLES = [
   "entry-map",
   "results",
   "radar",
+  "hammurabi",
 ];
 
 test("production build is self-contained behind the Python server", async ({
@@ -17,7 +18,7 @@ test("production build is self-contained behind the Python server", async ({
   const rootResponse = await request.get("/");
   expect(rootResponse.status()).toBe(200);
   expect(rootResponse.headers()["cache-control"]).toBe("no-store");
-  expect(rootResponse.headers()["x-openairtwin-frontend-build-id"]).toMatch(
+  expect(rootResponse.headers()["x-hammurabi-frontend-build-id"]).toMatch(
     /^(?:development|\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?\+[0-9a-f]{12})$/,
   );
   const html = await rootResponse.text();
@@ -53,7 +54,7 @@ test("production build is self-contained behind the Python server", async ({
     404,
   );
   expect((await request.get("/api/health")).status()).toBe(200);
-  expect((await request.get("/assets/openairtwin_logo.png")).status()).toBe(
+  expect((await request.get("/assets/hammurabi_logo.png")).status()).toBe(
     200,
   );
   expect((await request.get("/lib/leaflet/leaflet.css")).status()).toBe(200);
@@ -87,7 +88,7 @@ test("production build is self-contained behind the Python server", async ({
     }),
   );
   await page.goto("/");
-  await expect(page).toHaveTitle("OpenAirTwin");
+  await expect(page).toHaveTitle("Hammurabi");
   await expect(page.locator("#entryScreen")).toBeVisible();
   const resources = await page.evaluate(() =>
     performance.getEntriesByType("resource").map(({ name }) => name),
@@ -109,7 +110,7 @@ test("bootstrap watchdog replaces a failed entry chunk with a reload action", as
   const errorPanel = page.locator("#oatBootstrapError");
   await expect(errorPanel).toBeVisible();
   await expect(errorPanel).toHaveAttribute("role", "alert");
-  await expect(errorPanel).toContainText("OpenAirTwin could not start");
+  await expect(errorPanel).toContainText("Hammurabi could not start");
   await expect(
     errorPanel.getByRole("button", { name: "Reload" }),
   ).toBeVisible();

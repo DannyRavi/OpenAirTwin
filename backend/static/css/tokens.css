@@ -17,6 +17,26 @@
     --oat-status-warning-text: #b45309;
     --oat-color-white: #fff;
 
+    /* Hammurabi workspace chrome. Scene content keeps its own palettes. */
+    --hx-surface: rgba(9,22,37,.94);
+    --hx-surface-raised: rgba(17,34,53,.96);
+    --hx-surface-soft: rgba(28,49,74,.72);
+    --hx-border: rgba(125,158,196,.26);
+    --hx-border-strong: rgba(125,158,196,.42);
+    --hx-text: #e8eef7;
+    --hx-text-muted: #9db0c7;
+    --hx-text-dim: #7890aa;
+    --hx-accent: #4c93ff;
+    --hx-accent-strong: #1f63d6;
+    --hx-accent-soft: rgba(76,147,255,.16);
+    --hx-danger: #ef7373;
+    --hx-warning: #e8b45c;
+    --hx-success: #4fd6a0;
+    --hx-radius: 12px;
+    --hx-radius-sm: 8px;
+    --hx-shadow: 0 20px 50px rgba(2,10,20,.46);
+    --hx-panel-width: 352px;
+
     /* Canvas chrome is UI, while plotted series remain feature palettes. */
     --oat-canvas-background: #f7f9fc;
     --oat-canvas-grid: rgba(75,99,130,.18);

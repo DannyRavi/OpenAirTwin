@@ -700,26 +700,66 @@ function ensureEntryMap(overview = null) {
         opacity: 1,
       },
     );
-
-    entryMap.fallbackTimer = window.setTimeout(() => {
-      if (!entryMap.basemapReady) {
-        enableEntryMapFallback("online basemap timeout");
-      }
-    }, 15000);
   }
-  import("/@oat/runtime/entry-basemap.ts").then(({createEntryBasemap}) => {
-    if (entryMap.fallbackEnabled) return;
-    entryMap.tileLayer = createEntryBasemap(entryMap.map, {
-      style: ENTRY_BASEMAP_STYLE,
-      attribution: ENTRY_BASEMAP_ATTRIBUTION,
-      onReady: () => {
-        entryMap.basemapReady = true;
-        window.clearTimeout(entryMap.fallbackTimer);
-        entryMap.fallbackTimer = null;
+  const offlineRuntime = window.__HAMMURABI_OFFLINE__;
+  const offlineMode = offlineRuntime?.mode === "offline";
+  const activeRegion = offlineRuntime?.activeRegion;
+  const regionBasemap = activeRegion?.basemapUrl;
+  if ((offlineMode || offlineRuntime?.mode === "automatic") && regionBasemap) {
+    // Strict offline and automatic modes prefer the stored region snapshot.
+    // No external map request is made in either case when it is available.
+    entryMap.fallbackEnabled = true;
+    entryMap.fallbackLayer = window.L.imageOverlay(
+      regionBasemap,
+      window.L.latLngBounds([
+        [
+          (activeRegion.mapBounds || activeRegion.bounds).south,
+          (activeRegion.mapBounds || activeRegion.bounds).west,
+        ],
+        [
+          (activeRegion.mapBounds || activeRegion.bounds).north,
+          (activeRegion.mapBounds || activeRegion.bounds).east,
+        ],
+      ]),
+      {
+        className: "entryFallbackImageLayer",
+        interactive: false,
+        opacity: 1,
       },
-      onError: () => enableEntryMapFallback("online basemap error"),
-    });
-  }).catch(() => enableEntryMapFallback("online basemap unavailable"));
+    ).addTo(entryMap.map);
+    entryMap.map.attributionControl?.addAttribution?.(
+      "Offline snapshot: OpenFreeMap / OpenMapTiles, \u00a9 OpenStreetMap contributors",
+    );
+    entryMap.basemapReady = true;
+  } else if (offlineMode) {
+    // No network request is attempted for map tiles in strict offline mode.
+    entryMap.fallbackEnabled = true;
+    if (entryMap.fallbackLayer) entryMap.fallbackLayer.addTo(entryMap.map);
+    entryMap.map.attributionControl?.addAttribution?.(
+      "Offline mode: local scene and fallback map only",
+    );
+  } else {
+    if (fallbackImage) {
+      entryMap.fallbackTimer = window.setTimeout(() => {
+        if (!entryMap.basemapReady) {
+          enableEntryMapFallback("online basemap timeout");
+        }
+      }, 15000);
+    }
+    import("/@oat/runtime/entry-basemap.ts").then(({createEntryBasemap}) => {
+      if (entryMap.fallbackEnabled) return;
+      entryMap.tileLayer = createEntryBasemap(entryMap.map, {
+        style: ENTRY_BASEMAP_STYLE,
+        attribution: ENTRY_BASEMAP_ATTRIBUTION,
+        onReady: () => {
+          entryMap.basemapReady = true;
+          window.clearTimeout(entryMap.fallbackTimer);
+          entryMap.fallbackTimer = null;
+        },
+        onError: () => enableEntryMapFallback("online basemap error"),
+      });
+    }).catch(() => enableEntryMapFallback("online basemap unavailable"));
+  }
   entryMap.map.once("unload", () => {
     window.clearTimeout(entryMap.fallbackTimer);
     entryMap.fallbackTimer = null;

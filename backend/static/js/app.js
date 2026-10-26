@@ -1,12 +1,23 @@
 import {
+  cancelOfflineRegion,
+  createOfflineRegion,
   createTileDownloadJob,
   cancelTileDownloadJob,
+  deactivateOfflineRegion,
+  deleteOfflineRegion,
+  estimateOfflineRegion,
   getManifest,
+  getOfflineStatus,
   getOpen3dHkTileCoverage,
   getRtCapabilities,
   getRtSceneSelection,
   getTileDownloadJob,
+  openOfflineRegion,
+  resumeOfflineRegion,
+  saveOfflineBasemap,
+  setOfflineMode,
   setRtSceneSelection,
+  verifyOfflineRegion,
 } from "/js/api.js";
 import {entryMap, featureStore, PERFORMANCE_MODES, state, viewerRef} from "/js/app_state.js?v=20260723-radar-shared-groups";
 import {FeatureRegistry, PickingRegistry, SettingsBus} from "/js/core/feature_registry.js";
@@ -115,6 +126,220 @@ function closeFeatureTransientUi() {
 }
 
 const activeSolveActions = new Set();
+let offlinePollTimer = null;
+const basemapJobs = new Set();
+
+function offlineRegionView(region, activeRegionId) {
+  return {
+    regionId: region.region_id,
+    name: region.name,
+    status: region.status,
+    tileCount: region.tile_count,
+    bounds: region.bounds,
+    mapBounds: region.map_bounds || region.bounds,
+    bytesTotal: region.bytes_total,
+    assetCount: region.asset_count,
+    missingCount: region.missing_count,
+    progress: region.progress,
+    message: region.message || "",
+    error: region.error || null,
+    basemap: Boolean(region.basemap),
+    basemapUrl: region.basemap_url || null,
+    offlineReady: Boolean(region.offline_ready),
+    active: region.region_id === activeRegionId,
+  };
+}
+
+function offlineDraftBounds(status) {
+  const active = status.active_region;
+  if (active?.bounds) return active.bounds;
+  const sceneBounds = state.manifest?.scene?.bounds_wgs84;
+  if (sceneBounds && Number.isFinite(sceneBounds.west)) return sceneBounds;
+  const overviewBounds = state.entry.overview?.latLngBounds;
+  if (overviewBounds?.isValid()) {
+    return {
+      west: overviewBounds.getWest(),
+      east: overviewBounds.getEast(),
+      south: overviewBounds.getSouth(),
+      north: overviewBounds.getNorth(),
+    };
+  }
+  return {west: -180, east: 180, south: -90, north: 90};
+}
+
+function applyOfflineStatus(status, {initial = false} = {}) {
+  const shell = context.featureServices.shellUi;
+  if (!shell) return;
+  const previous = shellSnapshotOffline();
+  const regions = (status.regions || []).map((region) =>
+    offlineRegionView(region, status.active_region_id),
+  );
+  const busyRegion = (status.regions || []).find((region) =>
+    ["queued", "preparing", "verifying", "cancelling"].includes(region.status),
+  );
+  const activeRegion = regions.find((region) => region.active) || null;
+  const patch = {
+    available: true,
+    mode: status.mode,
+    activeRegionId: status.active_region_id || null,
+    activeRegionName: activeRegion?.name || null,
+    regions,
+    totalBytes: status.storage?.total_bytes || 0,
+    freeBytes: status.storage?.free_bytes || 0,
+    storageRoot: status.storage?.storage_root || "",
+    sceneRoot: status.scene_root || "",
+    busyRegionId: busyRegion?.region_id || null,
+    busy: Boolean(busyRegion),
+    error: null,
+    notice: previous.notice || "",
+    draftBounds:
+      initial || !previous.draftBounds
+        ? offlineDraftBounds(status)
+        : previous.draftBounds,
+  };
+  shell.updateOffline(patch);
+  window.__HAMMURABI_OFFLINE__ = {
+    mode: status.mode,
+    activeRegionId: status.active_region_id || null,
+    activeRegion: activeRegion
+      ? {
+          regionId: activeRegion.regionId,
+          name: activeRegion.name,
+          bounds: activeRegion.bounds,
+          mapBounds: activeRegion.mapBounds,
+          basemapUrl: activeRegion.basemapUrl,
+        }
+      : null,
+    regions: regions.map((region) => ({
+      regionId: region.regionId,
+      name: region.name,
+      bounds: region.bounds,
+      basemapUrl: region.basemapUrl,
+      offlineReady: region.offlineReady,
+    })),
+  };
+  if (status.mode === "offline" && document.body) {
+    document.body.dataset.connectivity = "offline";
+  } else if (document.body) {
+    document.body.dataset.connectivity = status.mode;
+  }
+  syncHammurabiSceneUi();
+}
+
+function shellSnapshotOffline() {
+  return context.featureServices.shellUi?.snapshot?.().offline || {};
+}
+
+async function refreshOfflineStatus({initial = false} = {}) {
+  try {
+    const status = await getOfflineStatus();
+    applyOfflineStatus(status, {initial});
+    return status;
+  } catch (error) {
+    context.featureServices.shellUi?.updateOffline({
+      available: false,
+      error: error?.message || String(error),
+    });
+    return null;
+  }
+}
+
+function syncHammurabiSceneUi() {
+  const shell = context.featureServices.shellUi;
+  if (!shell) return;
+  const manifest = state.manifest || {};
+  const scene = manifest.scene || {};
+  const offline = shellSnapshotOffline();
+  const active = (offline.regions || []).find((region) => region.active);
+  shell.updateScene({
+    sceneId: manifest.scene_id || "",
+    label: scene.label || manifest.scene_id || "",
+    tileCount: Array.isArray(manifest.tiles) ? manifest.tiles.length : 0,
+    loadedTileCount: sceneRenderState ? sceneRenderState.tileSelections().length : 0,
+    source: active ? "Offline region" : "Local scene root",
+    connectivity: offline.mode || "automatic",
+    offlineRegion: active?.name || null,
+  });
+}
+
+function stopOfflinePolling() {
+  if (offlinePollTimer !== null) {
+    window.clearInterval(offlinePollTimer);
+    offlinePollTimer = null;
+  }
+}
+
+function startOfflinePolling() {
+  stopOfflinePolling();
+  offlinePollTimer = window.setInterval(async () => {
+    const status = await refreshOfflineStatus();
+    if (!status) return;
+    const hasWork = (status.regions || []).some((region) =>
+      ["queued", "preparing", "verifying", "cancelling"].includes(region.status),
+    );
+    if (!hasWork) {
+      stopOfflinePolling();
+      const ready = (status.regions || []).filter(
+        (region) => region.status === "ready" && !region.basemap,
+      );
+      for (const region of ready) {
+        if (!basemapJobs.has(region.region_id)) {
+          void cacheOfflineBasemap(region.region_id, region.map_bounds || region.bounds, region.layers || []);
+        }
+      }
+    }
+  }, 1200);
+}
+
+async function cacheOfflineBasemap(regionId, bounds, layers = []) {
+  if (basemapJobs.has(regionId)) return;
+  if (!layers.includes("map")) return;
+  basemapJobs.add(regionId);
+  const shell = context.featureServices.shellUi;
+  try {
+    if (!bounds) throw new Error("Region bounds are unknown");
+    const {renderBasemapSnapshot} = await import("/@oat/runtime/entry-basemap.ts");
+    const canvas = await renderBasemapSnapshot({
+      style: "https://tiles.openfreemap.org/styles/bright",
+      bounds,
+      maxSize: 1536,
+      applyEntryStyle: false,
+    });
+    const dataUrl = canvas.toDataURL("image/png");
+    await saveOfflineBasemap(regionId, dataUrl);
+    shell?.updateOffline({
+      notice: "Offline map snapshot cached. Scene buildings and terrain are ready without internet.",
+    });
+    await refreshOfflineStatus();
+  } catch (error) {
+    shell?.updateOffline({
+      notice:
+        "The offline map snapshot could not be cached. Buildings and terrain still open offline; the local fallback map is used.",
+    });
+    console.warn("[offline] basemap snapshot failed", error);
+  } finally {
+    basemapJobs.delete(regionId);
+  }
+}
+
+async function openOfflineRegionAndEnter(regionId) {
+  await openOfflineRegion(regionId);
+  state.manifest = await getManifest();
+  state.entry.coverage = await getOpen3dHkTileCoverage();
+  sceneRenderState.populateTileList(state.manifest);
+  performancePanel.populatePerformanceControls(state.manifest);
+  state.entry.overview = entryMapController.buildEntryOverview(
+    state.manifest,
+    state.entry.coverage,
+  );
+  entryMapController.renderEntryOverview();
+  const status = await refreshOfflineStatus();
+  const active = status?.active_region;
+  const tileIds = active?.tile_ids || [];
+  sceneRenderState.setTileSelection(tileIds);
+  await handleEnterScene();
+  syncHammurabiSceneUi();
+}
 
 async function runSolveFromDock(actionId, run) {
   if (activeSolveActions.has(actionId)) return;
@@ -138,14 +363,52 @@ Object.assign(context.utilities, {
   showErrorDialog,
 });
 
-function handleEnterScene() {
+function sceneViewStorageKey() {
+  const offline = shellSnapshotOffline();
+  const active = (offline.regions || []).find((region) => region.active);
+  const sceneId = state.manifest?.scene_id || "scene";
+  return `hammurabi:camera:${active?.regionId || sceneId}`;
+}
+
+function saveSceneView() {
+  const viewer = currentViewer();
+  if (!viewer?.__ready) return;
+  try {
+    window.localStorage.setItem(
+      sceneViewStorageKey(),
+      JSON.stringify(viewer.getCameraState()),
+    );
+  } catch (error) {
+    console.warn("[view] camera state could not be saved", error);
+  }
+}
+
+function restoreSceneView() {
+  const viewer = currentViewer();
+  if (!viewer?.__ready) return false;
+  try {
+    const raw = window.localStorage.getItem(sceneViewStorageKey());
+    if (!raw) return false;
+    return viewer.setCameraState(JSON.parse(raw));
+  } catch (error) {
+    console.warn("[view] camera state could not be restored", error);
+    return false;
+  }
+}
+
+async function handleEnterScene() {
   devicePicking.clearActiveDevice({render: false, status: false});
-  return sceneRenderState.enterScene().catch((error) => {
+  try {
+    const result = await sceneRenderState.enterScene();
+    restoreSceneView();
+    syncHammurabiSceneUi();
+    return result;
+  } catch (error) {
     sceneRenderState.hideOverlay(null, true);
     state.tileLoadBusy = false;
     sceneRenderState.syncTileListUi();
     return showErrorDialog("Enter Scene Failed", error);
-  });
+  }
 }
 
 function handleReturnToScene() {
@@ -187,6 +450,7 @@ async function handleAppShellCommand(command) {
   if (command.name === "entry.map.pointerLeave") return entryMapController.hideEntryMapTooltip();
   if (command.name === "entry.scene.enter") return handleEnterScene();
   if (command.name === "entry.scene.open") {
+    saveSceneView();
     devicePicking.clearActiveDevice({render: false});
     solverControls.cancelLivePreview();
     entryMapController.showEntryScreen();
@@ -260,6 +524,204 @@ async function handleAppShellCommand(command) {
       entryMapController.focusEntryMapTiles(selected, selected.length > 1 ? 0.98 : 1.08);
     } else {
       entryMapController.fitEntryMapToView();
+    }
+    return;
+  }
+  if (command.name === "viewer.camera.reset") {
+    if (!currentViewer().__ready) return;
+    currentViewer().resetView();
+    sceneRenderState.renderAll();
+    return;
+  }
+  if (command.name === "viewer.camera.fit") {
+    if (!currentViewer().__ready) return;
+    const selected = sceneRenderState.tileSelections();
+    currentViewer().focusOnTiles(selected.length ? selected : [...currentViewer().loadedTileIds]);
+    sceneRenderState.renderAll();
+    return;
+  }
+  if (command.name === "app.fullscreen.toggle") {
+    if (document.fullscreenElement) {
+      await document.exitFullscreen();
+    } else {
+      await document.documentElement.requestFullscreen();
+    }
+    return;
+  }
+  if (command.name === "offline.refresh") {
+    await refreshOfflineStatus();
+    return;
+  }
+  if (command.name === "offline.bounds.useMap") {
+    const bounds = entryMap.map?.getBounds?.();
+    if (!bounds?.isValid()) {
+      context.featureServices.shellUi?.updateOffline({
+        notice: "Open the map to capture a viewport, or enter bounds manually.",
+      });
+      return;
+    }
+    context.featureServices.shellUi?.updateOffline({
+      draftBounds: {
+        west: bounds.getWest(),
+        east: bounds.getEast(),
+        south: bounds.getSouth(),
+        north: bounds.getNorth(),
+      },
+      notice: "Bounds captured from the current map viewport.",
+    });
+    return;
+  }
+  if (command.name === "offline.mode.set") {
+    try {
+      const response = await setOfflineMode(payload.mode);
+      applyOfflineStatus(response.status);
+      const shell = context.featureServices.shellUi;
+      shell?.updateOffline({
+        notice:
+          payload.mode === "offline"
+            ? "Strict offline mode enabled. Remote map and scene assets are blocked."
+            : "Connectivity mode updated.",
+      });
+    } catch (error) {
+      context.featureServices.shellUi?.updateOffline({error: errorMessage(error)});
+    }
+    return;
+  }
+  if (command.name === "offline.region.estimate") {
+    const shell = context.featureServices.shellUi;
+    shell?.updateOffline({estimating: true, error: null});
+    try {
+      const estimate = await estimateOfflineRegion({bounds: payload.bounds});
+      shell?.updateOffline({
+        estimating: false,
+        estimatedBytes: estimate.bytes,
+        notice: `${estimate.tile_count} tile(s) selected.`,
+      });
+    } catch (error) {
+      shell?.updateOffline({estimating: false, error: errorMessage(error)});
+    }
+    return;
+  }
+  if (command.name === "offline.region.create") {
+    const shell = context.featureServices.shellUi;
+    shell?.updateOffline({
+      busy: true,
+      error: null,
+      notice: "Preparing offline scene assets...",
+      estimatedBytes: null,
+    });
+    try {
+      const response = await createOfflineRegion(payload);
+      shell?.updateOffline({busyRegionId: response.region_id});
+      await refreshOfflineStatus();
+      startOfflinePolling();
+    } catch (error) {
+      shell?.updateOffline({busy: false, error: errorMessage(error)});
+    }
+    return;
+  }
+  if (command.name === "offline.region.open") {
+    const shell = context.featureServices.shellUi;
+    shell?.updateOffline({busy: true, error: null, notice: "Opening offline region..."});
+    try {
+      await openOfflineRegionAndEnter(payload.regionId);
+      await refreshOfflineStatus();
+      shell?.updateOffline({busy: false, notice: "Offline region loaded from local assets."});
+    } catch (error) {
+      shell?.updateOffline({busy: false, error: errorMessage(error)});
+      await showErrorDialog("Open Offline Region Failed", error);
+    }
+    return;
+  }
+  if (command.name === "offline.region.deactivate") {
+    const shell = context.featureServices.shellUi;
+    shell?.updateOffline({busy: true, error: null});
+    try {
+      await deactivateOfflineRegion();
+      state.manifest = await getManifest();
+      state.entry.coverage = await getOpen3dHkTileCoverage();
+      sceneRenderState.populateTileList(state.manifest);
+      performancePanel.populatePerformanceControls(state.manifest);
+      state.entry.overview = entryMapController.buildEntryOverview(
+        state.manifest,
+        state.entry.coverage,
+      );
+      entryMapController.renderEntryOverview();
+      const sceneTileIds = new Set(state.manifest.tiles.map((tile) => tile.id));
+      const defaults = (state.manifest.scene?.default_tile_ids || []).filter((tileId) =>
+        sceneTileIds.has(tileId),
+      );
+      sceneRenderState.setTileSelection(defaults);
+      if (!state.entry.visible) await handleEnterScene();
+      await refreshOfflineStatus();
+      shell?.updateOffline({busy: false, notice: "Returned to the local scene library."});
+    } catch (error) {
+      shell?.updateOffline({busy: false, error: errorMessage(error)});
+    }
+    return;
+  }
+  if (command.name === "offline.region.verify") {
+    const shell = context.featureServices.shellUi;
+    shell?.updateOffline({busy: true, error: null});
+    try {
+      await verifyOfflineRegion(payload.regionId);
+      shell?.updateOffline({notice: "All region assets match their hashes."});
+      await refreshOfflineStatus();
+    } catch (error) {
+      shell?.updateOffline({error: errorMessage(error)});
+    } finally {
+      shell?.updateOffline({busy: false});
+    }
+    return;
+  }
+  if (command.name === "offline.region.cancel") {
+    try {
+      await cancelOfflineRegion(payload.regionId);
+      await refreshOfflineStatus();
+    } catch (error) {
+      context.featureServices.shellUi?.updateOffline({error: errorMessage(error)});
+    }
+    return;
+  }
+  if (command.name === "offline.region.retry") {
+    try {
+      await resumeOfflineRegion(payload.regionId);
+      await refreshOfflineStatus();
+      startOfflinePolling();
+    } catch (error) {
+      context.featureServices.shellUi?.updateOffline({error: errorMessage(error)});
+    }
+    return;
+  }
+  if (command.name === "offline.region.basemap") {
+    const status = await refreshOfflineStatus();
+    const region = (status?.regions || []).find(
+      (candidate) => candidate.region_id === payload.regionId,
+    );
+    if (region) await cacheOfflineBasemap(region.region_id, region.map_bounds || region.bounds, ["map"]);
+    return;
+  }
+  if (command.name === "offline.region.delete") {
+    const status = await refreshOfflineStatus();
+    const region = (status?.regions || []).find(
+      (candidate) => candidate.region_id === payload.regionId,
+    );
+    if (!region) return;
+    const confirmed = await dialogController.confirm({
+      title: "Delete offline region",
+      message: `Delete "${region.name}" and its ${(region.bytes_total / (1024 * 1024)).toFixed(1)} MB of local scene assets?`,
+      confirmLabel: "Delete region",
+      variant: "warning",
+    });
+    if (!confirmed) return;
+    try {
+      await deleteOfflineRegion(payload.regionId);
+      await refreshOfflineStatus();
+      context.featureServices.shellUi?.updateOffline({
+        notice: `Deleted ${region.name}. No unrelated data was removed.`,
+      });
+    } catch (error) {
+      context.featureServices.shellUi?.updateOffline({error: errorMessage(error)});
     }
     return;
   }
@@ -353,10 +815,11 @@ async function bootstrap() {
   sceneRenderState.showOverlay({title: "Loading Scene", message: "Loading scene manifest...", percent: 10, force: true});
   attachRuntimeEvents();
   sceneRenderState.showOverlay({title: "Loading Scene", message: "Loading RT capabilities...", percent: 14, force: true});
-  const [rtCapabilities, manifest, coverage] = await Promise.all([
+  const [rtCapabilities, manifest, coverage, offlineStatus] = await Promise.all([
     getRtCapabilities(),
     getManifest(),
     getOpen3dHkTileCoverage(),
+    getOfflineStatus().catch(() => null),
   ]);
   state.rtCapabilities = rtCapabilities;
   solverControls.applyRtCapabilities(state.rtCapabilities);
@@ -371,9 +834,30 @@ async function bootstrap() {
     ? state.manifest.scene.default_tile_ids.filter((tileId) => sceneTileIds.has(tileId))
     : [];
   sceneRenderState.setTileSelection(defaultTileIds);
+  if (offlineStatus) {
+    applyOfflineStatus(offlineStatus, {initial: true});
+    const hasActiveJob = (offlineStatus.regions || []).some((region) =>
+      ["queued", "preparing", "verifying", "cancelling"].includes(region.status),
+    );
+    if (hasActiveJob) startOfflinePolling();
+  }
   state.entry.overview = entryMapController.buildEntryOverview(state.manifest, state.entry.coverage);
   entryMapController.renderEntryOverview();
   sceneRenderState.hideOverlay(null, true);
+  syncHammurabiSceneUi();
+  if (offlineStatus) {
+    const shell = context.featureServices.shellUi;
+    if (offlineStatus.active_region?.status === "ready") {
+      shell?.updateOffline({
+        notice: `Offline region "${offlineStatus.active_region.name}" is active and served from local storage.`,
+      });
+    }
+    if (offlineStatus.mode === "offline" && !offlineStatus.active_region) {
+      shell?.updateOffline({
+        notice: "Strict offline mode is active. Open a downloaded region to load buildings.",
+      });
+    }
+  }
 
   sceneRenderState.renderAll();
   if (state.entry.overview) {
@@ -383,10 +867,11 @@ async function bootstrap() {
     sceneRenderState.syncControlSidebarUi();
   }
   window.__OPENAIRTWIN_UI_READY_MS__ = window.performance.now();
-  window.dispatchEvent(new CustomEvent("openairtwin:ui-ready"));
+  window.dispatchEvent(new CustomEvent("hammurabi:ui-ready"));
 }
 
 window.addEventListener("pagehide", () => {
+  saveSceneView();
   featureRegistry.dispose(context);
   devicePicking?.dispose?.();
   paramTooltips?.dispose?.();

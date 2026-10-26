@@ -21,6 +21,11 @@ from backend.features.core import (
     capture_ready_scene_generation,
 )
 from backend.jobs.tile_download_jobs import TileDownloadBusy, TileDownloadJobManager
+from backend.offline.region_store import (
+    OfflineRegionBusy,
+    OfflineRegionError,
+    OfflineRegionManager,
+)
 from backend.rt.common import antenna_array_capabilities
 from backend.rt.device import rt_device_status
 from backend.rt.runtime import RTRuntime, SceneNotReady
@@ -103,17 +108,38 @@ class AppState:
     def __init__(self) -> None:
         self._closed = False
         self.reload_lock = threading.Lock()
-        ensure_scene_layout(config.SCENE_ROOT)
-        self.manifest: SceneManifest = load_scene_manifest(config.SCENE_ROOT)
+        self.source_scene_root = config.SCENE_ROOT.resolve()
+        self.scene_root = self.source_scene_root
+        self.active_offline_region = None
+        ensure_scene_layout(self.source_scene_root)
+        self.manifest: SceneManifest = load_scene_manifest(self.source_scene_root)
         self.manifest_lookup = self.manifest.mesh_lookup
         self.rt_scene_builder = TileSceneXmlBuilder(
-            config.SCENE_ROOT,
+            self.scene_root,
             config.GENERATED_ROOT / "rt_scene_xml",
         )
         self.rt_runtime = RTRuntime(
             config.DEFAULT_FREQUENCY_HZ,
             self.rt_scene_builder,
         )
+        self.offline_manager = OfflineRegionManager(
+            root=config.OFFLINE_REGION_ROOT,
+            scene_root=self.source_scene_root,
+            downloader=self.download_and_integrate_tile,
+        )
+        startup = self.offline_manager.startup_region()
+        if startup is not None:
+            record, scene_root = startup
+            self.scene_root = Path(scene_root).resolve()
+            self.active_offline_region = record.to_api_dict()
+            ensure_scene_layout(self.scene_root)
+            self.manifest = load_scene_manifest(self.scene_root)
+            self.manifest_lookup = self.manifest.mesh_lookup
+            self.rt_scene_builder = TileSceneXmlBuilder(
+                self.scene_root,
+                config.GENERATED_ROOT / "rt_scene_xml",
+            )
+            self.rt_runtime.scene_builder = self.rt_scene_builder
         self.feature_services = FeatureServiceRegistry({
             "config": config,
             "rt_runtime": self.rt_runtime,
@@ -123,6 +149,7 @@ class AppState:
         self.job_manager = self.feature_services.get("radiomap").manager
         self.mobility_job_manager = self.feature_services.get("mobility").manager
         self.deepmimo_job_manager = self.feature_services.get("deepmimo").manager
+        self.deepmimo_job_manager.scene_root = self.scene_root
         self.radar_job_manager = self.feature_services.get("radar").manager
         self.tile_download_job_manager = TileDownloadJobManager(self.download_and_integrate_tile)
 
@@ -137,19 +164,49 @@ class AppState:
             finally:
                 self._closed = True
 
-    def reload_scene_catalog(self) -> None:
+    def reload_scene_catalog(self, scene_root: Path | None = None) -> None:
+        root = Path(scene_root or self.scene_root).resolve()
         with self.reload_lock:
-            manifest = load_scene_manifest(config.SCENE_ROOT)
+            manifest = load_scene_manifest(root)
             manifest_lookup = manifest.mesh_lookup
             rt_scene_builder = TileSceneXmlBuilder(
-                config.SCENE_ROOT,
+                root,
                 config.GENERATED_ROOT / "rt_scene_xml",
             )
             with self.rt_runtime.lock:
+                self.scene_root = root
                 self.rt_scene_builder = rt_scene_builder
                 self.rt_runtime.scene_builder = rt_scene_builder
                 self.manifest = manifest
                 self.manifest_lookup = manifest_lookup
+                deepmimo_manager = getattr(self, "deepmimo_job_manager", None)
+                if deepmimo_manager is not None:
+                    deepmimo_manager.scene_root = root
+
+    def activate_offline_region(self, region_id: str) -> dict:
+        record = self.offline_manager.open_region(region_id)
+        region_scene_root = self.offline_manager.scene_dir(region_id)
+        self.reload_scene_catalog(region_scene_root)
+        self.active_offline_region = record.to_api_dict()
+        self.rt_runtime.request_scene_selection(list(record.tile_ids))
+        return {
+            "ok": True,
+            "region": record.to_api_dict(),
+            "tile_ids": list(record.tile_ids),
+            "scene_root": str(region_scene_root),
+            "manifest": self.manifest.to_api_dict(),
+        }
+
+    def deactivate_offline_region(self) -> dict:
+        self.offline_manager.deactivate_region()
+        self.reload_scene_catalog(self.source_scene_root)
+        self.active_offline_region = None
+        self.rt_runtime.request_scene_selection([])
+        return {
+            "ok": True,
+            "scene_root": str(self.source_scene_root),
+            "manifest": self.manifest.to_api_dict(),
+        }
 
     def download_and_integrate_tile(self, tile_id: str, *, progress_cb=None, cancel_check=None) -> dict:
         result = download_stage_and_integrate_tile(
@@ -176,7 +233,7 @@ class AppState:
 
 
 class RequestHandler(BaseHTTPRequestHandler):
-    server_version = f"OpenAirTwin/{__version__}"
+    server_version = f"Hammurabi/{__version__}"
 
     @property
     def app_state(self) -> AppState:
@@ -427,7 +484,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         self.send_file(
             build.index_path,
             content_type="text/html; charset=utf-8",
-            extra_headers={"X-OpenAirTwin-Frontend-Build-ID": build.build_id},
+            extra_headers={"X-Hammurabi-Frontend-Build-ID": build.build_id},
         )
 
     def serve_workbench_asset(self, relative_path: str) -> None:
@@ -453,7 +510,7 @@ class RequestHandler(BaseHTTPRequestHandler):
             self.send_text("Unknown mesh id", code=404)
             return
 
-        file_path = resolve_under(config.SCENE_ROOT, mesh.relative_path)
+        file_path = resolve_under(getattr(self.app_state, "scene_root", config.SCENE_ROOT), mesh.relative_path)
         if file_path is None or not file_path.is_file():
             self.send_text("Mesh file missing", code=404)
             return
@@ -466,12 +523,46 @@ class RequestHandler(BaseHTTPRequestHandler):
             return
 
         try:
-            result = ensure_tile_bundle(config.SCENE_ROOT, bundle)
+            result = ensure_tile_bundle(getattr(self.app_state, "scene_root", config.SCENE_ROOT), bundle)
         except Exception as exc:
             traceback.print_exception(type(exc), exc, exc.__traceback__, file=sys.stderr)
             self.send_json({"ok": False, "error": "Internal server error"}, code=500)
             return
         self.send_bundle_file(result.bundle_path)
+
+    def _offline_regions_payload(self) -> dict:
+        manager = self.app_state.offline_manager
+        return {
+            "ok": True,
+            "regions": [record.to_api_dict() for record in manager.list_regions()],
+            "active_region_id": manager.active_region_id,
+            "mode": manager.mode,
+        }
+
+    def _offline_status(self) -> dict:
+        manager = self.app_state.offline_manager
+        regions = [record.to_api_dict() for record in manager.list_regions()]
+        storage = manager.storage_summary()
+        active = next(
+            (region for region in regions if region["region_id"] == manager.active_region_id),
+            None,
+        )
+        return {
+            "ok": True,
+            "mode": manager.mode,
+            "modes": sorted(manager.storage_summary()["modes"]),
+            "active_region_id": manager.active_region_id,
+            "active_region": active,
+            "regions": regions,
+            "region_count": len(regions),
+            "ready_count": sum(1 for region in regions if region["offline_ready"]),
+            "storage": storage,
+            "scene_root": str(self.app_state.scene_root),
+            "source_scene_root": str(self.app_state.source_scene_root),
+            "active_offline_region": self.app_state.active_offline_region,
+            "network_required_for_downloads": manager.mode != "offline",
+            "attribution": storage["attribution"],
+        }
 
     def do_GET(self) -> None:
         path = urlparse(self.path).path
@@ -530,10 +621,14 @@ class RequestHandler(BaseHTTPRequestHandler):
                     "scene_id": self.app_state.manifest.scene_id,
                     "scene_label": scene_metadata.get("label"),
                     "scene_source_mode": "per_tile",
-                    "scene_root": str(config.SCENE_ROOT),
-                    "common_scene_xml": str(config.SCENE_ROOT / COMMON_SCENE_RELATIVE_PATH),
-                    "tile_xml_dir": str(config.SCENE_ROOT / TILE_SCENE_RELATIVE_DIR),
-                    "mesh_root": str(config.MESH_ROOT),
+                    "scene_root": str(getattr(self.app_state, "scene_root", config.SCENE_ROOT)),
+                    "common_scene_xml": str(getattr(self.app_state, "scene_root", config.SCENE_ROOT) / COMMON_SCENE_RELATIVE_PATH),
+                    "tile_xml_dir": str(getattr(self.app_state, "scene_root", config.SCENE_ROOT) / TILE_SCENE_RELATIVE_DIR),
+                    "mesh_root": str(getattr(self.app_state, "scene_root", config.SCENE_ROOT) / "meshes"),
+                    "connectivity_mode": getattr(getattr(self.app_state, "offline_manager", None), "mode", "automatic"),
+                    "active_offline_region": (
+                        getattr(self.app_state, "active_offline_region", None) or {}
+                    ).get("region_id"),
                 }
             )
             return
@@ -552,6 +647,33 @@ class RequestHandler(BaseHTTPRequestHandler):
 
         if path == "/api/scene/manifest":
             self.send_json(self.app_state.manifest.to_api_dict())
+            return
+
+        if path == "/api/offline/status":
+            self.send_json(self._offline_status())
+            return
+
+        if path == "/api/offline/regions":
+            self.send_json(self._offline_regions_payload())
+            return
+
+        if path.startswith("/api/offline/regions/") and path.endswith("/basemap.png"):
+            region_id = path.removeprefix("/api/offline/regions/").removesuffix("/basemap.png")
+            try:
+                basemap_path = self.app_state.offline_manager.basemap_path(region_id)
+            except OfflineRegionError as exc:
+                self.send_text(str(exc), code=404)
+                return
+            self.send_file(basemap_path, content_type="image/png")
+            return
+
+        if path.startswith("/api/offline/regions/"):
+            region_id = path.removeprefix("/api/offline/regions/").strip("/")
+            record = self.app_state.offline_manager.get_region(region_id)
+            if record is None:
+                self.send_json({"ok": False, "error": "Unknown offline region"}, code=404)
+                return
+            self.send_json({"ok": True, "region": record.to_api_dict(include_assets=True)})
             return
 
         if path.startswith("/api/scene/tile-downloads/"):
@@ -591,6 +713,85 @@ class RequestHandler(BaseHTTPRequestHandler):
             if FEATURE_ROUTES.dispatch("POST", path, self):
                 return
 
+            if path == "/api/offline/mode":
+                payload = self.read_json_body()
+                mode = self.app_state.offline_manager.set_mode(payload.get("mode"))
+                self.send_json({"ok": True, "mode": mode, "status": self._offline_status()})
+                return
+
+            if path == "/api/offline/estimate":
+                payload = self.read_json_body()
+                self.send_json(self.app_state.offline_manager.estimate(payload))
+                return
+
+            if path == "/api/offline/regions":
+                payload = self.read_json_body()
+                job = self.app_state.offline_manager.create_region(payload)
+                self.send_json(
+                    {"ok": True, "job": job.to_dict(), "region_id": job.region_id},
+                    code=202,
+                )
+                return
+
+            if path == "/api/offline/deactivate":
+                self.send_json(self.app_state.deactivate_offline_region())
+                return
+
+            if path.startswith("/api/offline/regions/"):
+                suffix = path.removeprefix("/api/offline/regions/")
+                action = ""
+                region_id = suffix
+                for candidate in ("cancel", "verify", "open", "delete", "basemap", "resume"):
+                    marker = f"/{candidate}"
+                    if suffix.endswith(marker):
+                        action = candidate
+                        region_id = suffix.removesuffix(marker)
+                        break
+                manager = self.app_state.offline_manager
+                if action == "cancel":
+                    job = manager.cancel_region(region_id)
+                    self.send_json({"ok": True, "job": job.to_dict()})
+                    return
+                if action == "verify":
+                    record = manager.verify_region(region_id)
+                    self.send_json({"ok": True, "region": record.to_api_dict(include_assets=True)})
+                    return
+                if action == "open":
+                    self.send_json(self.app_state.activate_offline_region(region_id))
+                    return
+                if action == "delete":
+                    manager.delete_region(region_id)
+                    if self.app_state.active_offline_region is not None:
+                        active_id = self.app_state.active_offline_region.get("region_id")
+                        if active_id == region_id:
+                            self.app_state.deactivate_offline_region()
+                    self.send_json({"ok": True, "region_id": region_id, "status": self._offline_status()})
+                    return
+                if action == "basemap":
+                    payload = self.read_json_body()
+                    record = manager.save_basemap(region_id, payload)
+                    self.send_json({"ok": True, "region": record.to_api_dict()})
+                    return
+                if action == "resume":
+                    record = manager.get_region(region_id)
+                    if record is None:
+                        self.send_json({"ok": False, "error": "Unknown offline region"}, code=404)
+                        return
+                    payload = {
+                        "name": record.name,
+                        "tile_ids": list(record.tile_ids),
+                        "bounds": record.bounds,
+                        "layers": list(record.layers),
+                    }
+                    job = manager.create_region(payload, region_id=region_id, resume=True)
+                    self.send_json(
+                        {"ok": True, "job": job.to_dict(), "region_id": region_id},
+                        code=202,
+                    )
+                    return
+                self.send_json({"ok": False, "error": "Unknown offline action"}, code=404)
+                return
+
             if path.startswith("/api/scene/tile-downloads/") and path.endswith("/cancel"):
                 job_id = path.removeprefix("/api/scene/tile-downloads/").removesuffix("/cancel")
                 job = self.app_state.tile_download_job_manager.cancel_job(job_id)
@@ -601,6 +802,17 @@ class RequestHandler(BaseHTTPRequestHandler):
                 return
 
             if path == "/api/scene/tile-downloads":
+                offline_manager = getattr(self.app_state, "offline_manager", None)
+                if offline_manager is not None and offline_manager.mode == "offline":
+                    self.send_json(
+                        {
+                            "ok": False,
+                            "error": "Strict offline mode blocks remote tile downloads. Switch to Online or Automatic mode.",
+                            "mode": "offline",
+                        },
+                        code=409,
+                    )
+                    return
                 payload = self.read_json_body()
                 tile_id = normalize_tile_id(str(payload.get("tile_id", ""))).internal
                 if is_open3dhk_download_base_url(config.MAP_DOWNLOAD_BASE_URL) and not open3dhk_tile_is_downloadable(tile_id):
@@ -629,6 +841,18 @@ class RequestHandler(BaseHTTPRequestHandler):
                 },
                 code=429,
             )
+        except OfflineRegionBusy as exc:
+            self.send_json(
+                {
+                    "ok": False,
+                    "error": str(exc),
+                    "active_job_id": exc.job_id,
+                    "region_id": exc.region_id,
+                },
+                code=409,
+            )
+        except OfflineRegionError as exc:
+            self.send_json({"ok": False, "error": str(exc)}, code=400)
         except SceneNotReady as exc:
             self.send_json({"ok": False, "error": exc.message, "status": exc.status}, code=409)
         except RequestBodyTooLarge as exc:
@@ -649,10 +873,11 @@ def main() -> None:
         server = ThreadingHTTPServer((config.HOST, config.PORT), RequestHandler)
         server.app_state = app_state  # type: ignore[attr-defined]
 
-        print(f"Serving OpenAirTwin v{__version__} on http://{config.HOST}:{config.PORT}")
-        print(f"Scene root: {config.SCENE_ROOT}")
-        print(f"Scene source: {config.SCENE_ROOT / COMMON_SCENE_RELATIVE_PATH} + {config.SCENE_ROOT / TILE_SCENE_RELATIVE_DIR}")
-        print(f"Mesh root: {config.MESH_ROOT}")
+        active_scene_root = Path(getattr(app_state, "scene_root", config.SCENE_ROOT))
+        print(f"Serving Hammurabi v{__version__} on http://{config.HOST}:{config.PORT}")
+        print(f"Scene root: {active_scene_root}")
+        print(f"Scene source: {active_scene_root / COMMON_SCENE_RELATIVE_PATH} + {active_scene_root / TILE_SCENE_RELATIVE_DIR}")
+        print(f"Mesh root: {active_scene_root / 'meshes'}")
         try:
             print(f"Workbench build: {load_workbench_build().root}")
         except WorkbenchBuildError:

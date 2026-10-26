@@ -90,6 +90,7 @@ const BUTTON_COMMANDS = Object.freeze({
   btnRunMobility: "mobility.solve.run",
   btnRunRadiomap: "radiomap.solve.run",
   btnShowAllCategories: "performance.categories.showAll",
+  btnWorkspacePanelCollapse: "workbench.controls.toggle",
   btnSolveLink: "link.solve.run",
   btnSolveRadar: "radar.solve.run",
   deepMimoDatasetToggle: "deepmimo.datasets.toggle",

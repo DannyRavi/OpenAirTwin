@@ -1,11 +1,23 @@
 # Changelog
 
-All notable changes to OpenAirTwin are recorded here. This project follows
+All notable changes to Hammurabi are recorded here. Hammurabi is an independent
+derivative of OpenAirTwin; upstream release history is preserved below. This project follows
 [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
 ### Added
+
+- Rebranded the product as Hammurabi with a new wordmark, mark, favicon and
+  dark floating workspace chrome.
+- Added a map-first workspace with a compact collapsible panel, floating map
+  toolbar, simulation action bar, status chip and offline maps navigation.
+- Added persistent offline scene regions: tile XML, PLY meshes, render bundles
+  and coverage are snapshotted by the local backend with SHA-256 manifests,
+  verified before use, and reopenable after a restart without external map
+  requests.
+- Added Online, Automatic and Strict offline connectivity modes with a locally
+  stored setting and an offline map-snapshot cache.
 
 - Added `backend.tools.import_geojson_buildings` to extrude a tiled Sionna RT
   scene from an EPSG:3857 building GeoJSON, including ground meshes, per-tile

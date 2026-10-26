@@ -86,7 +86,7 @@ export function createRadarController({state, controls, transport, renderAll, sh
         throw new Error("Radar result does not match the RS-06 result contract");
       }
       if (result.scene_health?.build_id && result.scene_health.build_id !== EXPECTED_RADAR_BUILD_ID) {
-        throw new Error("Radar frontend/backend build mismatch; restart the OpenAirTwin server");
+        throw new Error("Radar frontend/backend build mismatch; restart the Hammurabi server");
       }
       radar.result = result;
       radar.jobId = null;

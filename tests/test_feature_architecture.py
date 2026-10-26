@@ -18,7 +18,7 @@ from backend.rt.radar_payload import RADAR_JOB_ROUTE_CONTRACT
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 APP_CSS_FILES = (
     "tokens.css", "base.css", "components.css", "shell.css",
-    "entry-map.css", "results.css", "radar.css",
+    "entry-map.css", "results.css", "radar.css", "hammurabi.css",
 )
 
 

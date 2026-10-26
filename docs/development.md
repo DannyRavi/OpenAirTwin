@@ -1,11 +1,11 @@
-# OpenAirTwin Development Guide
+# Hammurabi Development Guide
 
 This guide describes the current modular-monolith architecture and the checks
 expected when changing an existing Feature or adding a new one.
 
 ## Architecture at a Glance
 
-OpenAirTwin uses a shared runtime with explicitly registered Features:
+Hammurabi uses a shared runtime with explicitly registered Features:
 
 ```text
 React App Shell
@@ -65,6 +65,23 @@ budgets; the existing application budgets remain unchanged.
 MapLibre's module worker is bundled through Vite's worker URL import so the
 release includes a hashed, local worker asset. WebGL2 availability is checked
 before constructing the renderer to avoid its partial-initialization path.
+
+### Offline regions
+
+The offline runtime lives in `backend/offline/region_store.py` and is wired into
+`backend/server.py` as a cross-cutting subsystem. It snapshots the current
+scene tiles, meshes, render bundles and coverage into a verified region
+directory under `generated/offline_regions/` (override with
+`OAT_OFFLINE_REGION_ROOT`). The active region becomes the scene root for the
+manifest, mesh/bundle serving and the Sionna RT scene builder; the source scene
+library remains untouched and can be restored with `/api/offline/deactivate`.
+
+The frontend exposes the workflow in the Workbench Offline Maps tab
+(`workbench/src/app-shell/HammurabiWorkspace.tsx`), while legacy commands are
+handled in `backend/static/js/app.js` and legacy API wrappers live in
+`backend/static/js/api.js`. Strict offline mode is also checked by the entry map
+and 3D basemap adapters so no remote map request is made. See
+[`offline-maps.md`](offline-maps.md) for storage, manifests and limitations.
 
 ### Continuous integration
 

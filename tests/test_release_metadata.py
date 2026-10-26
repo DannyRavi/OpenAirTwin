@@ -25,7 +25,7 @@ class ReleaseMetadataTests(unittest.TestCase):
         )
 
         self.assertEqual(__version__, EXPECTED_VERSION)
-        self.assertEqual(RequestHandler.server_version, f"OpenAirTwin/{EXPECTED_VERSION}")
+        self.assertEqual(RequestHandler.server_version, f"Hammurabi/{EXPECTED_VERSION}")
         self.assertEqual(package["version"], EXPECTED_VERSION)
         self.assertEqual(package_lock["version"], EXPECTED_VERSION)
         self.assertEqual(package_lock["packages"][""]["version"], EXPECTED_VERSION)

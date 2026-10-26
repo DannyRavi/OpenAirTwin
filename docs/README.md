@@ -1,4 +1,4 @@
-# OpenAirTwin Documentation
+# Hammurabi Documentation
 
 This directory contains the versioned documentation that accompanies the
 runtime and tutorial website.
@@ -16,6 +16,6 @@ runtime and tutorial website.
 - [`../CHANGELOG.md`](../CHANGELOG.md) records the v1.1.0 release
   and future unreleased changes.
 
-The tutorial website build copies `openairtwin-architecture.html` to
+The tutorial website build copies `openairtwin-architecture.html` (retained filename for compatibility) to
 `dist/architecture/index.html`. GitHub Pages therefore publishes it at the
 stable `/OpenAirTwin/architecture/` URL without maintaining a duplicate file.

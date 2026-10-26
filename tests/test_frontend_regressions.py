@@ -25,6 +25,7 @@ APP_CSS_FILES = (
     "entry-map.css",
     "results.css",
     "radar.css",
+    "hammurabi.css",
 )
 
 
@@ -487,7 +488,7 @@ class FrontendRegressionTests(unittest.TestCase):
 
         self.assertIn('export function getOpen3dHkTileCoverage()', api_source)
         self.assertIn(
-            "const [rtCapabilities, manifest, coverage] = await Promise.all([",
+            "const [rtCapabilities, manifest, coverage, offlineStatus] = await Promise.all([",
             app_source,
         )
         self.assertIn("getOpen3dHkTileCoverage(),", app_source)
@@ -512,7 +513,7 @@ class FrontendRegressionTests(unittest.TestCase):
 
         self.assertIn('export function getRtCapabilities()', api_source)
         self.assertIn(
-            "const [rtCapabilities, manifest, coverage] = await Promise.all([",
+            "const [rtCapabilities, manifest, coverage, offlineStatus] = await Promise.all([",
             app_source,
         )
         self.assertIn("getRtCapabilities(),", app_source)
