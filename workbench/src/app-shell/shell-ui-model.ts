@@ -92,12 +92,40 @@ export interface SceneUiSnapshot {
   readonly offlineRegion: string | null;
 }
 
+export interface MeasureRowViewModel {
+  readonly id: string;
+  readonly label: string;
+  readonly value: string;
+}
+
+export interface MeasurePointViewModel {
+  readonly x: number;
+  readonly y: number;
+  readonly z: number;
+}
+
+export interface MeasureUiSnapshot {
+  readonly mode: "distance" | "size";
+  readonly unit: "m" | "in";
+  readonly pickTarget: "a" | "b" | null;
+  readonly hint: string;
+  readonly summary: string;
+  readonly secondary: string;
+  readonly rows: readonly MeasureRowViewModel[];
+  readonly hasA: boolean;
+  readonly hasB: boolean;
+  readonly ready: boolean;
+  readonly a: MeasurePointViewModel | null;
+  readonly b: MeasurePointViewModel | null;
+}
+
 export interface ShellUiSnapshot {
   readonly entryPlaces: readonly EntryPlaceResultViewModel[];
   readonly tiles: readonly TileSelectionViewModel[];
   readonly performanceCategories: readonly PerformanceCategoryViewModel[];
   readonly offline: OfflineUiSnapshot;
   readonly scene: SceneUiSnapshot;
+  readonly measure: MeasureUiSnapshot;
 }
 
 export interface ShellUiModel {
@@ -112,6 +140,7 @@ export interface ShellUiModel {
   ) => void;
   readonly updateOffline: (patch: Partial<OfflineUiSnapshot>) => void;
   readonly updateScene: (patch: Partial<SceneUiSnapshot>) => void;
+  readonly updateMeasure: (patch: Partial<MeasureUiSnapshot>) => void;
   readonly dispose: () => void;
 }
 
@@ -152,6 +181,20 @@ export function createShellUiModel(): ShellUiModel {
       connectivity: "automatic",
       offlineRegion: null,
     },
+    measure: {
+      mode: "distance",
+      unit: "m",
+      pickTarget: null,
+      hint: "Pick point A and point B to start measuring.",
+      summary: "--",
+      secondary: "",
+      rows: [],
+      hasA: false,
+      hasB: false,
+      ready: false,
+      a: null,
+      b: null,
+    },
   };
   const store = new ObservableStateAdapter(() => snapshot);
   let disposed = false;
@@ -179,6 +222,9 @@ export function createShellUiModel(): ShellUiModel {
     },
     updateScene(patch) {
       update({ scene: { ...snapshot.scene, ...patch } });
+    },
+    updateMeasure(patch) {
+      update({ measure: { ...snapshot.measure, ...patch } });
     },
     dispose() {
       if (disposed) return;

@@ -301,6 +301,7 @@ export class Viewer {
     this.radiomapLayer = this.layers.create("radiomap", "heatmap", {order: 12});
     this.pmnetGroundLayer = this.layers.create("pmnet", "ground", {order: 13});
     this.pmnetBuildingLayer = this.layers.create("pmnet", "buildings", {order: 14});
+    this.measureLayer = this.layers.create("measure", "overlay", {order: 20});
     this.deepMimoRoiLayer = this.layers.create("deepmimo", "roi", {order: 16});
     this.mobilityLayer = this.layers.create("mobility", "trajectory");
     this.pathGroup = this.pathLayer.group;
@@ -1467,6 +1468,22 @@ export class Viewer {
     this.pmnetGroundLayer.clear();
     this.pmnetBuildingLayer.clear();
     this.pmnetMesh = null;
+  }
+
+  renderMeasure(primitive) {
+    this.measureLayer.clear();
+    if (!primitive || (!primitive.a && !primitive.b)) {
+      return null;
+    }
+    return this.primitives.render(this.measureLayer, {
+      type: "measure-overlay",
+      renderOrder: 20,
+      ...primitive,
+    });
+  }
+
+  clearMeasure() {
+    this.measureLayer.clear();
   }
 
   clearPmnetLayer(kind) {

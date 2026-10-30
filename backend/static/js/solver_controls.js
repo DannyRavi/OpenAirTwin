@@ -539,9 +539,13 @@ function syncViewerMarkers() {
 
 function syncModeVisuals() {
   const activeLayers = new Set(context.features.get(state.mode)?.renderLayers || []);
+  if (state.workspaceView === "measure") {
+    activeLayers.add("measure");
+  }
   for (const [layer, clear] of [
     ["radiomap", () => getViewer().clearRadiomap()],
     ["pmnet", () => getViewer().clearPmnet()],
+    ["measure", () => getViewer().clearMeasure()],
     ["roi", () => getViewer().clearDeepMimoRoi()],
     ["trajectory", () => getViewer().clearMobility()],
     ["paths", () => getViewer().clearPaths()],

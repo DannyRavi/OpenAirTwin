@@ -4896,6 +4896,157 @@ function DeviceControls({
             </div>
           </SurfaceNode>
           <SurfaceNode
+            id="measureCoordPanel"
+            tag="section"
+            staticProps={{
+              className: "deviceCoordPanel measureCoordPanel hidden",
+              "aria-label": "Measurement points",
+            }}
+            snapshot={snapshot}
+          >
+            <div className="measureCoordRows">
+              <div className="measureCoordGroup">
+                <span className="measurePointBadge" aria-hidden="true">
+                  {"A"}
+                </span>
+                <div className="deviceCoordGrid">
+                  <label>
+                    {"X "}
+                    <span className="unitInput">
+                      <SurfaceField
+                        id="measureAX"
+                        initial={{
+                          kind: "number",
+                          value: "",
+                          defaultValue: "",
+                          checked: false,
+                          defaultChecked: false,
+                          disabled: false,
+                          readOnly: false,
+                          step: "0.01",
+                          placeholder: "—",
+                        }}
+                        snapshot={snapshot}
+                      />
+                    </span>
+                  </label>
+                  <label>
+                    {"Y "}
+                    <span className="unitInput">
+                      <SurfaceField
+                        id="measureAY"
+                        initial={{
+                          kind: "number",
+                          value: "",
+                          defaultValue: "",
+                          checked: false,
+                          defaultChecked: false,
+                          disabled: false,
+                          readOnly: false,
+                          step: "0.01",
+                          placeholder: "—",
+                        }}
+                        snapshot={snapshot}
+                      />
+                    </span>
+                  </label>
+                  <label>
+                    {"Z "}
+                    <span className="unitInput">
+                      <SurfaceField
+                        id="measureAZ"
+                        initial={{
+                          kind: "number",
+                          value: "",
+                          defaultValue: "",
+                          checked: false,
+                          defaultChecked: false,
+                          disabled: false,
+                          readOnly: false,
+                          step: "0.01",
+                          placeholder: "—",
+                        }}
+                        snapshot={snapshot}
+                      />
+                    </span>
+                  </label>
+                </div>
+              </div>
+              <div className="measureCoordGroup">
+                <span className="measurePointBadge" aria-hidden="true">
+                  {"B"}
+                </span>
+                <div className="deviceCoordGrid">
+                  <label>
+                    {"X "}
+                    <span className="unitInput">
+                      <SurfaceField
+                        id="measureBX"
+                        initial={{
+                          kind: "number",
+                          value: "",
+                          defaultValue: "",
+                          checked: false,
+                          defaultChecked: false,
+                          disabled: false,
+                          readOnly: false,
+                          step: "0.01",
+                          placeholder: "—",
+                        }}
+                        snapshot={snapshot}
+                      />
+                    </span>
+                  </label>
+                  <label>
+                    {"Y "}
+                    <span className="unitInput">
+                      <SurfaceField
+                        id="measureBY"
+                        initial={{
+                          kind: "number",
+                          value: "",
+                          defaultValue: "",
+                          checked: false,
+                          defaultChecked: false,
+                          disabled: false,
+                          readOnly: false,
+                          step: "0.01",
+                          placeholder: "—",
+                        }}
+                        snapshot={snapshot}
+                      />
+                    </span>
+                  </label>
+                  <label>
+                    {"Z "}
+                    <span className="unitInput">
+                      <SurfaceField
+                        id="measureBZ"
+                        initial={{
+                          kind: "number",
+                          value: "",
+                          defaultValue: "",
+                          checked: false,
+                          defaultChecked: false,
+                          disabled: false,
+                          readOnly: false,
+                          step: "0.01",
+                          placeholder: "—",
+                        }}
+                        snapshot={snapshot}
+                      />
+                    </span>
+                  </label>
+                </div>
+              </div>
+              <div className="measureCoordReadout" aria-live="polite">
+                <span className="measureCoordDistance" id="measureDistance">
+                  {"--"}
+                </span>
+              </div>
+            </div>
+          </SurfaceNode>
+          <SurfaceNode
             id="deepMimoTxDeviceCard"
             tag="section"
             staticProps={{ className: "deviceCoordPanel hidden" }}
@@ -5528,6 +5679,67 @@ function DeviceControls({
             </svg>
           </span>
           <span className="deviceActionText">{"Run Radar"}</span>
+        </SurfaceAction>
+        <SurfaceAction
+          id="btnMeasurePickA"
+          tag="button"
+          staticProps={{
+            className: "deviceActionBtn measureDevicePick hidden",
+            type: "button",
+            "aria-label": "Pick measurement point A",
+            "aria-pressed": "false",
+          }}
+          snapshot={snapshot}
+        >
+          <span className="deviceActionIcon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 19v-7"></path>
+              <path d="M7 9a5 5 0 0 1 10 0"></path>
+              <path d="M4 6a9 9 0 0 1 16 0"></path>
+              <path d="M10 21h4"></path>
+            </svg>
+          </span>
+          <span className="deviceActionText">{"A"}</span>
+        </SurfaceAction>
+        <SurfaceAction
+          id="btnMeasurePickB"
+          tag="button"
+          staticProps={{
+            className: "deviceActionBtn measureDevicePick hidden",
+            type: "button",
+            "aria-label": "Pick measurement point B",
+            "aria-pressed": "false",
+          }}
+          snapshot={snapshot}
+        >
+          <span className="deviceActionIcon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 19v-7"></path>
+              <path d="M17 9a5 5 0 0 0-10 0"></path>
+              <path d="M20 6A9 9 0 0 0 4 6"></path>
+              <path d="M9 21h6"></path>
+            </svg>
+          </span>
+          <span className="deviceActionText">{"B"}</span>
+        </SurfaceAction>
+        <SurfaceAction
+          id="btnMeasureClear"
+          tag="button"
+          staticProps={{
+            className: "deviceActionBtn measureDevicePick hidden",
+            type: "button",
+            "aria-label": "Clear measurement points",
+            "aria-pressed": "false",
+          }}
+          snapshot={snapshot}
+        >
+          <span className="deviceActionIcon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M6 6l12 12"></path>
+              <path d="M18 6 6 18"></path>
+            </svg>
+          </span>
+          <span className="deviceActionText">{"Clear"}</span>
         </SurfaceAction>
       </SurfaceNode>
     </>

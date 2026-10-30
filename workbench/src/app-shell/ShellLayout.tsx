@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
+
+import { useUiCommand } from "../app/use-ui-command.ts";
 
 import { useFeatureSnapshot } from "../runtime/observable-state.ts";
 import { ControlSurface } from "../features/controls/ControlSurface.tsx";
@@ -7,6 +9,7 @@ import { DeepMimoDatasetTray } from "../features/deepmimo/DeepMimoDatasetTray.ts
 import type { DeepMimoDatasetModel } from "../features/deepmimo/deepmimo-dataset-model.ts";
 import { ResultDockContent } from "../features/results/ResultDockContent.tsx";
 import type { ResultDockModel } from "../features/results/result-dock-model.ts";
+import { MeasurePanel } from "./MeasurePanel.tsx";
 import {
   EntryPlaceResults,
   PerformanceCategoryList,
@@ -36,7 +39,15 @@ export function ShellLayout({
   readonly shellModel: ShellUiModel;
 }) {
   const [view, setView] = useState<WorkspaceView>("analysis");
+  const dispatch = useUiCommand();
   const shellSnapshot = useFeatureSnapshot(shellModel.store);
+  const changeView = useCallback(
+    (next: WorkspaceView) => {
+      setView(next);
+      void dispatch({ name: "workbench.view.select", payload: { view: next } });
+    },
+    [dispatch],
+  );
   return (
     <>
       <div
@@ -360,7 +371,7 @@ export function ShellLayout({
       </button>
       <MapToolbar
         onOpenOffline={() => {
-          setView("offline");
+          changeView("offline");
         }}
       />
       <WorkspaceStatus
@@ -384,14 +395,14 @@ export function ShellLayout({
             </button>
           </div>
         </div>
-        <WorkspaceNav active={view} onChange={setView} />
+        <WorkspaceNav active={view} onChange={changeView} />
         <div id="uiBody" className="oat-scroll-region">
           <div className="hx-view" data-view="scene" hidden={view !== "scene"}>
             <ScenePanel
               scene={shellSnapshot.scene}
               offline={shellSnapshot.offline}
               onOpenOffline={() => {
-                setView("offline");
+                changeView("offline");
               }}
             />
           </div>
@@ -502,6 +513,13 @@ export function ShellLayout({
             >
               <ControlSurface section="form" store={controlModel.store} />
             </div>
+          </div>
+          <div
+            className="hx-view"
+            data-view="measure"
+            hidden={view !== "measure"}
+          >
+            <MeasurePanel measure={shellSnapshot.measure} />
           </div>
           <div
             className="hx-view"

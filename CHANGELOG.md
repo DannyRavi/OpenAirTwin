@@ -44,6 +44,17 @@ derivative of OpenAirTwin; upstream release history is preserved below. This pro
   in a separate Three.js group, so it is never ray-cast, never sent to Sionna RT
   and never affects scene bounds or calculations.
 
+### Added
+
+- Added a Measure workspace section that picks point A and point B on the 3D
+  scene (or accepts edited coordinates in the device bar) and reports the
+  straight-line distance, per-axis deltas, and building width × depth × height,
+  footprint, volume and diagonal in metric metres or imperial inches.
+- Added typed measurement commands (`measure.point.pick`, `measure.point.clear`,
+  `measure.mode.set`, `measure.unit.set`, `workbench.view.select`), a
+  Feature-owned `measure` Viewer Layer with point markers and axis-coloured
+  dimension guides, and an editable compact device bar for the picked points.
+
 ### Fixed
 
 - Fixed the PMNet Tx surface pick not writing the picked X/Y/Z coordinates into
@@ -103,6 +114,17 @@ derivative of OpenAirTwin; upstream release history is preserved below. This pro
   → Installation page flow.
 - Updated the Radar Sensing feature preview with a dedicated drone-target image
   while keeping the approved Radar tutorial screenshot independent.
+
+### Added
+
+- Added a Measure workspace section that picks point A and point B on the 3D
+  scene (or accepts edited coordinates in the device bar) and reports the
+  straight-line distance, per-axis deltas, and building width × depth × height,
+  footprint, volume and diagonal in metric metres or imperial inches.
+- Added typed measurement commands (`measure.point.pick`, `measure.point.clear`,
+  `measure.mode.set`, `measure.unit.set`, `workbench.view.select`), a
+  Feature-owned `measure` Viewer Layer with point markers and axis-coloured
+  dimension guides, and an editable compact device bar for the picked points.
 
 ### Fixed
 

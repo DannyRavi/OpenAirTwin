@@ -1,6 +1,7 @@
 const OWNERS = Object.freeze({
   deepmimo: "feature:deepmimo",
   link: "feature:link",
+  measure: "feature:measure",
   mobility: "feature:mobility",
   pmnet: "feature:pmnet",
   radar: "feature:radar",
@@ -57,6 +58,10 @@ const BUTTON_COMMANDS = Object.freeze({
   btnDeepMimoClearRoi: "deepmimo.roi.clear",
   btnDeepMimoPickRoi: "deepmimo.roi.pick",
   btnDeepMimoPickTx: "deepmimo.device.pickTx",
+  btnMeasureClear: "measure.point.clear",
+  btnMeasureClearPanel: "measure.point.clear",
+  btnMeasurePickA: "measure.point.pick",
+  btnMeasurePickB: "measure.point.pick",
   btnPickPmnetTx: "pmnet.device.pickTx",
   btnRunPmnet: "pmnet.run",
   btnEnterScene: "entry.scene.enter",
@@ -110,6 +115,10 @@ const BUTTON_COMMANDS = Object.freeze({
   tabDeepMimo: "workbench.feature.activate",
   tabLink: "workbench.feature.activate",
   tabMobility: "workbench.feature.activate",
+  measureModeDistance: "measure.mode.set",
+  measureModeSize: "measure.mode.set",
+  measureUnitImperial: "measure.unit.set",
+  measureUnitMetric: "measure.unit.set",
   tabPmnet: "workbench.feature.activate",
   tabRadar: "workbench.feature.activate",
   tabRadiomap: "workbench.feature.activate",
@@ -167,6 +176,7 @@ function ownerForId(id) {
   if (/^(deepMimo|deepmimo|btnDeepMimo|btnRunDeepMimo|tabDeepMimo)/.test(id)) return OWNERS.deepmimo;
   if (/^(mobility|btnMobility|btnRunMobility|btnPickMobility|tabMobility)/.test(id)) return OWNERS.mobility;
   if (/^(pmnet|btnRunPmnet|btnPickPmnet|tabPmnet)/.test(id)) return OWNERS.pmnet;
+  if (/^(measure|btnMeasure|measureMode|measureUnit|measureRow|measurePanel)/.test(id)) return OWNERS.measure;
   if (/^(rm|radiomap|btnRunRadiomap|btnPickRm|tabRadiomap)/.test(id)) return OWNERS.radiomap;
   if (/^(link|path|btnSolveLink|btnPickLink|tabLink)/.test(id)) return OWNERS.link;
   if (id === "btnOrbitTx") return OWNERS.deviceDock;

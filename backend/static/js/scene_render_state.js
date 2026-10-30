@@ -198,6 +198,7 @@ function syncModeUi() {
   const activeTargetMeta = picking.get(nextActiveTarget);
   const hasPrecisionTarget = Boolean(activeTargetMeta?.precision);
 
+  const measureView = state.workspaceView === "measure";
   for (const definition of definitions) {
     const active = definition.id === activeFeature.id;
     const button = requiredFeatureUiRef(definition, definition.ui.tabRef);
@@ -236,28 +237,40 @@ function syncModeUi() {
 
   ui.deviceDock.classList.toggle("hidden", !sceneControlsVisible);
   ui.deviceDock.setAttribute("aria-hidden", String(!sceneControlsVisible));
-  ui.devicePrecisionPanel.classList.toggle("hidden", !sceneControlsVisible || !hasPrecisionTarget);
-  ui.devicePrecisionPanel.setAttribute("aria-hidden", String(!sceneControlsVisible || !hasPrecisionTarget));
+  const showPrecisionPanel = sceneControlsVisible && (hasPrecisionTarget || measureView);
+  ui.devicePrecisionPanel.classList.toggle("hidden", !showPrecisionPanel);
+  ui.devicePrecisionPanel.setAttribute("aria-hidden", String(!showPrecisionPanel));
 
   for (const definition of definitions) {
     const isActive = definition.id === activeFeature.id;
+    const featureActionsVisible = isActive && !measureView;
     for (const target of picking.targetsFor(definition.id)) {
       if (target.cardRef) {
-        requiredFeatureUiRef(definition, target.cardRef).classList.toggle("hidden", nextActiveTarget !== target.id);
+        requiredFeatureUiRef(definition, target.cardRef).classList.toggle("hidden", nextActiveTarget !== target.id || measureView);
       }
       if (target.buttonRef) {
         const button = requiredFeatureUiRef(definition, target.buttonRef);
-        button.classList.toggle("hidden", !isActive);
+        button.classList.toggle("hidden", !featureActionsVisible);
         button.classList.toggle("active", nextActiveTarget === target.id);
         button.classList.toggle("picking", state.pickTarget === target.id);
       }
     }
     for (const ref of definition.ui.extraActionButtonRefs || []) {
-      requiredFeatureUiRef(definition, ref).classList.toggle("hidden", !isActive);
+      requiredFeatureUiRef(definition, ref).classList.toggle("hidden", !featureActionsVisible);
     }
-    requiredFeatureUiRef(definition, definition.ui.runButtonRef).classList.toggle("hidden", !isActive);
+    requiredFeatureUiRef(definition, definition.ui.runButtonRef).classList.toggle("hidden", !featureActionsVisible);
   }
   ui.linkSurfaceClearanceField.classList.toggle("hidden", !activeTargetMeta?.clearance);
+
+  const measureActions = {
+    btnMeasurePickA: measureView,
+    btnMeasurePickB: measureView,
+    btnMeasureClear: measureView,
+  };
+  for (const [ref, visible] of Object.entries(measureActions)) {
+    ui[ref]?.classList.toggle("hidden", !visible || !sceneControlsVisible);
+  }
+  ui.measureCoordPanel?.classList.toggle("hidden", !measureView);
 
   for (const definition of definitions) {
     const button = requiredFeatureUiRef(definition, definition.ui.runButtonRef);
@@ -275,13 +288,16 @@ function syncModeUi() {
   }
   const orbitingTx = getViewer().isTxOrbiting();
   ui.btnOrbitTx.disabled = !txReady;
+  ui.btnOrbitTx.classList.toggle("hidden", measureView);
   if (txReady) ui.btnOrbitTx.removeAttribute("title");
   else ui.btnOrbitTx.title = "Place Tx before orbiting.";
   ui.btnOrbitTx.classList.toggle("active", orbitingTx);
   ui.btnOrbitTx.setAttribute("aria-pressed", String(orbitingTx));
   ui.btnOrbitTx.setAttribute("aria-label", orbitingTx ? "Stop transmitter orbit" : "Orbit around transmitter");
   ui.btnOrbitTx.querySelector(".deviceActionText").textContent = orbitingTx ? "Stop" : "Orbit";
-  ui.devicePrecisionTitle.textContent = activeTargetMeta?.precisionTitle || "Tx";
+  ui.devicePrecisionTitle.textContent = measureView
+    ? "Measure"
+    : (activeTargetMeta?.precisionTitle || "Tx");
 }
 function renderAll() {
   syncModeUi();

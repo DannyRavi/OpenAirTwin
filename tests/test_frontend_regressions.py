@@ -1028,7 +1028,8 @@ class FrontendRegressionTests(unittest.TestCase):
         self.assertIn("const activeTargetIds = new Set(picking.targetsFor(activeFeature.id)", scene_source)
         self.assertIn('ui.linkSurfaceClearanceField.classList.toggle("hidden", !activeTargetMeta?.clearance);', scene_source)
         self.assertIn("const hasPrecisionTarget = Boolean(activeTargetMeta?.precision);", scene_source)
-        self.assertIn('ui.devicePrecisionTitle.textContent = activeTargetMeta?.precisionTitle || "Tx";', scene_source)
+        self.assertIn(': (activeTargetMeta?.precisionTitle || "Tx");', scene_source)
+        self.assertIn("const featureActionsVisible = isActive && !measureView;", scene_source)
         self.assertIn('export function solveLink(payload, options = {})', api_source)
         self.assertIn("signal: options.signal", api_source)
 
@@ -1304,7 +1305,10 @@ class FrontendRegressionTests(unittest.TestCase):
         self.assertIn('prompt: "Click any surface to place Rx"', app_source)
         self.assertIn("const activeTargetIds = new Set(picking.targetsFor(activeFeature.id)", scene_source)
         self.assertIn("for (const target of picking.targetsFor(definition.id))", scene_source)
-        self.assertIn('button.classList.toggle("hidden", !isActive);', scene_source)
+        self.assertIn(
+            'button.classList.toggle("hidden", !featureActionsVisible);',
+            scene_source,
+        )
         self.assertIn("syncViewerMarkers();\n  syncModeVisuals();", scene_source)
 
         self.assertIn("context.features.instance(state.mode)?.markerPositions?.()", solver_source)
@@ -1467,7 +1471,10 @@ class FrontendRegressionTests(unittest.TestCase):
         self.assertIn('if (target.role === "roi")', app_source)
         self.assertIn("const activeTargetMeta = picking.get(nextActiveTarget);", scene_source)
         self.assertIn("const hasPrecisionTarget = Boolean(activeTargetMeta?.precision);", scene_source)
-        self.assertIn('!sceneControlsVisible || !hasPrecisionTarget', scene_source)
+        self.assertIn(
+            "const showPrecisionPanel = sceneControlsVisible && (hasPrecisionTarget || measureView);",
+            scene_source,
+        )
         self.assertIn('import("/js/viewer.js?v=20260722-radar-screen-labels")', scene_source)
         self.assertIn("for (const target of picking.targetsFor(definition.id))", scene_source)
         self.assertIn("for (const ref of definition.ui.extraActionButtonRefs || [])", scene_source)

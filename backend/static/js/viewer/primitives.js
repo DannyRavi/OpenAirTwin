@@ -59,6 +59,7 @@ export class PrimitiveRenderer {
       ["polygon-overlay", (layer, primitive) => this.renderPolygonOverlay(layer, primitive)],
       ["scalar-triangle-mesh", (layer, primitive) => this.renderScalarTriangleMesh(layer, primitive)],
       ["mesh-instance", (layer, primitive) => this.renderMeshInstance(layer, primitive)],
+      ["measure-overlay", (layer, primitive) => this.renderMeasureOverlay(layer, primitive)],
     ]);
   }
 
@@ -168,6 +169,69 @@ export class PrimitiveRenderer {
       depthTest: primitive.depthTest === true,
     }));
     layer.group.renderOrder = Number(primitive.renderOrder || 16);
+    return layer.group;
+  }
+
+  renderMeasureOverlay(layer, primitive) {
+    layer.clear();
+    const a = Array.isArray(primitive.a) ? primitive.a.map(Number) : null;
+    const b = Array.isArray(primitive.b) ? primitive.b.map(Number) : null;
+    if (!a && !b) {
+      return null;
+    }
+    const radius = Number(primitive.radius || 1.1);
+    const addPoint = (point, color) => {
+      const marker = new THREE.Mesh(
+        new THREE.SphereGeometry(radius, 16, 16),
+        new THREE.MeshBasicMaterial({
+          color: new THREE.Color(color),
+          transparent: true,
+          opacity: 0.96,
+          depthWrite: false,
+          depthTest: false,
+          toneMapped: false,
+        }),
+      );
+      marker.position.set(point[0], point[1], point[2]);
+      marker.renderOrder = 21;
+      layer.add(marker);
+    };
+    if (a) {
+      addPoint(a, primitive.pointAColor || "#f59e0b");
+    }
+    if (b) {
+      addPoint(b, primitive.pointBColor || "#22d3ee");
+    }
+    if (a && b) {
+      const axisColor = primitive.axisColor || "#e2e8f0";
+      const cornerX = [b[0], a[1], a[2]];
+      const cornerY = [b[0], b[1], a[2]];
+      layer.add(lineObject([a, b], {
+        color: axisColor,
+        width: primitive.lineWidth || 2.6,
+        opacity: 0.95,
+        depthTest: false,
+      }));
+      layer.add(lineObject([a, cornerX], {
+        color: primitive.xColor || "#f87171",
+        width: 2.0,
+        opacity: 0.9,
+        depthTest: false,
+      }));
+      layer.add(lineObject([cornerX, cornerY], {
+        color: primitive.yColor || "#4ade80",
+        width: 2.0,
+        opacity: 0.9,
+        depthTest: false,
+      }));
+      layer.add(lineObject([cornerY, b], {
+        color: primitive.zColor || "#60a5fa",
+        width: 2.0,
+        opacity: 0.9,
+        depthTest: false,
+      }));
+    }
+    layer.group.renderOrder = Number(primitive.renderOrder || 20);
     return layer.group;
   }
 

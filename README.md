@@ -88,6 +88,7 @@ installation. The upstream tutorial remains useful for the shared workflows:
 | Mobility | Define Rx waypoints, speed and sampling parameters | Trajectory, sample markers and time-varying channel results |
 | Radio map | Configure a receiver patch, resolution and display range | Scalar heatmap over the 3D scene |
 | PMNet pathloss | Pick a Tx, set the prediction window, grid and wall loss, and predict without path tracing | Ground pathloss heatmap plus a rooftop and facade building envelope |
+| Measure | Pick point A and point B on the 3D scene, or edit their coordinates, and read the distance, per-axis deltas, or building width × depth × height in metric or imperial units | Dimension guides, editable A/B coordinates and a live size/distance readout |
 | DeepMIMO export | Draw a receiver ROI and configure the receiver grid | Downloadable DeepMIMO-compatible dataset |
 
 

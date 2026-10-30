@@ -26,6 +26,7 @@ import {FEATURE_CATALOG} from "/js/features/feature_catalog.js?v=20260723-radar-
 import {createAppDialogController} from "/js/controllers/app_dialog_controller.js?v=20260604-app-dialog";
 import {createDevicePickingController} from "/js/controllers/device_picking_controller.js?v=20260519-mode-isolation";
 import {createEntryMapController} from "/js/entry_map.js";
+import {createMeasureController} from "/js/measure/measure_controller.js";
 import {createParamTooltipController} from "/js/param_tooltips.js";
 import {createPerformancePanelController} from "/js/performance_panel.js";
 import {createSceneRenderStateController} from "/js/scene_render_state.js?v=20260723-empty-devices";
@@ -74,6 +75,7 @@ let solverControls = null;
 let sceneRenderState = null;
 let paramTooltips = null;
 let devicePicking = null;
+let measureController = null;
 
 function initializeControllers() {
   dialogController = createAppDialogController(context);
@@ -83,6 +85,18 @@ function initializeControllers() {
   sceneRenderState = createSceneRenderStateController(context);
   paramTooltips = createParamTooltipController(context);
   devicePicking = createDevicePickingController(context);
+  measureController = createMeasureController({
+    state,
+    ui,
+    inputs,
+    getViewer: currentViewer,
+    shellUi: appShellRuntime.shell,
+    controls: appShellRuntime.controls,
+    renderAll: () => sceneRenderState.renderAll(),
+    devicePicking,
+    viewElement: appShellRuntime.element("view"),
+  });
+  measureController.attachPointerEvents();
   Object.assign(context.controllers, {
     dialogs: dialogController,
     performance: performancePanel,
@@ -91,6 +105,7 @@ function initializeControllers() {
     scene: sceneRenderState,
     tooltips: paramTooltips,
     devicePicking,
+    measure: measureController,
   });
 }
 
@@ -507,12 +522,41 @@ async function handleAppShellCommand(command) {
     sceneRenderState.renderAll();
     return;
   }
+  if (command.name === "workbench.view.select") {
+    state.workspaceView = String(payload.view || "analysis");
+    if (state.workspaceView === "measure") {
+      devicePicking.clearActiveDevice({render: false});
+      measureController.setActive(true);
+    } else {
+      measureController.setActive(false);
+    }
+    sceneRenderState.renderAll();
+    measureController.refresh();
+    return;
+  }
+  if (command.name === "measure.mode.set") {
+    measureController.setMode(payload.mode);
+    return;
+  }
+  if (command.name === "measure.unit.set") {
+    measureController.setUnit(payload.unit);
+    return;
+  }
+  if (command.name === "measure.point.pick") {
+    measureController.armPick(payload.point);
+    return;
+  }
+  if (command.name === "measure.point.clear") {
+    measureController.clearPoint(payload.point || "all");
+    return;
+  }
   if (command.name === "workbench.transient.dismiss") {
     closeModeMenu();
     closeFeatureTransientUi();
     return;
   }
   if (command.name === "viewer.precision.escape") {
+    if (measureController.cancelPick()) return;
     devicePicking.handleDevicePrecisionEscape({key: "Escape", preventDefault() {}});
     return;
   }
@@ -760,6 +804,7 @@ function attachRuntimeEvents() {
         sceneRenderState.renderAll();
         return;
       }
+      if (measureController.handleControlCommit(controlId)) return;
       for (const definition of featureRegistry.definitions()) {
         if (await featureRegistry.instance(definition.id)?.handleControlCommit?.(controlId)) return;
       }
@@ -771,6 +816,7 @@ function attachRuntimeEvents() {
         devicePicking.toggleTxOrbit();
         return;
       }
+      if (measureController.handleControlAction(actionId)) return;
       for (const definition of featureRegistry.definitions()) {
         if (await featureRegistry.instance(definition.id)?.handleControlAction?.(actionId, value)) return;
       }
@@ -874,6 +920,7 @@ window.addEventListener("pagehide", () => {
   saveSceneView();
   featureRegistry.dispose(context);
   devicePicking?.dispose?.();
+  measureController?.dispose?.();
   paramTooltips?.dispose?.();
   sceneRenderState?.dispose?.();
   entryMapController?.dispose?.();

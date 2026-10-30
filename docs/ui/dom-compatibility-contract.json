@@ -34,6 +34,7 @@
   "owners": [
     "feature:deepmimo",
     "feature:link",
+    "feature:measure",
     "feature:mobility",
     "feature:pmnet",
     "feature:radar",
@@ -3521,7 +3522,7 @@
         "type": "checkbox"
       },
       "labels": [
-        "Building envelope overlayiShades rooftop and facade cells with the predicted signal reaching each building surface."
+        "Building envelope overlay iShades rooftop and facade cells with the predicted signal reaching each building surface."
       ],
       "defaultValue": "",
       "defaultChecked": true,
@@ -5626,8 +5627,176 @@
       "compatibility": "required"
     },
     {
-      "id": "deviceDock",
+      "id": "measureModeDistance",
       "order": 313,
+      "tag": "button",
+      "classes": [
+        "hx-segment-btn",
+        "is-active"
+      ],
+      "attributes": {
+        "aria-pressed": "true",
+        "type": "button"
+      },
+      "text": "Distance",
+      "disabled": false,
+      "owner": "feature:measure",
+      "compatibility": "required",
+      "interaction": {
+        "command": "measure.mode.set",
+        "events": [
+          "click"
+        ]
+      }
+    },
+    {
+      "id": "measureModeSize",
+      "order": 314,
+      "tag": "button",
+      "classes": [
+        "hx-segment-btn"
+      ],
+      "attributes": {
+        "aria-pressed": "false",
+        "type": "button"
+      },
+      "text": "Size",
+      "disabled": false,
+      "owner": "feature:measure",
+      "compatibility": "required",
+      "interaction": {
+        "command": "measure.mode.set",
+        "events": [
+          "click"
+        ]
+      }
+    },
+    {
+      "id": "measureModeHint",
+      "order": 315,
+      "tag": "p",
+      "classes": [
+        "hx-hint"
+      ],
+      "attributes": {},
+      "owner": "feature:measure",
+      "compatibility": "required"
+    },
+    {
+      "id": "measureUnitMetric",
+      "order": 316,
+      "tag": "button",
+      "classes": [
+        "hx-segment-btn",
+        "is-active"
+      ],
+      "attributes": {
+        "aria-pressed": "true",
+        "type": "button"
+      },
+      "text": "Metric (m)",
+      "disabled": false,
+      "owner": "feature:measure",
+      "compatibility": "required",
+      "interaction": {
+        "command": "measure.unit.set",
+        "events": [
+          "click"
+        ]
+      }
+    },
+    {
+      "id": "measureUnitImperial",
+      "order": 317,
+      "tag": "button",
+      "classes": [
+        "hx-segment-btn"
+      ],
+      "attributes": {
+        "aria-pressed": "false",
+        "type": "button"
+      },
+      "text": "Imperial (in)",
+      "disabled": false,
+      "owner": "feature:measure",
+      "compatibility": "required",
+      "interaction": {
+        "command": "measure.unit.set",
+        "events": [
+          "click"
+        ]
+      }
+    },
+    {
+      "id": "measurePanelSummary",
+      "order": 318,
+      "tag": "p",
+      "classes": [
+        "hx-measure-summary"
+      ],
+      "attributes": {},
+      "owner": "feature:measure",
+      "compatibility": "required"
+    },
+    {
+      "id": "measurePanelSecondary",
+      "order": 319,
+      "tag": "p",
+      "classes": [
+        "hx-hint"
+      ],
+      "attributes": {},
+      "owner": "feature:measure",
+      "compatibility": "required"
+    },
+    {
+      "id": "measurePanelRows",
+      "order": 320,
+      "tag": "dl",
+      "classes": [
+        "hx-key-values"
+      ],
+      "attributes": {},
+      "owner": "feature:measure",
+      "compatibility": "required"
+    },
+    {
+      "id": "measurePanelHint",
+      "order": 321,
+      "tag": "p",
+      "classes": [
+        "hx-hint"
+      ],
+      "attributes": {},
+      "owner": "feature:measure",
+      "compatibility": "required"
+    },
+    {
+      "id": "btnMeasureClearPanel",
+      "order": 322,
+      "tag": "button",
+      "classes": [
+        "hx-btn",
+        "hx-btn--block",
+        "hx-btn--ghost"
+      ],
+      "attributes": {
+        "type": "button"
+      },
+      "text": "Clear measurement",
+      "disabled": true,
+      "owner": "feature:measure",
+      "compatibility": "required",
+      "interaction": {
+        "command": "measure.point.clear",
+        "events": [
+          "click"
+        ]
+      }
+    },
+    {
+      "id": "deviceDock",
+      "order": 323,
       "tag": "div",
       "classes": [
         "deviceDock",
@@ -5642,7 +5811,7 @@
     },
     {
       "id": "devicePrecisionPanel",
-      "order": 314,
+      "order": 324,
       "tag": "div",
       "classes": [
         "devicePrecisionPanel",
@@ -5657,7 +5826,7 @@
     },
     {
       "id": "devicePrecisionTitle",
-      "order": 315,
+      "order": 325,
       "tag": "div",
       "classes": [
         "devicePrecisionTitle"
@@ -5668,7 +5837,7 @@
     },
     {
       "id": "hintText",
-      "order": 316,
+      "order": 326,
       "tag": "div",
       "classes": [
         "devicePrecisionStatus"
@@ -5681,7 +5850,7 @@
     },
     {
       "id": "linkTxDeviceCard",
-      "order": 317,
+      "order": 327,
       "tag": "section",
       "classes": [
         "deviceCoordPanel",
@@ -5693,7 +5862,7 @@
     },
     {
       "id": "linkTxX",
-      "order": 318,
+      "order": 328,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5718,7 +5887,7 @@
     },
     {
       "id": "linkTxY",
-      "order": 319,
+      "order": 329,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5743,7 +5912,7 @@
     },
     {
       "id": "linkTxZ",
-      "order": 320,
+      "order": 330,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5768,7 +5937,7 @@
     },
     {
       "id": "linkRxDeviceCard",
-      "order": 321,
+      "order": 331,
       "tag": "section",
       "classes": [
         "deviceCoordPanel",
@@ -5780,7 +5949,7 @@
     },
     {
       "id": "linkRxX",
-      "order": 322,
+      "order": 332,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5805,7 +5974,7 @@
     },
     {
       "id": "linkRxY",
-      "order": 323,
+      "order": 333,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5830,7 +5999,7 @@
     },
     {
       "id": "linkRxZ",
-      "order": 324,
+      "order": 334,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5855,7 +6024,7 @@
     },
     {
       "id": "mobilityTxDeviceCard",
-      "order": 325,
+      "order": 335,
       "tag": "section",
       "classes": [
         "deviceCoordPanel",
@@ -5867,7 +6036,7 @@
     },
     {
       "id": "mobilityTxX",
-      "order": 326,
+      "order": 336,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5892,7 +6061,7 @@
     },
     {
       "id": "mobilityTxY",
-      "order": 327,
+      "order": 337,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5917,7 +6086,7 @@
     },
     {
       "id": "mobilityTxZ",
-      "order": 328,
+      "order": 338,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5942,7 +6111,7 @@
     },
     {
       "id": "mobilityRxDeviceCard",
-      "order": 329,
+      "order": 339,
       "tag": "section",
       "classes": [
         "deviceCoordPanel",
@@ -5954,7 +6123,7 @@
     },
     {
       "id": "mobilityRxX",
-      "order": 330,
+      "order": 340,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5979,7 +6148,7 @@
     },
     {
       "id": "mobilityRxY",
-      "order": 331,
+      "order": 341,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -6004,7 +6173,7 @@
     },
     {
       "id": "mobilityRxZ",
-      "order": 332,
+      "order": 342,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -6029,7 +6198,7 @@
     },
     {
       "id": "rmTxDeviceCard",
-      "order": 333,
+      "order": 343,
       "tag": "section",
       "classes": [
         "deviceCoordPanel",
@@ -6041,7 +6210,7 @@
     },
     {
       "id": "rmTxX",
-      "order": 334,
+      "order": 344,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -6066,7 +6235,7 @@
     },
     {
       "id": "rmTxY",
-      "order": 335,
+      "order": 345,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -6091,7 +6260,7 @@
     },
     {
       "id": "rmTxZ",
-      "order": 336,
+      "order": 346,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -6116,7 +6285,7 @@
     },
     {
       "id": "pmnetTxDeviceCard",
-      "order": 337,
+      "order": 347,
       "tag": "section",
       "classes": [
         "deviceCoordPanel",
@@ -6128,7 +6297,7 @@
     },
     {
       "id": "pmnetTxX",
-      "order": 338,
+      "order": 348,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -6153,7 +6322,7 @@
     },
     {
       "id": "pmnetTxY",
-      "order": 339,
+      "order": 349,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -6178,7 +6347,7 @@
     },
     {
       "id": "pmnetTxZ",
-      "order": 340,
+      "order": 350,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -6202,8 +6371,184 @@
       }
     },
     {
+      "id": "measureCoordPanel",
+      "order": 351,
+      "tag": "section",
+      "classes": [
+        "deviceCoordPanel",
+        "measureCoordPanel",
+        "hidden"
+      ],
+      "attributes": {
+        "aria-label": "Measurement points"
+      },
+      "owner": "feature:measure",
+      "compatibility": "required"
+    },
+    {
+      "id": "measureAX",
+      "order": 352,
+      "tag": "input",
+      "classes": [],
+      "attributes": {
+        "placeholder": "—",
+        "step": "0.01",
+        "type": "number"
+      },
+      "labels": [
+        "X"
+      ],
+      "defaultValue": "",
+      "defaultChecked": false,
+      "disabled": false,
+      "owner": "feature:measure",
+      "compatibility": "required",
+      "interaction": {
+        "command": "measure.configuration.update",
+        "events": [
+          "change"
+        ]
+      }
+    },
+    {
+      "id": "measureAY",
+      "order": 353,
+      "tag": "input",
+      "classes": [],
+      "attributes": {
+        "placeholder": "—",
+        "step": "0.01",
+        "type": "number"
+      },
+      "labels": [
+        "Y"
+      ],
+      "defaultValue": "",
+      "defaultChecked": false,
+      "disabled": false,
+      "owner": "feature:measure",
+      "compatibility": "required",
+      "interaction": {
+        "command": "measure.configuration.update",
+        "events": [
+          "change"
+        ]
+      }
+    },
+    {
+      "id": "measureAZ",
+      "order": 354,
+      "tag": "input",
+      "classes": [],
+      "attributes": {
+        "placeholder": "—",
+        "step": "0.01",
+        "type": "number"
+      },
+      "labels": [
+        "Z"
+      ],
+      "defaultValue": "",
+      "defaultChecked": false,
+      "disabled": false,
+      "owner": "feature:measure",
+      "compatibility": "required",
+      "interaction": {
+        "command": "measure.configuration.update",
+        "events": [
+          "change"
+        ]
+      }
+    },
+    {
+      "id": "measureBX",
+      "order": 355,
+      "tag": "input",
+      "classes": [],
+      "attributes": {
+        "placeholder": "—",
+        "step": "0.01",
+        "type": "number"
+      },
+      "labels": [
+        "X"
+      ],
+      "defaultValue": "",
+      "defaultChecked": false,
+      "disabled": false,
+      "owner": "feature:measure",
+      "compatibility": "required",
+      "interaction": {
+        "command": "measure.configuration.update",
+        "events": [
+          "change"
+        ]
+      }
+    },
+    {
+      "id": "measureBY",
+      "order": 356,
+      "tag": "input",
+      "classes": [],
+      "attributes": {
+        "placeholder": "—",
+        "step": "0.01",
+        "type": "number"
+      },
+      "labels": [
+        "Y"
+      ],
+      "defaultValue": "",
+      "defaultChecked": false,
+      "disabled": false,
+      "owner": "feature:measure",
+      "compatibility": "required",
+      "interaction": {
+        "command": "measure.configuration.update",
+        "events": [
+          "change"
+        ]
+      }
+    },
+    {
+      "id": "measureBZ",
+      "order": 357,
+      "tag": "input",
+      "classes": [],
+      "attributes": {
+        "placeholder": "—",
+        "step": "0.01",
+        "type": "number"
+      },
+      "labels": [
+        "Z"
+      ],
+      "defaultValue": "",
+      "defaultChecked": false,
+      "disabled": false,
+      "owner": "feature:measure",
+      "compatibility": "required",
+      "interaction": {
+        "command": "measure.configuration.update",
+        "events": [
+          "change"
+        ]
+      }
+    },
+    {
+      "id": "measureDistance",
+      "order": 358,
+      "tag": "span",
+      "classes": [
+        "measureCoordDistance"
+      ],
+      "attributes": {},
+      "owner": "feature:measure",
+      "compatibility": "required"
+    },
+    {
       "id": "deepMimoTxDeviceCard",
-      "order": 341,
+      "order": 359,
       "tag": "section",
       "classes": [
         "deviceCoordPanel",
@@ -6215,7 +6560,7 @@
     },
     {
       "id": "deepMimoTxX",
-      "order": 342,
+      "order": 360,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -6240,7 +6585,7 @@
     },
     {
       "id": "deepMimoTxY",
-      "order": 343,
+      "order": 361,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -6265,7 +6610,7 @@
     },
     {
       "id": "deepMimoTxZ",
-      "order": 344,
+      "order": 362,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -6290,7 +6635,7 @@
     },
     {
       "id": "radarTxDeviceCard",
-      "order": 345,
+      "order": 363,
       "tag": "section",
       "classes": [
         "deviceCoordPanel",
@@ -6302,7 +6647,7 @@
     },
     {
       "id": "radarTxX",
-      "order": 346,
+      "order": 364,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -6327,7 +6672,7 @@
     },
     {
       "id": "radarTxY",
-      "order": 347,
+      "order": 365,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -6352,7 +6697,7 @@
     },
     {
       "id": "radarTxZ",
-      "order": 348,
+      "order": 366,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -6377,7 +6722,7 @@
     },
     {
       "id": "radarRxDeviceCard",
-      "order": 349,
+      "order": 367,
       "tag": "section",
       "classes": [
         "deviceCoordPanel",
@@ -6389,7 +6734,7 @@
     },
     {
       "id": "radarRxX",
-      "order": 350,
+      "order": 368,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -6414,7 +6759,7 @@
     },
     {
       "id": "radarRxY",
-      "order": 351,
+      "order": 369,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -6439,7 +6784,7 @@
     },
     {
       "id": "radarRxZ",
-      "order": 352,
+      "order": 370,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -6464,7 +6809,7 @@
     },
     {
       "id": "linkSurfaceClearanceField",
-      "order": 353,
+      "order": 371,
       "tag": "label",
       "classes": [
         "deviceClearanceField",
@@ -6478,7 +6823,7 @@
     },
     {
       "id": "linkSurfaceClearance",
-      "order": 354,
+      "order": 372,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -6504,7 +6849,7 @@
     },
     {
       "id": "deviceActionBar",
-      "order": 355,
+      "order": 373,
       "tag": "div",
       "classes": [
         "deviceActionBar"
@@ -6518,7 +6863,7 @@
     },
     {
       "id": "btnPickLinkTx",
-      "order": 356,
+      "order": 374,
       "tag": "button",
       "classes": [
         "deviceActionBtn"
@@ -6540,7 +6885,7 @@
     },
     {
       "id": "btnPickLinkRx",
-      "order": 357,
+      "order": 375,
       "tag": "button",
       "classes": [
         "deviceActionBtn"
@@ -6562,7 +6907,7 @@
     },
     {
       "id": "btnPickMobilityTx",
-      "order": 358,
+      "order": 376,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6585,7 +6930,7 @@
     },
     {
       "id": "btnPickMobilityRx",
-      "order": 359,
+      "order": 377,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6608,7 +6953,7 @@
     },
     {
       "id": "btnPickRmTx",
-      "order": 360,
+      "order": 378,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6631,7 +6976,7 @@
     },
     {
       "id": "btnPickPmnetTx",
-      "order": 361,
+      "order": 379,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6654,7 +6999,7 @@
     },
     {
       "id": "btnDeepMimoPickTx",
-      "order": 362,
+      "order": 380,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6677,7 +7022,7 @@
     },
     {
       "id": "btnDeepMimoPickRoi",
-      "order": 363,
+      "order": 381,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6700,7 +7045,7 @@
     },
     {
       "id": "btnDeepMimoClearRoi",
-      "order": 364,
+      "order": 382,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6723,7 +7068,7 @@
     },
     {
       "id": "btnOrbitTx",
-      "order": 365,
+      "order": 383,
       "tag": "button",
       "classes": [
         "deviceActionBtn"
@@ -6747,7 +7092,7 @@
     },
     {
       "id": "btnSolveLink",
-      "order": 366,
+      "order": 384,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6770,7 +7115,7 @@
     },
     {
       "id": "btnRunMobility",
-      "order": 367,
+      "order": 385,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6794,7 +7139,7 @@
     },
     {
       "id": "btnRunRadiomap",
-      "order": 368,
+      "order": 386,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6818,7 +7163,7 @@
     },
     {
       "id": "btnRunPmnet",
-      "order": 369,
+      "order": 387,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6842,7 +7187,7 @@
     },
     {
       "id": "btnRunDeepMimo",
-      "order": 370,
+      "order": 388,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6866,7 +7211,7 @@
     },
     {
       "id": "btnPickRadarTx",
-      "order": 371,
+      "order": 389,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6890,7 +7235,7 @@
     },
     {
       "id": "btnPickRadarRx",
-      "order": 372,
+      "order": 390,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6914,7 +7259,7 @@
     },
     {
       "id": "btnSolveRadar",
-      "order": 373,
+      "order": 391,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6939,8 +7284,83 @@
       }
     },
     {
+      "id": "btnMeasurePickA",
+      "order": 392,
+      "tag": "button",
+      "classes": [
+        "deviceActionBtn",
+        "measureDevicePick",
+        "hidden"
+      ],
+      "attributes": {
+        "aria-label": "Pick measurement point A",
+        "aria-pressed": "false",
+        "type": "button"
+      },
+      "text": "A",
+      "disabled": false,
+      "owner": "feature:measure",
+      "compatibility": "required",
+      "interaction": {
+        "command": "measure.point.pick",
+        "events": [
+          "click"
+        ]
+      }
+    },
+    {
+      "id": "btnMeasurePickB",
+      "order": 393,
+      "tag": "button",
+      "classes": [
+        "deviceActionBtn",
+        "measureDevicePick",
+        "hidden"
+      ],
+      "attributes": {
+        "aria-label": "Pick measurement point B",
+        "aria-pressed": "false",
+        "type": "button"
+      },
+      "text": "B",
+      "disabled": false,
+      "owner": "feature:measure",
+      "compatibility": "required",
+      "interaction": {
+        "command": "measure.point.pick",
+        "events": [
+          "click"
+        ]
+      }
+    },
+    {
+      "id": "btnMeasureClear",
+      "order": 394,
+      "tag": "button",
+      "classes": [
+        "deviceActionBtn",
+        "measureDevicePick",
+        "hidden"
+      ],
+      "attributes": {
+        "aria-label": "Clear measurement points",
+        "aria-pressed": "false",
+        "type": "button"
+      },
+      "text": "Clear",
+      "disabled": false,
+      "owner": "feature:measure",
+      "compatibility": "required",
+      "interaction": {
+        "command": "measure.point.clear",
+        "events": [
+          "click"
+        ]
+      }
+    },
+    {
       "id": "sceneQuickBar",
-      "order": 374,
+      "order": 395,
       "tag": "div",
       "classes": [
         "sceneQuickBar",
@@ -6954,7 +7374,7 @@
     },
     {
       "id": "btnOpenTileIndex",
-      "order": 375,
+      "order": 396,
       "tag": "button",
       "classes": [
         "quickIconBtn"
@@ -6977,7 +7397,7 @@
     },
     {
       "id": "performanceDock",
-      "order": 376,
+      "order": 397,
       "tag": "div",
       "classes": [
         "performanceDock",
@@ -6993,7 +7413,7 @@
     },
     {
       "id": "btnPerformanceDockToggle",
-      "order": 377,
+      "order": 398,
       "tag": "button",
       "classes": [
         "performanceDockHead"
@@ -7016,7 +7436,7 @@
     },
     {
       "id": "perfSummaryFps",
-      "order": 378,
+      "order": 399,
       "tag": "i",
       "classes": [],
       "attributes": {},
@@ -7025,7 +7445,7 @@
     },
     {
       "id": "perfSummaryDpr",
-      "order": 379,
+      "order": 400,
       "tag": "i",
       "classes": [],
       "attributes": {},
@@ -7034,7 +7454,7 @@
     },
     {
       "id": "perfSummaryLoaded",
-      "order": 380,
+      "order": 401,
       "tag": "i",
       "classes": [],
       "attributes": {},
@@ -7043,7 +7463,7 @@
     },
     {
       "id": "perfModeAuto",
-      "order": 381,
+      "order": 402,
       "tag": "button",
       "classes": [
         "perfModeBtn",
@@ -7065,7 +7485,7 @@
     },
     {
       "id": "perfModeQuality",
-      "order": 382,
+      "order": 403,
       "tag": "button",
       "classes": [
         "perfModeBtn"
@@ -7086,7 +7506,7 @@
     },
     {
       "id": "perfModeFast",
-      "order": 383,
+      "order": 404,
       "tag": "button",
       "classes": [
         "perfModeBtn"
@@ -7107,7 +7527,7 @@
     },
     {
       "id": "perfLightMaterials",
-      "order": 384,
+      "order": 405,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -7130,7 +7550,7 @@
     },
     {
       "id": "perfHud",
-      "order": 385,
+      "order": 406,
       "tag": "div",
       "classes": [
         "perfHud"
@@ -7141,7 +7561,7 @@
     },
     {
       "id": "perfFps",
-      "order": 386,
+      "order": 407,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -7150,7 +7570,7 @@
     },
     {
       "id": "perfDpr",
-      "order": 387,
+      "order": 408,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -7159,7 +7579,7 @@
     },
     {
       "id": "perfDrawCalls",
-      "order": 388,
+      "order": 409,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -7168,7 +7588,7 @@
     },
     {
       "id": "perfTriangles",
-      "order": 389,
+      "order": 410,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -7177,7 +7597,7 @@
     },
     {
       "id": "perfFaces",
-      "order": 390,
+      "order": 411,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -7186,7 +7606,7 @@
     },
     {
       "id": "perfLoaded",
-      "order": 391,
+      "order": 412,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -7195,7 +7615,7 @@
     },
     {
       "id": "btnShowAllCategories",
-      "order": 392,
+      "order": 413,
       "tag": "button",
       "classes": [
         "oat-button",
@@ -7217,7 +7637,7 @@
     },
     {
       "id": "btnHideHeavyCategories",
-      "order": 393,
+      "order": 414,
       "tag": "button",
       "classes": [
         "oat-button",
@@ -7239,7 +7659,7 @@
     },
     {
       "id": "categoryVisibility",
-      "order": 394,
+      "order": 415,
       "tag": "div",
       "classes": [
         "categoryVisibility"

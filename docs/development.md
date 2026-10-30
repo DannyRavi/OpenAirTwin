@@ -67,6 +67,19 @@ MapLibre's module worker is bundled through Vite's worker URL import so the
 release includes a hashed, local worker asset. WebGL2 availability is checked
 before constructing the renderer to avoid its partial-initialization path.
 
+### Measurement tool
+
+Measurement is a workspace section, not an analysis Feature, because it has no
+solver, no job and no result dock. The React shell owns the Measure view
+(`workbench/src/app-shell/MeasurePanel.tsx`) and dispatches
+`workbench.view.select` plus typed `measure.*` commands. The legacy controller
+in `backend/static/js/measure/measure_controller.js` owns the picked points,
+the unit conversion, pointer picking and the `measure` Viewer Layer. The device
+bar reuses the shared control-field infrastructure: `measureAX`..`measureBZ`
+are ordinary controlled fields, so they are editable and synchronized through
+`updateFields`. The controller also sets `state.workspaceView`, which the mode
+sync uses to hide analysis device actions while measuring.
+
 ### Offline regions
 
 The offline runtime lives in `backend/offline/region_store.py` and is wired into

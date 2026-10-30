@@ -10,7 +10,7 @@ import type {
 } from "./shell-ui-model.ts";
 import { useFeatureSnapshot } from "../runtime/observable-state.ts";
 
-export type WorkspaceView = "scene" | "analysis" | "offline" | "project";
+export type WorkspaceView = "scene" | "analysis" | "measure" | "offline" | "project";
 
 const NAV_ITEMS: readonly {
   readonly id: WorkspaceView;
@@ -26,6 +26,11 @@ const NAV_ITEMS: readonly {
     id: "analysis",
     label: "Analysis",
     icon: "M4 19V5m0 14h16M7 15l4-5 3 3 5-7",
+  },
+  {
+    id: "measure",
+    label: "Measure",
+    icon: "M4 20 20 4M4 20h4M4 20v-4M20 4h-4M20 4v4M8.5 15.5l3 3M12 12l3 3M15.5 8.5l3 3",
   },
   {
     id: "offline",

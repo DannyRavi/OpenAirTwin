@@ -51,6 +51,10 @@ const shellCommandNames = new Set([
   "entry.sidebar.toggle",
   "entry.tile.toggle",
   "loading.cancel",
+  "measure.mode.set",
+  "measure.point.clear",
+  "measure.point.pick",
+  "measure.unit.set",
   "offline.bounds.useMap",
   "offline.mode.set",
   "offline.refresh",
@@ -78,6 +82,7 @@ const shellCommandNames = new Set([
   "workbench.mode.select",
   "workbench.mode.toggle",
   "workbench.resize",
+  "workbench.view.select",
   "workbench.transient.dismiss",
 ]);
 
