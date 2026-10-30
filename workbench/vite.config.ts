@@ -93,6 +93,7 @@ const PRODUCTION_FEATURE_IDS = [
   "radiomap",
   "deepmimo",
   "radar",
+  "pmnet",
 ] as const;
 
 function isFeatureModule(id: string, featureId: string): boolean {

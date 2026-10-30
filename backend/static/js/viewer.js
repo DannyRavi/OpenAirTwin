@@ -299,6 +299,8 @@ export class Viewer {
     this.layers = new SceneLayerManager(this.scene);
     this.pathLayer = this.layers.create("shared", "paths");
     this.radiomapLayer = this.layers.create("radiomap", "heatmap", {order: 12});
+    this.pmnetGroundLayer = this.layers.create("pmnet", "ground", {order: 13});
+    this.pmnetBuildingLayer = this.layers.create("pmnet", "buildings", {order: 14});
     this.deepMimoRoiLayer = this.layers.create("deepmimo", "roi", {order: 16});
     this.mobilityLayer = this.layers.create("mobility", "trajectory");
     this.pathGroup = this.pathLayer.group;
@@ -1401,6 +1403,7 @@ export class Viewer {
   clearOverlay() {
     this.clearPaths();
     this.clearRadiomap();
+    this.clearPmnet();
     this.clearSurfacePreview();
     this.clearMobility();
     this.clearDeepMimoRoi();
@@ -1458,6 +1461,38 @@ export class Viewer {
   clearRadiomap() {
     this.radiomapLayer.clear();
     this.radiomapMesh = null;
+  }
+
+  clearPmnet() {
+    this.pmnetGroundLayer.clear();
+    this.pmnetBuildingLayer.clear();
+    this.pmnetMesh = null;
+  }
+
+  clearPmnetLayer(kind) {
+    if (kind === "buildings") {
+      this.pmnetBuildingLayer.clear();
+      return;
+    }
+    this.pmnetGroundLayer.clear();
+  }
+
+  hasPmnetSurface(kind = "ground") {
+    const layer = kind === "buildings" ? this.pmnetBuildingLayer : this.pmnetGroundLayer;
+    return layer.group.children.length > 0;
+  }
+
+  renderPmnetSurface(kind, primitive) {
+    const layer = kind === "buildings" ? this.pmnetBuildingLayer : this.pmnetGroundLayer;
+    if (!primitive || !primitive.values?.length) {
+      layer.clear();
+      return null;
+    }
+    const mesh = this.primitives.renderScalarTriangleMesh(layer, primitive);
+    if (kind !== "buildings") {
+      this.pmnetMesh = mesh;
+    }
+    return mesh;
   }
 
   clearDeepMimoRoi() {

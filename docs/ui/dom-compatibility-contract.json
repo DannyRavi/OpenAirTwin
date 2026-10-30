@@ -35,6 +35,7 @@
     "feature:deepmimo",
     "feature:link",
     "feature:mobility",
+    "feature:pmnet",
     "feature:radar",
     "feature:radiomap",
     "shell:device-dock",
@@ -323,6 +324,7 @@
       "tag": "div",
       "classes": [
         "linkDockSection",
+        "heatmapStats",
         "hidden"
       ],
       "attributes": {
@@ -430,8 +432,180 @@
       "compatibility": "required"
     },
     {
-      "id": "mobilityTimelineSection",
+      "id": "pmnetResult",
       "order": 35,
+      "tag": "div",
+      "classes": [
+        "linkResultSummary"
+      ],
+      "attributes": {},
+      "owner": "feature:pmnet",
+      "compatibility": "required"
+    },
+    {
+      "id": "pmStatus",
+      "order": 36,
+      "tag": "span",
+      "classes": [],
+      "attributes": {},
+      "owner": "shell:workbench",
+      "compatibility": "required"
+    },
+    {
+      "id": "pmEngine",
+      "order": 37,
+      "tag": "span",
+      "classes": [],
+      "attributes": {},
+      "owner": "shell:workbench",
+      "compatibility": "required"
+    },
+    {
+      "id": "pmGrid",
+      "order": 38,
+      "tag": "span",
+      "classes": [],
+      "attributes": {},
+      "owner": "shell:workbench",
+      "compatibility": "required"
+    },
+    {
+      "id": "pmCoverage",
+      "order": 39,
+      "tag": "span",
+      "classes": [],
+      "attributes": {},
+      "owner": "shell:workbench",
+      "compatibility": "required"
+    },
+    {
+      "id": "pmnetResolutionSection",
+      "order": 40,
+      "tag": "div",
+      "classes": [
+        "linkDockSection",
+        "heatmapStats",
+        "hidden"
+      ],
+      "attributes": {
+        "aria-hidden": "true"
+      },
+      "owner": "feature:pmnet",
+      "compatibility": "required"
+    },
+    {
+      "id": "pmArea",
+      "order": 41,
+      "tag": "span",
+      "classes": [],
+      "attributes": {},
+      "owner": "shell:workbench",
+      "compatibility": "required"
+    },
+    {
+      "id": "pmCellSize",
+      "order": 42,
+      "tag": "span",
+      "classes": [],
+      "attributes": {},
+      "owner": "shell:workbench",
+      "compatibility": "required"
+    },
+    {
+      "id": "pmWallLoss",
+      "order": 43,
+      "tag": "span",
+      "classes": [],
+      "attributes": {},
+      "owner": "shell:workbench",
+      "compatibility": "required"
+    },
+    {
+      "id": "pmRange",
+      "order": 44,
+      "tag": "span",
+      "classes": [],
+      "attributes": {},
+      "owner": "shell:workbench",
+      "compatibility": "required"
+    },
+    {
+      "id": "pmEngineNote",
+      "order": 45,
+      "tag": "p",
+      "classes": [
+        "channelAnalysisMiniTitle",
+        "pmnetEngineNote"
+      ],
+      "attributes": {},
+      "owner": "shell:workbench",
+      "compatibility": "required"
+    },
+    {
+      "id": "pmnetColorbarSection",
+      "order": 46,
+      "tag": "div",
+      "classes": [
+        "linkDockSection",
+        "rmColorbarSection",
+        "hidden"
+      ],
+      "attributes": {
+        "aria-hidden": "true"
+      },
+      "owner": "feature:pmnet",
+      "compatibility": "required"
+    },
+    {
+      "id": "pmnetColormapLabel",
+      "order": 47,
+      "tag": "span",
+      "classes": [],
+      "attributes": {},
+      "owner": "feature:pmnet",
+      "compatibility": "required"
+    },
+    {
+      "id": "pmnetColorbarRange",
+      "order": 48,
+      "tag": "span",
+      "classes": [],
+      "attributes": {},
+      "owner": "feature:pmnet",
+      "compatibility": "required"
+    },
+    {
+      "id": "pmnetColorbar",
+      "order": 49,
+      "tag": "div",
+      "classes": [
+        "rmColorbar"
+      ],
+      "attributes": {},
+      "owner": "feature:pmnet",
+      "compatibility": "required"
+    },
+    {
+      "id": "pmnetColorbarMin",
+      "order": 50,
+      "tag": "span",
+      "classes": [],
+      "attributes": {},
+      "owner": "feature:pmnet",
+      "compatibility": "required"
+    },
+    {
+      "id": "pmnetColorbarMax",
+      "order": 51,
+      "tag": "span",
+      "classes": [],
+      "attributes": {},
+      "owner": "feature:pmnet",
+      "compatibility": "required"
+    },
+    {
+      "id": "mobilityTimelineSection",
+      "order": 52,
       "tag": "div",
       "classes": [
         "linkDockSection",
@@ -445,7 +619,7 @@
     },
     {
       "id": "mobilityStepLabel",
-      "order": 36,
+      "order": 53,
       "tag": "div",
       "classes": [
         "channelAnalysisMiniTitle"
@@ -456,7 +630,7 @@
     },
     {
       "id": "mobilityMetric",
-      "order": 37,
+      "order": 54,
       "tag": "select",
       "classes": [
         "oat-input",
@@ -478,7 +652,7 @@
     },
     {
       "id": "mobilitySeriesChart",
-      "order": 38,
+      "order": 55,
       "tag": "svg",
       "classes": [
         "tapChart",
@@ -493,7 +667,7 @@
     },
     {
       "id": "btnMobilityPlay",
-      "order": 39,
+      "order": 56,
       "tag": "button",
       "classes": [
         "oat-button",
@@ -515,7 +689,7 @@
     },
     {
       "id": "mobilityStepSlider",
-      "order": 40,
+      "order": 57,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -539,7 +713,7 @@
     },
     {
       "id": "mobilityPlaybackSpeed",
-      "order": 41,
+      "order": 58,
       "tag": "select",
       "classes": [
         "oat-input",
@@ -561,7 +735,7 @@
     },
     {
       "id": "pathSelectionSection",
-      "order": 42,
+      "order": 59,
       "tag": "div",
       "classes": [
         "linkDockSection",
@@ -575,7 +749,7 @@
     },
     {
       "id": "pathSelectionMeta",
-      "order": 43,
+      "order": 60,
       "tag": "div",
       "classes": [
         "pathSelectionMeta",
@@ -587,7 +761,7 @@
     },
     {
       "id": "pathSelectionCount",
-      "order": 44,
+      "order": 61,
       "tag": "div",
       "classes": [
         "channelAnalysisMiniTitle",
@@ -599,7 +773,7 @@
     },
     {
       "id": "pathButtons",
-      "order": 45,
+      "order": 62,
       "tag": "div",
       "classes": [
         "pathList",
@@ -611,7 +785,7 @@
     },
     {
       "id": "pathDetailSection",
-      "order": 46,
+      "order": 63,
       "tag": "div",
       "classes": [
         "linkDockSection",
@@ -625,7 +799,7 @@
     },
     {
       "id": "pathDetailTitle",
-      "order": 47,
+      "order": 64,
       "tag": "div",
       "classes": [
         "sectionTitle"
@@ -636,7 +810,7 @@
     },
     {
       "id": "pathDetailList",
-      "order": 48,
+      "order": 65,
       "tag": "div",
       "classes": [
         "pathDetailList"
@@ -647,7 +821,7 @@
     },
     {
       "id": "linkTapAnalysisSection",
-      "order": 49,
+      "order": 66,
       "tag": "div",
       "classes": [
         "linkDockSection",
@@ -661,7 +835,7 @@
     },
     {
       "id": "linkTapTotalPower",
-      "order": 50,
+      "order": 67,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -670,7 +844,7 @@
     },
     {
       "id": "linkTapPeak",
-      "order": 51,
+      "order": 68,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -679,7 +853,7 @@
     },
     {
       "id": "linkCirCoeffCount",
-      "order": 52,
+      "order": 69,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -688,7 +862,7 @@
     },
     {
       "id": "linkCirStrongest",
-      "order": 53,
+      "order": 70,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -697,7 +871,7 @@
     },
     {
       "id": "linkTapChart",
-      "order": 54,
+      "order": 71,
       "tag": "svg",
       "classes": [
         "tapChart"
@@ -711,7 +885,7 @@
     },
     {
       "id": "radarResultSections",
-      "order": 55,
+      "order": 72,
       "tag": "div",
       "classes": [
         "radarResultSections",
@@ -725,7 +899,7 @@
     },
     {
       "id": "radarResult",
-      "order": 56,
+      "order": 73,
       "tag": "div",
       "classes": [
         "linkResultSummary",
@@ -737,7 +911,7 @@
     },
     {
       "id": "radarDetectionMetric",
-      "order": 57,
+      "order": 74,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -746,7 +920,7 @@
     },
     {
       "id": "radarPathMetric",
-      "order": 58,
+      "order": 75,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -755,7 +929,7 @@
     },
     {
       "id": "radarSnrMetric",
-      "order": 59,
+      "order": 76,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -764,7 +938,7 @@
     },
     {
       "id": "radarNoiseMetric",
-      "order": 60,
+      "order": 77,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -773,7 +947,7 @@
     },
     {
       "id": "radarRangeDopplerSection",
-      "order": 61,
+      "order": 78,
       "tag": "section",
       "classes": [
         "linkDockSection",
@@ -785,7 +959,7 @@
     },
     {
       "id": "radarRdMeta",
-      "order": 62,
+      "order": 79,
       "tag": "div",
       "classes": [
         "channelAnalysisMiniTitle"
@@ -796,7 +970,7 @@
     },
     {
       "id": "radarRdTruncated",
-      "order": 63,
+      "order": 80,
       "tag": "span",
       "classes": [
         "radarSummaryBadge",
@@ -809,7 +983,7 @@
     },
     {
       "id": "radarRdRaw",
-      "order": 64,
+      "order": 81,
       "tag": "button",
       "classes": [
         "active"
@@ -830,7 +1004,7 @@
     },
     {
       "id": "radarRdMean",
-      "order": 65,
+      "order": 82,
       "tag": "button",
       "classes": [],
       "attributes": {
@@ -849,7 +1023,7 @@
     },
     {
       "id": "radarRdIdeal",
-      "order": 66,
+      "order": 83,
       "tag": "button",
       "classes": [],
       "attributes": {
@@ -868,7 +1042,7 @@
     },
     {
       "id": "radarRdProcessingHint",
-      "order": 67,
+      "order": 84,
       "tag": "p",
       "classes": [
         "radarProcessingHint"
@@ -879,7 +1053,7 @@
     },
     {
       "id": "radarRdFocus",
-      "order": 68,
+      "order": 85,
       "tag": "button",
       "classes": [
         "active"
@@ -900,7 +1074,7 @@
     },
     {
       "id": "radarRdFull",
-      "order": 69,
+      "order": 86,
       "tag": "button",
       "classes": [],
       "attributes": {
@@ -919,7 +1093,7 @@
     },
     {
       "id": "radarRdHover",
-      "order": 70,
+      "order": 87,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -928,7 +1102,7 @@
     },
     {
       "id": "radarPlotLegend",
-      "order": 71,
+      "order": 88,
       "tag": "div",
       "classes": [
         "radarPlotLegend"
@@ -941,7 +1115,7 @@
     },
     {
       "id": "radarRangeDopplerCanvas",
-      "order": 72,
+      "order": 89,
       "tag": "canvas",
       "classes": [
         "radarChart"
@@ -954,7 +1128,7 @@
     },
     {
       "id": "radarChartCrosshair",
-      "order": 73,
+      "order": 90,
       "tag": "div",
       "classes": [
         "radarChartCrosshair",
@@ -968,7 +1142,7 @@
     },
     {
       "id": "radarChartTooltip",
-      "order": 74,
+      "order": 91,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -977,7 +1151,7 @@
     },
     {
       "id": "radarRangeProfileCanvas",
-      "order": 75,
+      "order": 92,
       "tag": "canvas",
       "classes": [
         "radarChart",
@@ -991,7 +1165,7 @@
     },
     {
       "id": "radarDetectionSection",
-      "order": 76,
+      "order": 93,
       "tag": "section",
       "classes": [
         "linkDockSection"
@@ -1002,7 +1176,7 @@
     },
     {
       "id": "radarDetectionCount",
-      "order": 77,
+      "order": 94,
       "tag": "span",
       "classes": [
         "radarSummaryBadge",
@@ -1014,7 +1188,7 @@
     },
     {
       "id": "radarDetectionFilter",
-      "order": 78,
+      "order": 95,
       "tag": "select",
       "classes": [
         "oat-input",
@@ -1036,7 +1210,7 @@
     },
     {
       "id": "radarDetectionMore",
-      "order": 79,
+      "order": 96,
       "tag": "button",
       "classes": [
         "oat-button",
@@ -1059,7 +1233,7 @@
     },
     {
       "id": "radarDetectionList",
-      "order": 80,
+      "order": 97,
       "tag": "div",
       "classes": [
         "radarResultList",
@@ -1072,7 +1246,7 @@
     },
     {
       "id": "radarTruthSection",
-      "order": 81,
+      "order": 98,
       "tag": "section",
       "classes": [
         "linkDockSection"
@@ -1083,7 +1257,7 @@
     },
     {
       "id": "radarTruthList",
-      "order": 82,
+      "order": 99,
       "tag": "div",
       "classes": [
         "radarResultList",
@@ -1095,7 +1269,7 @@
     },
     {
       "id": "radarPathSection",
-      "order": 83,
+      "order": 100,
       "tag": "section",
       "classes": [
         "linkDockSection"
@@ -1106,7 +1280,7 @@
     },
     {
       "id": "radarPathCount",
-      "order": 84,
+      "order": 101,
       "tag": "span",
       "classes": [
         "radarSummaryBadge",
@@ -1118,7 +1292,7 @@
     },
     {
       "id": "radarPathDisplayMode",
-      "order": 85,
+      "order": 102,
       "tag": "select",
       "classes": [
         "oat-input",
@@ -1140,7 +1314,7 @@
     },
     {
       "id": "radarPathDisplayHint",
-      "order": 86,
+      "order": 103,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -1149,7 +1323,7 @@
     },
     {
       "id": "radarPathList",
-      "order": 87,
+      "order": 104,
       "tag": "div",
       "classes": [
         "radarResultList",
@@ -1162,7 +1336,7 @@
     },
     {
       "id": "deepMimoDatasetTray",
-      "order": 88,
+      "order": 105,
       "tag": "div",
       "classes": [
         "deepMimoDatasetTray",
@@ -1176,7 +1350,7 @@
     },
     {
       "id": "deepMimoDatasetToggle",
-      "order": 89,
+      "order": 106,
       "tag": "button",
       "classes": [
         "deepMimoDatasetToggle"
@@ -1200,7 +1374,7 @@
     },
     {
       "id": "deepMimoDatasetCount",
-      "order": 90,
+      "order": 107,
       "tag": "span",
       "classes": [
         "deepMimoDatasetCount"
@@ -1213,7 +1387,7 @@
     },
     {
       "id": "deepMimoDatasetPanel",
-      "order": 91,
+      "order": 108,
       "tag": "div",
       "classes": [
         "deepMimoDatasetPanel",
@@ -1228,7 +1402,7 @@
     },
     {
       "id": "deepMimoDatasetList",
-      "order": 92,
+      "order": 109,
       "tag": "div",
       "classes": [
         "deepMimoDatasetList",
@@ -1240,7 +1414,7 @@
     },
     {
       "id": "loadingScreen",
-      "order": 93,
+      "order": 110,
       "tag": "div",
       "classes": [],
       "attributes": {},
@@ -1249,7 +1423,7 @@
     },
     {
       "id": "loadingTitle",
-      "order": 94,
+      "order": 111,
       "tag": "div",
       "classes": [
         "loadingTitle"
@@ -1260,7 +1434,7 @@
     },
     {
       "id": "barWrap",
-      "order": 95,
+      "order": 112,
       "tag": "div",
       "classes": [],
       "attributes": {},
@@ -1269,7 +1443,7 @@
     },
     {
       "id": "bar",
-      "order": 96,
+      "order": 113,
       "tag": "div",
       "classes": [],
       "attributes": {},
@@ -1278,7 +1452,7 @@
     },
     {
       "id": "loadingPhase",
-      "order": 97,
+      "order": 114,
       "tag": "div",
       "classes": [],
       "attributes": {},
@@ -1287,7 +1461,7 @@
     },
     {
       "id": "btnLoadingCancel",
-      "order": 98,
+      "order": 115,
       "tag": "button",
       "classes": [
         "oat-button",
@@ -1310,7 +1484,7 @@
     },
     {
       "id": "appDialog",
-      "order": 99,
+      "order": 116,
       "tag": "div",
       "classes": [
         "appDialog",
@@ -1324,7 +1498,7 @@
     },
     {
       "id": "appDialogCard",
-      "order": 100,
+      "order": 117,
       "tag": "section",
       "classes": [
         "appDialogCard",
@@ -1342,7 +1516,7 @@
     },
     {
       "id": "appDialogClose",
-      "order": 101,
+      "order": 118,
       "tag": "button",
       "classes": [
         "appDialogClose"
@@ -1364,7 +1538,7 @@
     },
     {
       "id": "appDialogTitle",
-      "order": 102,
+      "order": 119,
       "tag": "h2",
       "classes": [
         "appDialogTitle"
@@ -1375,7 +1549,7 @@
     },
     {
       "id": "appDialogMessage",
-      "order": 103,
+      "order": 120,
       "tag": "p",
       "classes": [
         "appDialogMessage"
@@ -1386,7 +1560,7 @@
     },
     {
       "id": "appDialogDetail",
-      "order": 104,
+      "order": 121,
       "tag": "pre",
       "classes": [
         "appDialogDetail",
@@ -1398,7 +1572,7 @@
     },
     {
       "id": "appDialogSecondary",
-      "order": 105,
+      "order": 122,
       "tag": "button",
       "classes": [
         "oat-button",
@@ -1421,7 +1595,7 @@
     },
     {
       "id": "appDialogPrimary",
-      "order": 106,
+      "order": 123,
       "tag": "button",
       "classes": [
         "oat-button",
@@ -1444,7 +1618,7 @@
     },
     {
       "id": "entryScreen",
-      "order": 107,
+      "order": 124,
       "tag": "div",
       "classes": [
         "hidden"
@@ -1457,7 +1631,7 @@
     },
     {
       "id": "btnEntrySidebarToggle",
-      "order": 108,
+      "order": 125,
       "tag": "button",
       "classes": [
         "entrySidebarToggle"
@@ -1480,7 +1654,7 @@
     },
     {
       "id": "entrySidebar",
-      "order": 109,
+      "order": 126,
       "tag": "section",
       "classes": [
         "entryIntro",
@@ -1492,7 +1666,7 @@
     },
     {
       "id": "entryPlaceInput",
-      "order": 110,
+      "order": 127,
       "tag": "input",
       "classes": [
         "entryManualInput",
@@ -1520,7 +1694,7 @@
     },
     {
       "id": "btnEntrySearch",
-      "order": 111,
+      "order": 128,
       "tag": "button",
       "classes": [
         "oat-button",
@@ -1542,7 +1716,7 @@
     },
     {
       "id": "entrySearchHint",
-      "order": 112,
+      "order": 129,
       "tag": "div",
       "classes": [
         "entryManualHint"
@@ -1553,7 +1727,7 @@
     },
     {
       "id": "entryPlaceResults",
-      "order": 113,
+      "order": 130,
       "tag": "div",
       "classes": [
         "entryPlaceResults"
@@ -1566,7 +1740,7 @@
     },
     {
       "id": "entryMapTitle",
-      "order": 114,
+      "order": 131,
       "tag": "div",
       "classes": [
         "entryMapTitle"
@@ -1577,7 +1751,7 @@
     },
     {
       "id": "btnEntryFitMap",
-      "order": 115,
+      "order": 132,
       "tag": "button",
       "classes": [
         "entryIconBtn"
@@ -1600,7 +1774,7 @@
     },
     {
       "id": "btnEntryFocusSelection",
-      "order": 116,
+      "order": 133,
       "tag": "button",
       "classes": [
         "entryIconBtn"
@@ -1623,7 +1797,7 @@
     },
     {
       "id": "btnEntryZoomIn",
-      "order": 117,
+      "order": 134,
       "tag": "button",
       "classes": [
         "entryIconBtn"
@@ -1646,7 +1820,7 @@
     },
     {
       "id": "btnEntryZoomOut",
-      "order": 118,
+      "order": 135,
       "tag": "button",
       "classes": [
         "entryIconBtn"
@@ -1669,7 +1843,7 @@
     },
     {
       "id": "entryMapViewport",
-      "order": 119,
+      "order": 136,
       "tag": "div",
       "classes": [
         "entryMapViewport"
@@ -1680,7 +1854,7 @@
     },
     {
       "id": "entryMapFigure",
-      "order": 120,
+      "order": 137,
       "tag": "div",
       "classes": [
         "entryMapFigure"
@@ -1691,7 +1865,7 @@
     },
     {
       "id": "entryMapScene",
-      "order": 121,
+      "order": 138,
       "tag": "div",
       "classes": [
         "entryMapScene",
@@ -1710,7 +1884,7 @@
     },
     {
       "id": "entryMapTooltip",
-      "order": 122,
+      "order": 139,
       "tag": "div",
       "classes": [
         "entryMapTooltip",
@@ -1722,7 +1896,7 @@
     },
     {
       "id": "entryMapBadgeValue",
-      "order": 123,
+      "order": 140,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -1731,7 +1905,7 @@
     },
     {
       "id": "entryMapBadgeDetail",
-      "order": 124,
+      "order": 141,
       "tag": "small",
       "classes": [],
       "attributes": {},
@@ -1740,7 +1914,7 @@
     },
     {
       "id": "btnEnterScene",
-      "order": 125,
+      "order": 142,
       "tag": "button",
       "classes": [
         "oat-button",
@@ -1763,7 +1937,7 @@
     },
     {
       "id": "btnEntryReturnScene",
-      "order": 126,
+      "order": 143,
       "tag": "button",
       "classes": [
         "quickIconBtn"
@@ -1786,7 +1960,7 @@
     },
     {
       "id": "panelToggle",
-      "order": 127,
+      "order": 144,
       "tag": "button",
       "classes": [
         "hidden"
@@ -1809,7 +1983,7 @@
     },
     {
       "id": "ui",
-      "order": 128,
+      "order": 145,
       "tag": "div",
       "classes": [
         "oat-panel"
@@ -1822,7 +1996,7 @@
     },
     {
       "id": "btnWorkspacePanelCollapse",
-      "order": 129,
+      "order": 146,
       "tag": "button",
       "classes": [
         "hx-icon-btn"
@@ -1845,7 +2019,7 @@
     },
     {
       "id": "uiBody",
-      "order": 130,
+      "order": 147,
       "tag": "div",
       "classes": [
         "oat-scroll-region"
@@ -1856,7 +2030,7 @@
     },
     {
       "id": "modeSelector",
-      "order": 131,
+      "order": 148,
       "tag": "details",
       "classes": [
         "paramGroup",
@@ -1875,7 +2049,7 @@
     },
     {
       "id": "modeSelectButton",
-      "order": 132,
+      "order": 149,
       "tag": "summary",
       "classes": [
         "paramGroupSummary",
@@ -1899,7 +2073,7 @@
     },
     {
       "id": "modeSelectTitle",
-      "order": 133,
+      "order": 150,
       "tag": "span",
       "classes": [
         "modeSelectTitle"
@@ -1910,7 +2084,7 @@
     },
     {
       "id": "modeMenu",
-      "order": 134,
+      "order": 151,
       "tag": "div",
       "classes": [
         "modeMenu"
@@ -1924,7 +2098,7 @@
     },
     {
       "id": "tabLink",
-      "order": 135,
+      "order": 152,
       "tag": "button",
       "classes": [
         "modeMenuItem",
@@ -1949,7 +2123,7 @@
     },
     {
       "id": "tabMobility",
-      "order": 136,
+      "order": 153,
       "tag": "button",
       "classes": [
         "modeMenuItem"
@@ -1973,7 +2147,7 @@
     },
     {
       "id": "tabRadiomap",
-      "order": 137,
+      "order": 154,
       "tag": "button",
       "classes": [
         "modeMenuItem"
@@ -1997,7 +2171,7 @@
     },
     {
       "id": "tabDeepMimo",
-      "order": 138,
+      "order": 155,
       "tag": "button",
       "classes": [
         "modeMenuItem"
@@ -2021,7 +2195,7 @@
     },
     {
       "id": "tabRadar",
-      "order": 139,
+      "order": 156,
       "tag": "button",
       "classes": [
         "modeMenuItem"
@@ -2044,8 +2218,32 @@
       }
     },
     {
+      "id": "tabPmnet",
+      "order": 157,
+      "tag": "button",
+      "classes": [
+        "modeMenuItem"
+      ],
+      "attributes": {
+        "aria-selected": "false",
+        "data-mode": "pmnet",
+        "role": "option",
+        "type": "button"
+      },
+      "text": "PMNet Pathloss",
+      "disabled": false,
+      "owner": "feature:pmnet",
+      "compatibility": "required",
+      "interaction": {
+        "command": "workbench.feature.activate",
+        "events": [
+          "click"
+        ]
+      }
+    },
+    {
       "id": "tileSummary",
-      "order": 140,
+      "order": 158,
       "tag": "div",
       "classes": [
         "tileSummary",
@@ -2057,7 +2255,7 @@
     },
     {
       "id": "tileList",
-      "order": 141,
+      "order": 159,
       "tag": "div",
       "classes": [
         "tileList",
@@ -2069,7 +2267,7 @@
     },
     {
       "id": "cfgFrequency",
-      "order": 142,
+      "order": 160,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2093,7 +2291,7 @@
     },
     {
       "id": "linkBandwidthMhz",
-      "order": 143,
+      "order": 161,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2118,7 +2316,7 @@
     },
     {
       "id": "linkTapFftSize",
-      "order": 144,
+      "order": 162,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2143,7 +2341,7 @@
     },
     {
       "id": "linkSubcarrierSpacingKhz",
-      "order": 145,
+      "order": 163,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2166,7 +2364,7 @@
     },
     {
       "id": "linkTapSubcarrierSpacing",
-      "order": 146,
+      "order": 164,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2186,7 +2384,7 @@
     },
     {
       "id": "txArrayPattern",
-      "order": 147,
+      "order": 165,
       "tag": "select",
       "classes": [],
       "attributes": {},
@@ -2206,7 +2404,7 @@
     },
     {
       "id": "txArrayPolarization",
-      "order": 148,
+      "order": 166,
       "tag": "select",
       "classes": [],
       "attributes": {},
@@ -2226,7 +2424,7 @@
     },
     {
       "id": "txArrayRows",
-      "order": 149,
+      "order": 167,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2252,7 +2450,7 @@
     },
     {
       "id": "txArrayCols",
-      "order": 150,
+      "order": 168,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2278,7 +2476,7 @@
     },
     {
       "id": "txArrayVerticalSpacing",
-      "order": 151,
+      "order": 169,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2304,7 +2502,7 @@
     },
     {
       "id": "txArrayHorizontalSpacing",
-      "order": 152,
+      "order": 170,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2330,7 +2528,7 @@
     },
     {
       "id": "rxArrayPattern",
-      "order": 153,
+      "order": 171,
       "tag": "select",
       "classes": [],
       "attributes": {},
@@ -2350,7 +2548,7 @@
     },
     {
       "id": "rxArrayPolarization",
-      "order": 154,
+      "order": 172,
       "tag": "select",
       "classes": [],
       "attributes": {},
@@ -2370,7 +2568,7 @@
     },
     {
       "id": "rxArrayRows",
-      "order": 155,
+      "order": 173,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2396,7 +2594,7 @@
     },
     {
       "id": "rxArrayCols",
-      "order": 156,
+      "order": 174,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2422,7 +2620,7 @@
     },
     {
       "id": "rxArrayVerticalSpacing",
-      "order": 157,
+      "order": 175,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2448,7 +2646,7 @@
     },
     {
       "id": "rxArrayHorizontalSpacing",
-      "order": 158,
+      "order": 176,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2474,7 +2672,7 @@
     },
     {
       "id": "btnMobilityAddRxPoint",
-      "order": 159,
+      "order": 177,
       "tag": "button",
       "classes": [
         "oat-button",
@@ -2497,7 +2695,7 @@
     },
     {
       "id": "btnMobilityClearPoints",
-      "order": 160,
+      "order": 178,
       "tag": "button",
       "classes": [
         "oat-button",
@@ -2519,7 +2717,7 @@
     },
     {
       "id": "mobilityWaypointList",
-      "order": 161,
+      "order": 179,
       "tag": "div",
       "classes": [
         "waypointList"
@@ -2530,7 +2728,7 @@
     },
     {
       "id": "mobilityVelocity",
-      "order": 162,
+      "order": 180,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2556,7 +2754,7 @@
     },
     {
       "id": "mobilityTimeStep",
-      "order": 163,
+      "order": 181,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2582,7 +2780,7 @@
     },
     {
       "id": "mobilityMaxSteps",
-      "order": 164,
+      "order": 182,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2608,7 +2806,7 @@
     },
     {
       "id": "mobilityEstimate",
-      "order": 165,
+      "order": 183,
       "tag": "div",
       "classes": [
         "mobilityEstimate"
@@ -2619,7 +2817,7 @@
     },
     {
       "id": "linkSamplesPerSrc",
-      "order": 166,
+      "order": 184,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2645,7 +2843,7 @@
     },
     {
       "id": "rmSamplesPerTx",
-      "order": 167,
+      "order": 185,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2671,7 +2869,7 @@
     },
     {
       "id": "linkMaxNumPaths",
-      "order": 168,
+      "order": 186,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2697,7 +2895,7 @@
     },
     {
       "id": "cfgMaxDepth",
-      "order": 169,
+      "order": 187,
       "tag": "select",
       "classes": [],
       "attributes": {},
@@ -2717,7 +2915,7 @@
     },
     {
       "id": "cfgSeed",
-      "order": 170,
+      "order": 188,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2742,7 +2940,7 @@
     },
     {
       "id": "linkSyntheticArray",
-      "order": 171,
+      "order": 189,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2765,7 +2963,7 @@
     },
     {
       "id": "cfgLos",
-      "order": 172,
+      "order": 190,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2788,7 +2986,7 @@
     },
     {
       "id": "cfgSpecular",
-      "order": 173,
+      "order": 191,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2811,7 +3009,7 @@
     },
     {
       "id": "cfgDiffuse",
-      "order": 174,
+      "order": 192,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2834,7 +3032,7 @@
     },
     {
       "id": "cfgRefraction",
-      "order": 175,
+      "order": 193,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2857,7 +3055,7 @@
     },
     {
       "id": "linkDiffraction",
-      "order": 176,
+      "order": 194,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2880,7 +3078,7 @@
     },
     {
       "id": "linkEdgeDiffraction",
-      "order": 177,
+      "order": 195,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2903,7 +3101,7 @@
     },
     {
       "id": "linkDiffractionLitRegion",
-      "order": 178,
+      "order": 196,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2926,7 +3124,7 @@
     },
     {
       "id": "linkComputeTaps",
-      "order": 179,
+      "order": 197,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2949,7 +3147,7 @@
     },
     {
       "id": "linkTapLMin",
-      "order": 180,
+      "order": 198,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2973,7 +3171,7 @@
     },
     {
       "id": "linkTapLMax",
-      "order": 181,
+      "order": 199,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -2997,7 +3195,7 @@
     },
     {
       "id": "livePreviewEnabled",
-      "order": 182,
+      "order": 200,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3020,7 +3218,7 @@
     },
     {
       "id": "livePreviewLinkSamples",
-      "order": 183,
+      "order": 201,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3046,7 +3244,7 @@
     },
     {
       "id": "livePreviewPathsDelay",
-      "order": 184,
+      "order": 202,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3071,8 +3269,275 @@
       }
     },
     {
+      "id": "pmnetSizeX",
+      "order": 203,
+      "tag": "input",
+      "classes": [],
+      "attributes": {
+        "max": "2000",
+        "min": "10",
+        "step": "10",
+        "type": "number"
+      },
+      "labels": [
+        "ROI Size XiSquare prediction window centred on the PMNet Tx. Larger windows cover more buildings at the same grid size. m"
+      ],
+      "defaultValue": "200.0",
+      "defaultChecked": false,
+      "disabled": false,
+      "owner": "feature:pmnet",
+      "compatibility": "required",
+      "interaction": {
+        "command": "pmnet.configuration.update",
+        "events": [
+          "change"
+        ]
+      }
+    },
+    {
+      "id": "pmnetSizeY",
+      "order": 204,
+      "tag": "input",
+      "classes": [],
+      "attributes": {
+        "max": "2000",
+        "min": "10",
+        "step": "10",
+        "type": "number"
+      },
+      "labels": [
+        "ROI Size YiCross-street extent of the prediction window in scene meters. m"
+      ],
+      "defaultValue": "200.0",
+      "defaultChecked": false,
+      "disabled": false,
+      "owner": "feature:pmnet",
+      "compatibility": "required",
+      "interaction": {
+        "command": "pmnet.configuration.update",
+        "events": [
+          "change"
+        ]
+      }
+    },
+    {
+      "id": "pmnetGrid",
+      "order": 205,
+      "tag": "input",
+      "classes": [],
+      "attributes": {
+        "max": "256",
+        "min": "16",
+        "step": "16",
+        "type": "number"
+      },
+      "labels": [
+        "Grid CellsiCells per side of the square prediction grid. PMNet inference cost grows with the square of this value."
+      ],
+      "defaultValue": "128",
+      "defaultChecked": false,
+      "disabled": false,
+      "owner": "feature:pmnet",
+      "compatibility": "required",
+      "interaction": {
+        "command": "pmnet.configuration.update",
+        "events": [
+          "change"
+        ]
+      }
+    },
+    {
+      "id": "pmnetHeightOffset",
+      "order": 206,
+      "tag": "input",
+      "classes": [],
+      "attributes": {
+        "max": "200",
+        "min": "0",
+        "step": "0.1",
+        "type": "number"
+      },
+      "labels": [
+        "Receiver HeightiHeight of the street-level prediction plane above the terrain. Building rooftops are predicted separately. m"
+      ],
+      "defaultValue": "1.5",
+      "defaultChecked": false,
+      "disabled": false,
+      "owner": "feature:pmnet",
+      "compatibility": "required",
+      "interaction": {
+        "command": "pmnet.configuration.update",
+        "events": [
+          "change"
+        ]
+      }
+    },
+    {
+      "id": "pmnetWallLoss",
+      "order": 207,
+      "tag": "input",
+      "classes": [],
+      "attributes": {
+        "max": "60",
+        "min": "0",
+        "step": "0.5",
+        "type": "number"
+      },
+      "labels": [
+        "Wall LossiLoss added for every building wall the surrogate path crosses. dB"
+      ],
+      "defaultValue": "6.0",
+      "defaultChecked": false,
+      "disabled": false,
+      "owner": "feature:pmnet",
+      "compatibility": "required",
+      "interaction": {
+        "command": "pmnet.configuration.update",
+        "events": [
+          "change"
+        ]
+      }
+    },
+    {
+      "id": "pmnetEngine",
+      "order": 208,
+      "tag": "select",
+      "classes": [],
+      "attributes": {},
+      "labels": [
+        "ModeliAuto uses a PMNet checkpoint when one is configured and falls back to the deterministic geometry surrogate. Auto PMNet checkpoint Geometry surrogate"
+      ],
+      "defaultValue": "auto",
+      "disabled": false,
+      "owner": "feature:pmnet",
+      "compatibility": "required",
+      "interaction": {
+        "command": "pmnet.configuration.update",
+        "events": [
+          "change"
+        ]
+      }
+    },
+    {
+      "id": "pmnetTxPower",
+      "order": 209,
+      "tag": "input",
+      "classes": [],
+      "attributes": {
+        "max": "80",
+        "min": "-40",
+        "step": "1",
+        "type": "number"
+      },
+      "labels": [
+        "Tx PoweriTransmit power used to convert propagation loss into received power. dBm"
+      ],
+      "defaultValue": "30.0",
+      "defaultChecked": false,
+      "disabled": false,
+      "owner": "feature:pmnet",
+      "compatibility": "required",
+      "interaction": {
+        "command": "pmnet.configuration.update",
+        "events": [
+          "change"
+        ]
+      }
+    },
+    {
+      "id": "pmnetColormap",
+      "order": 210,
+      "tag": "select",
+      "classes": [],
+      "attributes": {},
+      "labels": [
+        "ColormapiDisplay color scale for the ground and building layers. viridis plasma turbo jet"
+      ],
+      "defaultValue": "jet",
+      "disabled": false,
+      "owner": "feature:pmnet",
+      "compatibility": "required",
+      "interaction": {
+        "command": "pmnet.configuration.update",
+        "events": [
+          "change"
+        ]
+      }
+    },
+    {
+      "id": "pmnetColorMin",
+      "order": 211,
+      "tag": "input",
+      "classes": [],
+      "attributes": {
+        "step": "1",
+        "type": "number"
+      },
+      "labels": [
+        "Color MiniLower display bound for the pathloss overlay. Display-only; no recompute. dB"
+      ],
+      "defaultValue": "-140",
+      "defaultChecked": false,
+      "disabled": false,
+      "owner": "feature:pmnet",
+      "compatibility": "required",
+      "interaction": {
+        "command": "pmnet.configuration.update",
+        "events": [
+          "change"
+        ]
+      }
+    },
+    {
+      "id": "pmnetColorMax",
+      "order": 212,
+      "tag": "input",
+      "classes": [],
+      "attributes": {
+        "step": "1",
+        "type": "number"
+      },
+      "labels": [
+        "Color MaxiUpper display bound for the pathloss overlay. Display-only; no recompute. dB"
+      ],
+      "defaultValue": "-60",
+      "defaultChecked": false,
+      "disabled": false,
+      "owner": "feature:pmnet",
+      "compatibility": "required",
+      "interaction": {
+        "command": "pmnet.configuration.update",
+        "events": [
+          "change"
+        ]
+      }
+    },
+    {
+      "id": "pmnetShowBuildings",
+      "order": 213,
+      "tag": "input",
+      "classes": [],
+      "attributes": {
+        "type": "checkbox"
+      },
+      "labels": [
+        "Building envelope overlayiShades rooftop and facade cells with the predicted signal reaching each building surface."
+      ],
+      "defaultValue": "",
+      "defaultChecked": true,
+      "disabled": false,
+      "owner": "feature:pmnet",
+      "compatibility": "required",
+      "interaction": {
+        "command": "pmnet.configuration.update",
+        "events": [
+          "change"
+        ]
+      }
+    },
+    {
       "id": "rmSizeX",
-      "order": 185,
+      "order": 214,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3096,7 +3561,7 @@
     },
     {
       "id": "rmSizeY",
-      "order": 186,
+      "order": 215,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3120,7 +3585,7 @@
     },
     {
       "id": "rmHeightOffset",
-      "order": 187,
+      "order": 216,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3144,7 +3609,7 @@
     },
     {
       "id": "rmCellSize",
-      "order": 188,
+      "order": 217,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3171,7 +3636,7 @@
     },
     {
       "id": "rmDensityLevel",
-      "order": 189,
+      "order": 218,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3197,7 +3662,7 @@
     },
     {
       "id": "rmColormap",
-      "order": 190,
+      "order": 219,
       "tag": "select",
       "classes": [],
       "attributes": {},
@@ -3217,7 +3682,7 @@
     },
     {
       "id": "rmColorMin",
-      "order": 191,
+      "order": 220,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3241,7 +3706,7 @@
     },
     {
       "id": "rmColorMax",
-      "order": 192,
+      "order": 221,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3265,7 +3730,7 @@
     },
     {
       "id": "deepMimoScenarioName",
-      "order": 193,
+      "order": 222,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3288,7 +3753,7 @@
     },
     {
       "id": "deepMimoRoiCenterX",
-      "order": 194,
+      "order": 223,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3312,7 +3777,7 @@
     },
     {
       "id": "deepMimoRoiCenterY",
-      "order": 195,
+      "order": 224,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3336,7 +3801,7 @@
     },
     {
       "id": "deepMimoRoiWidth",
-      "order": 196,
+      "order": 225,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3361,7 +3826,7 @@
     },
     {
       "id": "deepMimoRoiLength",
-      "order": 197,
+      "order": 226,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3386,7 +3851,7 @@
     },
     {
       "id": "deepMimoGridSpacing",
-      "order": 198,
+      "order": 227,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3412,7 +3877,7 @@
     },
     {
       "id": "deepMimoRxHeight",
-      "order": 199,
+      "order": 228,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3438,7 +3903,7 @@
     },
     {
       "id": "deepMimoMaxReceivers",
-      "order": 200,
+      "order": 229,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3464,7 +3929,7 @@
     },
     {
       "id": "deepMimoChunkSize",
-      "order": 201,
+      "order": 230,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3490,7 +3955,7 @@
     },
     {
       "id": "deepMimoSamplesPerSrc",
-      "order": 202,
+      "order": 231,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3516,7 +3981,7 @@
     },
     {
       "id": "deepMimoMaxPaths",
-      "order": 203,
+      "order": 232,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3542,7 +4007,7 @@
     },
     {
       "id": "deepMimoRxCandidates",
-      "order": 204,
+      "order": 233,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3567,7 +4032,7 @@
     },
     {
       "id": "deepMimoFilterBuildings",
-      "order": 205,
+      "order": 234,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3590,7 +4055,7 @@
     },
     {
       "id": "linkPanel",
-      "order": 206,
+      "order": 235,
       "tag": "section",
       "classes": [
         "modePanel"
@@ -3601,7 +4066,7 @@
     },
     {
       "id": "mobilityPanel",
-      "order": 207,
+      "order": 236,
       "tag": "section",
       "classes": [
         "modePanel",
@@ -3612,8 +4077,20 @@
       "compatibility": "required"
     },
     {
+      "id": "pmnetPanel",
+      "order": 237,
+      "tag": "section",
+      "classes": [
+        "modePanel",
+        "hidden"
+      ],
+      "attributes": {},
+      "owner": "feature:pmnet",
+      "compatibility": "required"
+    },
+    {
       "id": "radiomapPanel",
-      "order": 208,
+      "order": 238,
       "tag": "section",
       "classes": [
         "modePanel",
@@ -3625,7 +4102,7 @@
     },
     {
       "id": "deepmimoPanel",
-      "order": 209,
+      "order": 239,
       "tag": "section",
       "classes": [
         "modePanel",
@@ -3637,7 +4114,7 @@
     },
     {
       "id": "radarPanel",
-      "order": 210,
+      "order": 240,
       "tag": "section",
       "classes": [
         "modePanel",
@@ -3652,7 +4129,7 @@
     },
     {
       "id": "radarJobBar",
-      "order": 211,
+      "order": 241,
       "tag": "div",
       "classes": [
         "radarJobBar",
@@ -3664,7 +4141,7 @@
     },
     {
       "id": "radarJobStatus",
-      "order": 212,
+      "order": 242,
       "tag": "span",
       "classes": [
         "radarStatusPill",
@@ -3676,7 +4153,7 @@
     },
     {
       "id": "radarJobMessage",
-      "order": 213,
+      "order": 243,
       "tag": "strong",
       "classes": [],
       "attributes": {},
@@ -3685,7 +4162,7 @@
     },
     {
       "id": "radarJobProgress",
-      "order": 214,
+      "order": 244,
       "tag": "progress",
       "classes": [],
       "attributes": {
@@ -3697,7 +4174,7 @@
     },
     {
       "id": "btnCancelRadar",
-      "order": 215,
+      "order": 245,
       "tag": "button",
       "classes": [
         "oat-button",
@@ -3720,7 +4197,7 @@
     },
     {
       "id": "btnRetryRadar",
-      "order": 216,
+      "order": 246,
       "tag": "button",
       "classes": [
         "oat-button",
@@ -3743,7 +4220,7 @@
     },
     {
       "id": "radarGeometryGroup",
-      "order": 217,
+      "order": 247,
       "tag": "details",
       "classes": [
         "paramGroup",
@@ -3762,7 +4239,7 @@
     },
     {
       "id": "radarModeMonostatic",
-      "order": 218,
+      "order": 248,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3786,7 +4263,7 @@
     },
     {
       "id": "radarModeBistatic",
-      "order": 219,
+      "order": 249,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -3810,7 +4287,7 @@
     },
     {
       "id": "radarModeHint",
-      "order": 220,
+      "order": 250,
       "tag": "p",
       "classes": [
         "radarHint"
@@ -3821,7 +4298,7 @@
     },
     {
       "id": "radarTargetsGroup",
-      "order": 221,
+      "order": 251,
       "tag": "details",
       "classes": [
         "paramGroup",
@@ -3840,7 +4317,7 @@
     },
     {
       "id": "radarTargetCount",
-      "order": 222,
+      "order": 252,
       "tag": "span",
       "classes": [
         "radarSummaryBadge",
@@ -3852,7 +4329,7 @@
     },
     {
       "id": "radarAssetPicker",
-      "order": 223,
+      "order": 253,
       "tag": "div",
       "classes": [
         "radarAssetPicker"
@@ -3865,7 +4342,7 @@
     },
     {
       "id": "radarAssetPreviewCanvas",
-      "order": 224,
+      "order": 254,
       "tag": "canvas",
       "classes": [
         "radarAssetPreviewCanvas"
@@ -3879,7 +4356,7 @@
     },
     {
       "id": "radarAssetPreviewStatus",
-      "order": 225,
+      "order": 255,
       "tag": "div",
       "classes": [
         "radarAssetPreviewStatus"
@@ -3892,7 +4369,7 @@
     },
     {
       "id": "btnRadarAssetPrevious",
-      "order": 226,
+      "order": 256,
       "tag": "button",
       "classes": [
         "radarAssetNav",
@@ -3915,7 +4392,7 @@
     },
     {
       "id": "btnRadarAssetNext",
-      "order": 227,
+      "order": 257,
       "tag": "button",
       "classes": [
         "radarAssetNav",
@@ -3938,7 +4415,7 @@
     },
     {
       "id": "radarAssetPreviewName",
-      "order": 228,
+      "order": 258,
       "tag": "strong",
       "classes": [],
       "attributes": {
@@ -3949,7 +4426,7 @@
     },
     {
       "id": "radarAssetPreviewCount",
-      "order": 229,
+      "order": 259,
       "tag": "span",
       "classes": [
         "radarAssetPreviewCount"
@@ -3960,7 +4437,7 @@
     },
     {
       "id": "btnAddRadarTarget",
-      "order": 230,
+      "order": 260,
       "tag": "button",
       "classes": [
         "oat-button",
@@ -3985,7 +4462,7 @@
     },
     {
       "id": "btnPickRadarTarget",
-      "order": 231,
+      "order": 261,
       "tag": "button",
       "classes": [
         "oat-button",
@@ -4009,7 +4486,7 @@
     },
     {
       "id": "btnFocusRadarTarget",
-      "order": 232,
+      "order": 262,
       "tag": "button",
       "classes": [
         "oat-button",
@@ -4032,7 +4509,7 @@
     },
     {
       "id": "btnRemoveRadarTarget",
-      "order": 233,
+      "order": 263,
       "tag": "button",
       "classes": [
         "oat-button",
@@ -4056,7 +4533,7 @@
     },
     {
       "id": "radarAssetPickerHint",
-      "order": 234,
+      "order": 264,
       "tag": "p",
       "classes": [
         "radarAssetPickerHint"
@@ -4067,7 +4544,7 @@
     },
     {
       "id": "radarTargetList",
-      "order": 235,
+      "order": 265,
       "tag": "div",
       "classes": [
         "radarTargetList",
@@ -4082,7 +4559,7 @@
     },
     {
       "id": "radarTargetEditor",
-      "order": 236,
+      "order": 266,
       "tag": "div",
       "classes": [
         "radarTargetEditor"
@@ -4093,7 +4570,7 @@
     },
     {
       "id": "radarEditorTitle",
-      "order": 237,
+      "order": 267,
       "tag": "strong",
       "classes": [],
       "attributes": {},
@@ -4102,7 +4579,7 @@
     },
     {
       "id": "radarEditorAssetName",
-      "order": 238,
+      "order": 268,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -4111,7 +4588,7 @@
     },
     {
       "id": "radarTargetAsset",
-      "order": 239,
+      "order": 269,
       "tag": "select",
       "classes": [],
       "attributes": {},
@@ -4131,7 +4608,7 @@
     },
     {
       "id": "radarTargetX",
-      "order": 240,
+      "order": 270,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4157,7 +4634,7 @@
     },
     {
       "id": "radarTargetY",
-      "order": 241,
+      "order": 271,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4183,7 +4660,7 @@
     },
     {
       "id": "radarTargetZ",
-      "order": 242,
+      "order": 272,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4209,7 +4686,7 @@
     },
     {
       "id": "radarTargetRoll",
-      "order": 243,
+      "order": 273,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4235,7 +4712,7 @@
     },
     {
       "id": "radarTargetPitch",
-      "order": 244,
+      "order": 274,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4261,7 +4738,7 @@
     },
     {
       "id": "radarTargetYaw",
-      "order": 245,
+      "order": 275,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4288,7 +4765,7 @@
     },
     {
       "id": "radarTargetSpeed",
-      "order": 246,
+      "order": 276,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4316,7 +4793,7 @@
     },
     {
       "id": "radarTargetDirection",
-      "order": 247,
+      "order": 277,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4344,7 +4821,7 @@
     },
     {
       "id": "radarTargetClimb",
-      "order": 248,
+      "order": 278,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4372,7 +4849,7 @@
     },
     {
       "id": "radarVelocityVectorPreview",
-      "order": 249,
+      "order": 279,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -4381,7 +4858,7 @@
     },
     {
       "id": "radarTargetRcs",
-      "order": 250,
+      "order": 280,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4409,7 +4886,7 @@
     },
     {
       "id": "radarWaveformGroup",
-      "order": 251,
+      "order": 281,
       "tag": "details",
       "classes": [
         "paramGroup",
@@ -4428,7 +4905,7 @@
     },
     {
       "id": "radarCarrierFrequency",
-      "order": 252,
+      "order": 282,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4456,7 +4933,7 @@
     },
     {
       "id": "radarBandwidth",
-      "order": 253,
+      "order": 283,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4483,7 +4960,7 @@
     },
     {
       "id": "radarNumSubcarriers",
-      "order": 254,
+      "order": 284,
       "tag": "select",
       "classes": [],
       "attributes": {},
@@ -4503,7 +4980,7 @@
     },
     {
       "id": "radarNumSymbols",
-      "order": 255,
+      "order": 285,
       "tag": "select",
       "classes": [],
       "attributes": {},
@@ -4523,7 +5000,7 @@
     },
     {
       "id": "radarTxPower",
-      "order": 256,
+      "order": 286,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4551,7 +5028,7 @@
     },
     {
       "id": "radarNoiseFigure",
-      "order": 257,
+      "order": 287,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4579,7 +5056,7 @@
     },
     {
       "id": "radarSystemLoss",
-      "order": 258,
+      "order": 288,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4607,7 +5084,7 @@
     },
     {
       "id": "radarNoiseTemperature",
-      "order": 259,
+      "order": 289,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4635,7 +5112,7 @@
     },
     {
       "id": "radarDirectPathCancellation",
-      "order": 260,
+      "order": 290,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -4658,7 +5135,7 @@
     },
     {
       "id": "radarRangeResolutionPreview",
-      "order": 261,
+      "order": 291,
       "tag": "b",
       "classes": [],
       "attributes": {},
@@ -4667,7 +5144,7 @@
     },
     {
       "id": "radarDopplerResolutionPreview",
-      "order": 262,
+      "order": 292,
       "tag": "b",
       "classes": [],
       "attributes": {},
@@ -4676,7 +5153,7 @@
     },
     {
       "id": "radarVelocityResolutionPreview",
-      "order": 263,
+      "order": 293,
       "tag": "b",
       "classes": [],
       "attributes": {},
@@ -4685,7 +5162,7 @@
     },
     {
       "id": "radarCfarGroup",
-      "order": 264,
+      "order": 294,
       "tag": "details",
       "classes": [
         "paramGroup",
@@ -4704,7 +5181,7 @@
     },
     {
       "id": "radarCfarEnabled",
-      "order": 265,
+      "order": 295,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -4727,7 +5204,7 @@
     },
     {
       "id": "radarCfarGuardRange",
-      "order": 266,
+      "order": 296,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4755,7 +5232,7 @@
     },
     {
       "id": "radarCfarGuardDoppler",
-      "order": 267,
+      "order": 297,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4783,7 +5260,7 @@
     },
     {
       "id": "radarCfarTrainingRange",
-      "order": 268,
+      "order": 298,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4811,7 +5288,7 @@
     },
     {
       "id": "radarCfarTrainingDoppler",
-      "order": 269,
+      "order": 299,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4839,7 +5316,7 @@
     },
     {
       "id": "radarCfarPfa",
-      "order": 270,
+      "order": 300,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4867,7 +5344,7 @@
     },
     {
       "id": "radarPropagationGroup",
-      "order": 271,
+      "order": 301,
       "tag": "details",
       "classes": [
         "paramGroup",
@@ -4886,7 +5363,7 @@
     },
     {
       "id": "radarSamplesPerSrc",
-      "order": 272,
+      "order": 302,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4914,7 +5391,7 @@
     },
     {
       "id": "radarMaxPaths",
-      "order": 273,
+      "order": 303,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4942,7 +5419,7 @@
     },
     {
       "id": "radarMaxDepth",
-      "order": 274,
+      "order": 304,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4970,7 +5447,7 @@
     },
     {
       "id": "radarSeed",
-      "order": 275,
+      "order": 305,
       "tag": "input",
       "classes": [
         "oat-input"
@@ -4998,7 +5475,7 @@
     },
     {
       "id": "radarLos",
-      "order": 276,
+      "order": 306,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5021,7 +5498,7 @@
     },
     {
       "id": "radarSpecular",
-      "order": 277,
+      "order": 307,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5044,7 +5521,7 @@
     },
     {
       "id": "radarDiffuse",
-      "order": 278,
+      "order": 308,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5067,7 +5544,7 @@
     },
     {
       "id": "radarRefraction",
-      "order": 279,
+      "order": 309,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5090,7 +5567,7 @@
     },
     {
       "id": "radarDiffraction",
-      "order": 280,
+      "order": 310,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5113,7 +5590,7 @@
     },
     {
       "id": "radarSyntheticArray",
-      "order": 281,
+      "order": 311,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5136,7 +5613,7 @@
     },
     {
       "id": "radarInputError",
-      "order": 282,
+      "order": 312,
       "tag": "p",
       "classes": [
         "radarInputError",
@@ -5150,7 +5627,7 @@
     },
     {
       "id": "deviceDock",
-      "order": 283,
+      "order": 313,
       "tag": "div",
       "classes": [
         "deviceDock",
@@ -5165,7 +5642,7 @@
     },
     {
       "id": "devicePrecisionPanel",
-      "order": 284,
+      "order": 314,
       "tag": "div",
       "classes": [
         "devicePrecisionPanel",
@@ -5180,7 +5657,7 @@
     },
     {
       "id": "devicePrecisionTitle",
-      "order": 285,
+      "order": 315,
       "tag": "div",
       "classes": [
         "devicePrecisionTitle"
@@ -5191,7 +5668,7 @@
     },
     {
       "id": "hintText",
-      "order": 286,
+      "order": 316,
       "tag": "div",
       "classes": [
         "devicePrecisionStatus"
@@ -5204,7 +5681,7 @@
     },
     {
       "id": "linkTxDeviceCard",
-      "order": 287,
+      "order": 317,
       "tag": "section",
       "classes": [
         "deviceCoordPanel",
@@ -5216,7 +5693,7 @@
     },
     {
       "id": "linkTxX",
-      "order": 288,
+      "order": 318,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5241,7 +5718,7 @@
     },
     {
       "id": "linkTxY",
-      "order": 289,
+      "order": 319,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5266,7 +5743,7 @@
     },
     {
       "id": "linkTxZ",
-      "order": 290,
+      "order": 320,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5291,7 +5768,7 @@
     },
     {
       "id": "linkRxDeviceCard",
-      "order": 291,
+      "order": 321,
       "tag": "section",
       "classes": [
         "deviceCoordPanel",
@@ -5303,7 +5780,7 @@
     },
     {
       "id": "linkRxX",
-      "order": 292,
+      "order": 322,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5328,7 +5805,7 @@
     },
     {
       "id": "linkRxY",
-      "order": 293,
+      "order": 323,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5353,7 +5830,7 @@
     },
     {
       "id": "linkRxZ",
-      "order": 294,
+      "order": 324,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5378,7 +5855,7 @@
     },
     {
       "id": "mobilityTxDeviceCard",
-      "order": 295,
+      "order": 325,
       "tag": "section",
       "classes": [
         "deviceCoordPanel",
@@ -5390,7 +5867,7 @@
     },
     {
       "id": "mobilityTxX",
-      "order": 296,
+      "order": 326,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5415,7 +5892,7 @@
     },
     {
       "id": "mobilityTxY",
-      "order": 297,
+      "order": 327,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5440,7 +5917,7 @@
     },
     {
       "id": "mobilityTxZ",
-      "order": 298,
+      "order": 328,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5465,7 +5942,7 @@
     },
     {
       "id": "mobilityRxDeviceCard",
-      "order": 299,
+      "order": 329,
       "tag": "section",
       "classes": [
         "deviceCoordPanel",
@@ -5477,7 +5954,7 @@
     },
     {
       "id": "mobilityRxX",
-      "order": 300,
+      "order": 330,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5502,7 +5979,7 @@
     },
     {
       "id": "mobilityRxY",
-      "order": 301,
+      "order": 331,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5527,7 +6004,7 @@
     },
     {
       "id": "mobilityRxZ",
-      "order": 302,
+      "order": 332,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5552,7 +6029,7 @@
     },
     {
       "id": "rmTxDeviceCard",
-      "order": 303,
+      "order": 333,
       "tag": "section",
       "classes": [
         "deviceCoordPanel",
@@ -5564,7 +6041,7 @@
     },
     {
       "id": "rmTxX",
-      "order": 304,
+      "order": 334,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5589,7 +6066,7 @@
     },
     {
       "id": "rmTxY",
-      "order": 305,
+      "order": 335,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5614,7 +6091,7 @@
     },
     {
       "id": "rmTxZ",
-      "order": 306,
+      "order": 336,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5638,8 +6115,95 @@
       }
     },
     {
+      "id": "pmnetTxDeviceCard",
+      "order": 337,
+      "tag": "section",
+      "classes": [
+        "deviceCoordPanel",
+        "hidden"
+      ],
+      "attributes": {},
+      "owner": "feature:pmnet",
+      "compatibility": "required"
+    },
+    {
+      "id": "pmnetTxX",
+      "order": 338,
+      "tag": "input",
+      "classes": [],
+      "attributes": {
+        "placeholder": "—",
+        "step": "1.0",
+        "type": "number"
+      },
+      "labels": [
+        "X m"
+      ],
+      "defaultValue": "",
+      "defaultChecked": false,
+      "disabled": false,
+      "owner": "feature:pmnet",
+      "compatibility": "required",
+      "interaction": {
+        "command": "pmnet.configuration.update",
+        "events": [
+          "change"
+        ]
+      }
+    },
+    {
+      "id": "pmnetTxY",
+      "order": 339,
+      "tag": "input",
+      "classes": [],
+      "attributes": {
+        "placeholder": "—",
+        "step": "1.0",
+        "type": "number"
+      },
+      "labels": [
+        "Y m"
+      ],
+      "defaultValue": "",
+      "defaultChecked": false,
+      "disabled": false,
+      "owner": "feature:pmnet",
+      "compatibility": "required",
+      "interaction": {
+        "command": "pmnet.configuration.update",
+        "events": [
+          "change"
+        ]
+      }
+    },
+    {
+      "id": "pmnetTxZ",
+      "order": 340,
+      "tag": "input",
+      "classes": [],
+      "attributes": {
+        "placeholder": "—",
+        "step": "1.0",
+        "type": "number"
+      },
+      "labels": [
+        "Z m"
+      ],
+      "defaultValue": "",
+      "defaultChecked": false,
+      "disabled": false,
+      "owner": "feature:pmnet",
+      "compatibility": "required",
+      "interaction": {
+        "command": "pmnet.configuration.update",
+        "events": [
+          "change"
+        ]
+      }
+    },
+    {
       "id": "deepMimoTxDeviceCard",
-      "order": 307,
+      "order": 341,
       "tag": "section",
       "classes": [
         "deviceCoordPanel",
@@ -5651,7 +6215,7 @@
     },
     {
       "id": "deepMimoTxX",
-      "order": 308,
+      "order": 342,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5676,7 +6240,7 @@
     },
     {
       "id": "deepMimoTxY",
-      "order": 309,
+      "order": 343,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5701,7 +6265,7 @@
     },
     {
       "id": "deepMimoTxZ",
-      "order": 310,
+      "order": 344,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5726,7 +6290,7 @@
     },
     {
       "id": "radarTxDeviceCard",
-      "order": 311,
+      "order": 345,
       "tag": "section",
       "classes": [
         "deviceCoordPanel",
@@ -5738,7 +6302,7 @@
     },
     {
       "id": "radarTxX",
-      "order": 312,
+      "order": 346,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5763,7 +6327,7 @@
     },
     {
       "id": "radarTxY",
-      "order": 313,
+      "order": 347,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5788,7 +6352,7 @@
     },
     {
       "id": "radarTxZ",
-      "order": 314,
+      "order": 348,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5813,7 +6377,7 @@
     },
     {
       "id": "radarRxDeviceCard",
-      "order": 315,
+      "order": 349,
       "tag": "section",
       "classes": [
         "deviceCoordPanel",
@@ -5825,7 +6389,7 @@
     },
     {
       "id": "radarRxX",
-      "order": 316,
+      "order": 350,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5850,7 +6414,7 @@
     },
     {
       "id": "radarRxY",
-      "order": 317,
+      "order": 351,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5875,7 +6439,7 @@
     },
     {
       "id": "radarRxZ",
-      "order": 318,
+      "order": 352,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5900,7 +6464,7 @@
     },
     {
       "id": "linkSurfaceClearanceField",
-      "order": 319,
+      "order": 353,
       "tag": "label",
       "classes": [
         "deviceClearanceField",
@@ -5914,7 +6478,7 @@
     },
     {
       "id": "linkSurfaceClearance",
-      "order": 320,
+      "order": 354,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -5940,7 +6504,7 @@
     },
     {
       "id": "deviceActionBar",
-      "order": 321,
+      "order": 355,
       "tag": "div",
       "classes": [
         "deviceActionBar"
@@ -5954,7 +6518,7 @@
     },
     {
       "id": "btnPickLinkTx",
-      "order": 322,
+      "order": 356,
       "tag": "button",
       "classes": [
         "deviceActionBtn"
@@ -5976,7 +6540,7 @@
     },
     {
       "id": "btnPickLinkRx",
-      "order": 323,
+      "order": 357,
       "tag": "button",
       "classes": [
         "deviceActionBtn"
@@ -5998,7 +6562,7 @@
     },
     {
       "id": "btnPickMobilityTx",
-      "order": 324,
+      "order": 358,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6021,7 +6585,7 @@
     },
     {
       "id": "btnPickMobilityRx",
-      "order": 325,
+      "order": 359,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6044,7 +6608,7 @@
     },
     {
       "id": "btnPickRmTx",
-      "order": 326,
+      "order": 360,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6066,8 +6630,31 @@
       }
     },
     {
+      "id": "btnPickPmnetTx",
+      "order": 361,
+      "tag": "button",
+      "classes": [
+        "deviceActionBtn",
+        "hidden"
+      ],
+      "attributes": {
+        "aria-label": "Pick PMNet transmitter",
+        "type": "button"
+      },
+      "text": "Tx",
+      "disabled": false,
+      "owner": "feature:pmnet",
+      "compatibility": "required",
+      "interaction": {
+        "command": "pmnet.device.pickTx",
+        "events": [
+          "click"
+        ]
+      }
+    },
+    {
       "id": "btnDeepMimoPickTx",
-      "order": 327,
+      "order": 362,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6090,7 +6677,7 @@
     },
     {
       "id": "btnDeepMimoPickRoi",
-      "order": 328,
+      "order": 363,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6113,7 +6700,7 @@
     },
     {
       "id": "btnDeepMimoClearRoi",
-      "order": 329,
+      "order": 364,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6136,7 +6723,7 @@
     },
     {
       "id": "btnOrbitTx",
-      "order": 330,
+      "order": 365,
       "tag": "button",
       "classes": [
         "deviceActionBtn"
@@ -6160,7 +6747,7 @@
     },
     {
       "id": "btnSolveLink",
-      "order": 331,
+      "order": 366,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6183,7 +6770,7 @@
     },
     {
       "id": "btnRunMobility",
-      "order": 332,
+      "order": 367,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6207,7 +6794,7 @@
     },
     {
       "id": "btnRunRadiomap",
-      "order": 333,
+      "order": 368,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6230,8 +6817,32 @@
       }
     },
     {
+      "id": "btnRunPmnet",
+      "order": 369,
+      "tag": "button",
+      "classes": [
+        "deviceActionBtn",
+        "solve",
+        "hidden"
+      ],
+      "attributes": {
+        "title": "Place a PMNet Tx before predicting the pathloss map.",
+        "type": "button"
+      },
+      "text": "Predict Map",
+      "disabled": true,
+      "owner": "feature:pmnet",
+      "compatibility": "required",
+      "interaction": {
+        "command": "pmnet.run",
+        "events": [
+          "click"
+        ]
+      }
+    },
+    {
       "id": "btnRunDeepMimo",
-      "order": 334,
+      "order": 370,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6255,7 +6866,7 @@
     },
     {
       "id": "btnPickRadarTx",
-      "order": 335,
+      "order": 371,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6279,7 +6890,7 @@
     },
     {
       "id": "btnPickRadarRx",
-      "order": 336,
+      "order": 372,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6303,7 +6914,7 @@
     },
     {
       "id": "btnSolveRadar",
-      "order": 337,
+      "order": 373,
       "tag": "button",
       "classes": [
         "deviceActionBtn",
@@ -6329,7 +6940,7 @@
     },
     {
       "id": "sceneQuickBar",
-      "order": 338,
+      "order": 374,
       "tag": "div",
       "classes": [
         "sceneQuickBar",
@@ -6343,7 +6954,7 @@
     },
     {
       "id": "btnOpenTileIndex",
-      "order": 339,
+      "order": 375,
       "tag": "button",
       "classes": [
         "quickIconBtn"
@@ -6366,7 +6977,7 @@
     },
     {
       "id": "performanceDock",
-      "order": 340,
+      "order": 376,
       "tag": "div",
       "classes": [
         "performanceDock",
@@ -6382,7 +6993,7 @@
     },
     {
       "id": "btnPerformanceDockToggle",
-      "order": 341,
+      "order": 377,
       "tag": "button",
       "classes": [
         "performanceDockHead"
@@ -6405,7 +7016,7 @@
     },
     {
       "id": "perfSummaryFps",
-      "order": 342,
+      "order": 378,
       "tag": "i",
       "classes": [],
       "attributes": {},
@@ -6414,7 +7025,7 @@
     },
     {
       "id": "perfSummaryDpr",
-      "order": 343,
+      "order": 379,
       "tag": "i",
       "classes": [],
       "attributes": {},
@@ -6423,7 +7034,7 @@
     },
     {
       "id": "perfSummaryLoaded",
-      "order": 344,
+      "order": 380,
       "tag": "i",
       "classes": [],
       "attributes": {},
@@ -6432,7 +7043,7 @@
     },
     {
       "id": "perfModeAuto",
-      "order": 345,
+      "order": 381,
       "tag": "button",
       "classes": [
         "perfModeBtn",
@@ -6454,7 +7065,7 @@
     },
     {
       "id": "perfModeQuality",
-      "order": 346,
+      "order": 382,
       "tag": "button",
       "classes": [
         "perfModeBtn"
@@ -6475,7 +7086,7 @@
     },
     {
       "id": "perfModeFast",
-      "order": 347,
+      "order": 383,
       "tag": "button",
       "classes": [
         "perfModeBtn"
@@ -6496,7 +7107,7 @@
     },
     {
       "id": "perfLightMaterials",
-      "order": 348,
+      "order": 384,
       "tag": "input",
       "classes": [],
       "attributes": {
@@ -6519,7 +7130,7 @@
     },
     {
       "id": "perfHud",
-      "order": 349,
+      "order": 385,
       "tag": "div",
       "classes": [
         "perfHud"
@@ -6530,7 +7141,7 @@
     },
     {
       "id": "perfFps",
-      "order": 350,
+      "order": 386,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -6539,7 +7150,7 @@
     },
     {
       "id": "perfDpr",
-      "order": 351,
+      "order": 387,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -6548,7 +7159,7 @@
     },
     {
       "id": "perfDrawCalls",
-      "order": 352,
+      "order": 388,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -6557,7 +7168,7 @@
     },
     {
       "id": "perfTriangles",
-      "order": 353,
+      "order": 389,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -6566,7 +7177,7 @@
     },
     {
       "id": "perfFaces",
-      "order": 354,
+      "order": 390,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -6575,7 +7186,7 @@
     },
     {
       "id": "perfLoaded",
-      "order": 355,
+      "order": 391,
       "tag": "span",
       "classes": [],
       "attributes": {},
@@ -6584,7 +7195,7 @@
     },
     {
       "id": "btnShowAllCategories",
-      "order": 356,
+      "order": 392,
       "tag": "button",
       "classes": [
         "oat-button",
@@ -6606,7 +7217,7 @@
     },
     {
       "id": "btnHideHeavyCategories",
-      "order": 357,
+      "order": 393,
       "tag": "button",
       "classes": [
         "oat-button",
@@ -6628,7 +7239,7 @@
     },
     {
       "id": "categoryVisibility",
-      "order": 358,
+      "order": 394,
       "tag": "div",
       "classes": [
         "categoryVisibility"

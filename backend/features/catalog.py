@@ -4,6 +4,7 @@ from backend.features.core import RouteRegistry
 from backend.features.deepmimo import DEEPMIMO_FEATURE
 from backend.features.link import LINK_FEATURE
 from backend.features.mobility import MOBILITY_FEATURE
+from backend.features.pmnet import PMNET_FEATURE
 from backend.features.radar import RADAR_FEATURE
 from backend.features.radiomap import RADIOMAP_FEATURE
 
@@ -14,6 +15,7 @@ BACKEND_FEATURE_CATALOG = (
     RADIOMAP_FEATURE,
     DEEPMIMO_FEATURE,
     RADAR_FEATURE,
+    PMNET_FEATURE,
 )
 
 

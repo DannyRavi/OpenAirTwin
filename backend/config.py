@@ -187,3 +187,43 @@ MAX_MOBILITY_TIME_STEP_S = float(os.environ.get("OAT_MAX_MOBILITY_TIME_STEP_S", 
 MIN_MOBILITY_STEPS = int(os.environ.get("OAT_MIN_MOBILITY_STEPS", "2"))
 DEFAULT_MOBILITY_MAX_STEPS = int(os.environ.get("OAT_DEFAULT_MOBILITY_MAX_STEPS", "1000"))
 MAX_MOBILITY_STEPS = int(os.environ.get("OAT_MAX_MOBILITY_STEPS", str(max(DEFAULT_MOBILITY_MAX_STEPS, 10000))))
+
+# PMNet pathloss-map prediction. This is a static surrogate: it never launches
+# Sionna RT path tracing, so its bounds are separate from the solver bounds
+# above. A pre-trained checkpoint additionally requires PyTorch; without one
+# the deterministic multi-wall / knife-edge surrogate is used instead.
+PMNET_MAX_PENDING_JOBS = int(os.environ.get("OAT_PMNET_MAX_PENDING_JOBS", "2"))
+PMNET_MAX_STORED_JOBS = int(os.environ.get("OAT_PMNET_MAX_STORED_JOBS", "8"))
+PMNET_JOB_TTL_SECONDS = float(os.environ.get("OAT_PMNET_JOB_TTL_SECONDS", "3600"))
+DEFAULT_PMNET_ROI_SIZE = (200.0, 200.0)
+DEFAULT_PMNET_GRID_CELLS = int(os.environ.get("OAT_DEFAULT_PMNET_GRID_CELLS", "128"))
+MIN_PMNET_GRID_CELLS = int(os.environ.get("OAT_MIN_PMNET_GRID_CELLS", "16"))
+MAX_PMNET_GRID_CELLS = int(os.environ.get("OAT_MAX_PMNET_GRID_CELLS", "256"))
+MAX_PMNET_CELLS = int(os.environ.get("OAT_MAX_PMNET_CELLS", "40000"))
+MIN_PMNET_ROI_SIZE_M = float(os.environ.get("OAT_MIN_PMNET_ROI_SIZE_M", "10.0"))
+MAX_PMNET_ROI_SIZE_M = float(os.environ.get("OAT_MAX_PMNET_ROI_SIZE_M", "2000.0"))
+DEFAULT_PMNET_HEIGHT_OFFSET = float(os.environ.get("OAT_DEFAULT_PMNET_HEIGHT_OFFSET", "1.5"))
+DEFAULT_PMNET_TX_POWER_DBM = float(os.environ.get("OAT_DEFAULT_PMNET_TX_POWER_DBM", "30.0"))
+MIN_PMNET_TX_POWER_DBM = float(os.environ.get("OAT_MIN_PMNET_TX_POWER_DBM", "-40.0"))
+MAX_PMNET_TX_POWER_DBM = float(os.environ.get("OAT_MAX_PMNET_TX_POWER_DBM", "80.0"))
+DEFAULT_PMNET_WALL_LOSS_DB = float(os.environ.get("OAT_DEFAULT_PMNET_WALL_LOSS_DB", "6.0"))
+MIN_PMNET_WALL_LOSS_DB = float(os.environ.get("OAT_MIN_PMNET_WALL_LOSS_DB", "0.0"))
+MAX_PMNET_WALL_LOSS_DB = float(os.environ.get("OAT_MAX_PMNET_WALL_LOSS_DB", "60.0"))
+DEFAULT_PMNET_RX_HEIGHT_M = float(os.environ.get("OAT_DEFAULT_PMNET_RX_HEIGHT_M", "1.5"))
+MIN_PMNET_RX_HEIGHT_M = float(os.environ.get("OAT_MIN_PMNET_RX_HEIGHT_M", "0.1"))
+MAX_PMNET_RX_HEIGHT_M = float(os.environ.get("OAT_MAX_PMNET_RX_HEIGHT_M", "200.0"))
+MIN_PMNET_BUILDING_HEIGHT_M = float(os.environ.get("OAT_MIN_PMNET_BUILDING_HEIGHT_M", "1.0"))
+MAX_PMNET_BUILDING_CELLS = int(os.environ.get("OAT_MAX_PMNET_BUILDING_CELLS", "20000"))
+MAX_PMNET_RAY_SAMPLES = int(os.environ.get("OAT_MAX_PMNET_RAY_SAMPLES", "192"))
+PMNET_OBSTACLE_MATERIALS = tuple(
+    token.strip()
+    for token in os.environ.get(
+        "OAT_PMNET_OBSTACLE_MATERIALS", "itu_concrete,itu_wood,itu_marble"
+    ).split(",")
+    if token.strip()
+)
+PMNET_CHECKPOINT_PATH = os.environ.get("OAT_PMNET_CHECKPOINT", "").strip()
+PMNET_DEVICE = os.environ.get("OAT_PMNET_DEVICE", "auto").strip().lower()
+PMNET_DEFAULT_MIN_LOSS_DB = float(os.environ.get("OAT_PMNET_DEFAULT_MIN_LOSS_DB", "60.0"))
+PMNET_DEFAULT_MAX_LOSS_DB = float(os.environ.get("OAT_PMNET_DEFAULT_MAX_LOSS_DB", "160.0"))
+PMNET_INFERENCE_SIZE = int(os.environ.get("OAT_PMNET_INFERENCE_SIZE", "256"))

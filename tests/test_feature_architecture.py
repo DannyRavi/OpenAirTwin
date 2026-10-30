@@ -34,7 +34,14 @@ def read_architecture_map() -> str:
 
 
 def test_backend_catalog_and_existing_routes_are_explicit() -> None:
-    assert [feature.id for feature in BACKEND_FEATURE_CATALOG] == ["link", "mobility", "radiomap", "deepmimo", "radar"]
+    assert [feature.id for feature in BACKEND_FEATURE_CATALOG] == [
+        "link",
+        "mobility",
+        "radiomap",
+        "deepmimo",
+        "radar",
+        "pmnet",
+    ]
     assert {(method, path) for method, path, _name in FEATURE_ROUTES.routes()} == {
         ("POST", "/api/link/solve"),
         ("POST", "/api/radar/solve"),
@@ -52,6 +59,9 @@ def test_backend_catalog_and_existing_routes_are_explicit() -> None:
         ("GET", "/api/deepmimo/jobs/{job_id}"),
         ("GET", "/api/deepmimo/jobs/{job_id}/download"),
         ("POST", "/api/deepmimo/jobs/{job_id}/cancel"),
+        ("POST", "/api/pmnet/jobs"),
+        ("GET", "/api/pmnet/jobs/{job_id}"),
+        ("GET", "/api/pmnet/jobs/{job_id}/result"),
     }
     radar_job_routes = tuple(
         route for route in FEATURE_ROUTES.routes() if route[1].startswith("/api/radar/jobs")
@@ -123,7 +133,7 @@ def test_frontend_core_entry_is_catalog_driven() -> None:
     assert "mountTemplates" not in app_source
     assert "templateFragments" not in registry_source
     assert "features.definitions()" in scene_source
-    for feature_id in ("link", "mobility", "radiomap", "deepmimo", "radar"):
+    for feature_id in ("link", "mobility", "radiomap", "deepmimo", "radar", "pmnet"):
         assert f'"{feature_id}"' not in app_source
         assert f'"{feature_id}"' not in scene_source
         assert feature_id in catalog_source.lower()
@@ -133,6 +143,8 @@ def test_frontend_core_entry_is_catalog_driven() -> None:
         "createMobilityJob",
         "createRadiomapJob",
         "createDeepMimoJob",
+        "createPmnetJob",
+        "getPmnetResult",
         "getMobilityResult",
         "getRadiomapResult",
         "getDeepMimoJob",
@@ -149,7 +161,7 @@ def test_frontend_features_own_state_transport_controller_view_and_lifecycle() -
     assert "/js/controllers/deepmimo_controller.js" not in solver_source
     assert "/js/controllers/radar_controller.js" not in solver_source
 
-    feature_ids = ("link", "mobility", "radiomap", "deepmimo", "radar")
+    feature_ids = ("link", "mobility", "radiomap", "deepmimo", "radar", "pmnet")
     for feature_id in feature_ids:
         directory = feature_root / feature_id
         assert {"index.js", "runtime.js", "state.js", "transport.js", "renderer.js"} <= {path.name for path in directory.iterdir()}
@@ -258,7 +270,11 @@ def test_architecture_map_documents_react_bridge_and_production_delivery() -> No
         "workbench/src/runtime/ui-command.ts",
         "backend/workbench.py",
         "backend/static/js/controllers/radar_controller.js",
-        "Reviewed for OpenAirTwin 1.1.0",
+        '<option value="pmnet">PMNet call flow</option>',
+        'id: "pmnet-front"',
+        'from: "pmnet-exec", to: "rt-scene"',
+        "backend/pmnet/solver.py",
+        "Reviewed for Hammurabi 1.1.0",
     )
     for expected in expected_contract:
         assert expected in source

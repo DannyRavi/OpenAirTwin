@@ -1,4 +1,5 @@
-export type ResultFeatureId = "link" | "mobility" | "radiomap" | "radar";
+export type ResultFeatureId =
+  "link" | "mobility" | "radiomap" | "radar" | "pmnet";
 export type ResultStatus =
   "idle" | "loading" | "success" | "empty" | "cancelled" | "error" | "stale";
 
@@ -87,6 +88,22 @@ export interface RadioMapResultViewModel {
   };
 }
 
+export interface PmnetResultViewModel {
+  readonly status: ResultStatus;
+  readonly visible: boolean;
+  readonly engineDetail: string;
+  readonly summary: readonly ResultMetricViewModel[];
+  readonly resolution: readonly ResultMetricViewModel[];
+  readonly colorbar: {
+    readonly visible: boolean;
+    readonly colormapLabel: string;
+    readonly rangeLabel: string;
+    readonly minLabel: string;
+    readonly maxLabel: string;
+    readonly gradient: string;
+  };
+}
+
 export interface RadarRowViewModel {
   readonly id: string;
   readonly title: string;
@@ -137,6 +154,7 @@ export interface ResultDockSnapshot {
   readonly mobility: MobilityResultViewModel;
   readonly radiomap: RadioMapResultViewModel;
   readonly radar: RadarResultViewModel;
+  readonly pmnet: PmnetResultViewModel;
 }
 
 const emptyPaths = (featureId: "link" | "mobility"): PathResultsViewModel => ({
@@ -205,6 +223,22 @@ export function createInitialResultDockSnapshot(): ResultDockSnapshot {
     radiomap: {
       status: "idle",
       visible: false,
+      summary: [],
+      resolution: [],
+      colorbar: {
+        visible: false,
+        colormapLabel: "Colormap: jet",
+        rangeLabel: "Display limits: --",
+        minLabel: "--",
+        maxLabel: "--",
+        gradient: "",
+      },
+    },
+    pmnet: {
+      status: "idle",
+      visible: false,
+      engineDetail:
+        "Select a checkpoint or use the built-in building-aware surrogate.",
       summary: [],
       resolution: [],
       colorbar: {

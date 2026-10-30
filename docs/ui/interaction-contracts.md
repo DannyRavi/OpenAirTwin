@@ -67,6 +67,7 @@ One `app-shell` CommandBus emits the following commands. The Shell no longer reg
 | Mobility | `mobility.configuration.update`, `mobility.waypoint.addCurrentRx/select/remove/deleteSelected/clear` | `mobility.solve.run`, `mobility.playback.toggle/speed.change`, `mobility.timeline.seek/metric.change/inspect` |
 | Radio Map | `radiomap.configuration.update` | `radiomap.solve.run`; the feature palette owns the domain colormap |
 | DeepMIMO | `deepmimo.configuration.update`, `deepmimo.roi.pick/clear` | `deepmimo.export.run`, `deepmimo.datasets.toggle`, `deepmimo.dataset.cancel/download` |
+| PMNet | `pmnet.configuration.update`, `pmnet.device.pickTx` | `pmnet.run`; display-only colormap, colour limits and building-envelope changes redraw without a new job |
 | Radar | `radar.configuration.update`, `radar.asset.previous/next`, `radar.target.add/select/pick/focus/remove` | `radar.solve.run`, `radar.job.cancel/retry`, `radar.processing.select`, `radar.rangeDoppler.scope.select/select`, `radar.detections.filter/toggleAll/select`, `radar.truth.select`, `radar.path.select`, `radar.paths.displayMode.change` |
 
 ## 5. Pointer, Keyboard, and Focus

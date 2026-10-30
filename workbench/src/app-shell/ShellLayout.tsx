@@ -474,6 +474,17 @@ export function ShellLayout({
                     <span className="modeMenuDot" aria-hidden="true"></span>
                     <span className="modeMenuTitle">{"Radar Sensing"}</span>
                   </button>
+                  <button
+                    className="modeMenuItem"
+                    data-mode="pmnet"
+                    id="tabPmnet"
+                    type="button"
+                    role="option"
+                    aria-selected="false"
+                  >
+                    <span className="modeMenuDot" aria-hidden="true"></span>
+                    <span className="modeMenuTitle">{"PMNet Pathloss"}</span>
+                  </button>
                 </div>
               </div>
             </details>

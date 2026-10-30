@@ -1043,6 +1043,18 @@
     color: var(--hx-text);
   }
 
+  /* Heatmap budget sections (Radio Map, PMNet) follow the dark dock surface so
+     their light metric text stays readable. Chart panes and the light colour
+     bar keep their own surfaces. */
+  .channelAnalysisDock .linkDockSection.heatmapStats {
+    background: rgba(255, 255, 255, .035);
+    border-color: var(--hx-border);
+  }
+
+  .channelAnalysisDock .linkDockSection .pmnetEngineNote {
+    color: var(--hx-text-muted);
+  }
+
   /* Radar chart panes keep the light plotting surface and its dark labels. */
   .channelAnalysisDock .radarChartSection {
     color: var(--oat-text-primary);

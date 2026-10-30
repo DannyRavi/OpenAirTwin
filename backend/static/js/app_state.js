@@ -22,6 +22,10 @@ function createViewerStub() {
     isTxOrbiting() { return false; },
     subscribeFrame() { return () => false; },
     clearRadiomap() {},
+    renderPmnetSurface() {},
+    clearPmnetLayer() {},
+    clearPmnet() {},
+    hasPmnetSurface() { return false; },
     clearSurfacePreview() {},
     renderMobilityTrajectory() {},
     focusOnTiles() { return false; },
@@ -139,6 +143,7 @@ export const state = {
   radiomap: featureStore.get("radiomap"),
   deepmimo: featureStore.get("deepmimo"),
   mobility: featureStore.get("mobility"),
+  pmnet: featureStore.get("pmnet"),
   antenna: {
     txArray: createDefaultAntennaArray(),
     rxArray: createDefaultAntennaArray(),

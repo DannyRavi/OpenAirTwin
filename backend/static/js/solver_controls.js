@@ -11,6 +11,8 @@ import {
   linkChannelConfig as buildLinkChannelConfig,
   linkSolvePayload as buildLinkSolvePayload,
   linkSolverConfig as buildLinkSolverConfig,
+  normalizePmnetEngine,
+  pmnetJobPayload as buildPmnetJobPayload,
   radiomapJobPayload as buildRadiomapJobPayload,
   radiomapSurfacePayload as buildRadiomapSurfacePayload,
 } from "/js/solvers/solver_payloads.js?v=20260723-empty-devices";
@@ -408,6 +410,22 @@ function syncNumericInputs() {
   inputs.rmColormap.value = normalizeColormapName(colormap);
   inputs.rmColorMin.value = colorMinDb.toFixed(0);
   inputs.rmColorMax.value = colorMaxDb.toFixed(0);
+  syncDeviceVectorInputs(
+    [inputs.pmnetTxX, inputs.pmnetTxY, inputs.pmnetTxZ],
+    state.pmnet.tx,
+    "pmnet-tx",
+  );
+  inputs.pmnetSizeX.value = state.pmnet.roi.size[0].toFixed(1);
+  inputs.pmnetSizeY.value = state.pmnet.roi.size[1].toFixed(1);
+  inputs.pmnetGrid.value = String(state.pmnet.roi.grid);
+  inputs.pmnetHeightOffset.value = state.pmnet.roi.heightOffset.toFixed(1);
+  inputs.pmnetWallLoss.value = state.pmnet.model.wallLossDb.toFixed(1);
+  inputs.pmnetEngine.value = state.pmnet.model.engine;
+  inputs.pmnetTxPower.value = state.pmnet.signal.txPowerDbm.toFixed(1);
+  inputs.pmnetShowBuildings.checked = Boolean(state.pmnet.display.showBuildings);
+  inputs.pmnetColormap.value = normalizeColormapName(state.pmnet.display.colormap);
+  inputs.pmnetColorMin.value = state.pmnet.display.colorMinDb.toFixed(0);
+  inputs.pmnetColorMax.value = state.pmnet.display.colorMaxDb.toFixed(0);
   inputs.deepMimoScenarioName.value = state.deepmimo.export.scenarioName;
   syncDeviceVectorInputs(
     [inputs.deepMimoTxX, inputs.deepMimoTxY, inputs.deepMimoTxZ],
@@ -523,6 +541,7 @@ function syncModeVisuals() {
   const activeLayers = new Set(context.features.get(state.mode)?.renderLayers || []);
   for (const [layer, clear] of [
     ["radiomap", () => getViewer().clearRadiomap()],
+    ["pmnet", () => getViewer().clearPmnet()],
     ["roi", () => getViewer().clearDeepMimoRoi()],
     ["trajectory", () => getViewer().clearMobility()],
     ["paths", () => getViewer().clearPaths()],
@@ -585,6 +604,24 @@ function readRadiomapInputs() {
   readAntennaArrayInputs();
 }
 
+function readPmnetInputs() {
+  setLogicalAndVisual(state.pmnet, "tx", readDeviceVector([inputs.pmnetTxX, inputs.pmnetTxY, inputs.pmnetTxZ]));
+  state.pmnet.roi.size = [Number(inputs.pmnetSizeX.value), Number(inputs.pmnetSizeY.value)];
+  state.pmnet.roi.grid = Number(inputs.pmnetGrid.value);
+  state.pmnet.roi.heightOffset = Number(inputs.pmnetHeightOffset.value);
+  state.pmnet.model.engine = normalizePmnetEngine(inputs.pmnetEngine.value);
+  state.pmnet.model.wallLossDb = Number(inputs.pmnetWallLoss.value);
+  state.pmnet.signal.txPowerDbm = Number(inputs.pmnetTxPower.value);
+  state.pmnet.display.showBuildings = Boolean(inputs.pmnetShowBuildings.checked);
+  state.pmnet.display.colormap = normalizeColormapName(inputs.pmnetColormap.value);
+  const colorMinDb = Number(inputs.pmnetColorMin.value);
+  const colorMaxDb = Number(inputs.pmnetColorMax.value);
+  if (Number.isFinite(colorMinDb) && Number.isFinite(colorMaxDb) && colorMinDb < colorMaxDb) {
+    state.pmnet.display.colorMinDb = colorMinDb;
+    state.pmnet.display.colorMaxDb = colorMaxDb;
+  }
+}
+
 function readDeepMimoInputs() {
   setLogicalAndVisual(
     state.deepmimo,
@@ -638,6 +675,28 @@ function rerenderRadiomapOverlay() {
   }
   const colorRange = radiomapColorRange();
   getViewer().renderRadiomap(state.radiomap.result, colorRange);
+}
+
+function pmnetColorRange() {
+  const minDb = Number(state.pmnet.display.colorMinDb);
+  const maxDb = Number(state.pmnet.display.colorMaxDb);
+  const colormap = normalizeColormapName(state.pmnet.display.colormap);
+  state.pmnet.display.colormap = colormap;
+  if (!(minDb < maxDb)) {
+    return {minDb: -140, maxDb: -60, colormap};
+  }
+  return {minDb, maxDb, colormap};
+}
+
+function rerenderPmnetOverlay() {
+  if (!state.pmnet.result || state.mode !== "pmnet") {
+    return;
+  }
+  context.features.instance("pmnet")?.renderPmnetSceneForResult?.();
+}
+
+function pmnetJobPayload() {
+  return buildPmnetJobPayload({state, inputs});
 }
 
 function syncLivePreviewStatusUi() {
@@ -898,6 +957,9 @@ function applyPick(pick, targetId = state.pickTarget) {
     readRadiomapInputs,
     radiomapJobPayload,
     radiomapColorRange,
+    readPmnetInputs,
+    pmnetJobPayload,
+    pmnetColorRange,
     deepMimoRoiBounds,
     deepMimoReceiverEstimate,
     deepMimoPayload,
@@ -923,6 +985,9 @@ function applyPick(pick, targetId = state.pickTarget) {
     readLivePreviewInputs,
     readMobilityInputs,
     readRadiomapInputs,
+    readPmnetInputs,
+    rerenderPmnetOverlay,
+    pmnetColorRange,
     invalidateLinkResult,
     invalidateRadarResult,
     invalidateRadiomapResult,

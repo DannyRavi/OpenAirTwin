@@ -8,6 +8,17 @@ derivative of OpenAirTwin; upstream release history is preserved below. This pro
 
 ### Added
 
+- Added a PMNet Pathloss mode that predicts a pathloss map from the loaded
+  Sionna RT scene without path tracing, renders it as a ground heatmap plus a
+  rooftop and facade building envelope, and reports the prediction engine,
+  grid, building coverage and display budget in the result dock.
+- Added a deterministic COST-231-style multi-wall and ITU-R P.526 knife-edge
+  surrogate, so PMNet works without PyTorch, plus optional `pmnet_v1` and
+  `pmnet_v3` checkpoint inference from `OAT_PMNET_CHECKPOINT` or
+  `models/pmnet/`.
+- Added bounded asynchronous PMNet jobs under `/api/pmnet/jobs` with queue
+  limits, scene-generation protection, in-memory results and no download
+  route.
 - Rebranded the product as Hammurabi with a new wordmark, mark, favicon and
   dark floating workspace chrome.
 - Added a map-first workspace with a compact collapsible panel, floating map
@@ -32,6 +43,13 @@ derivative of OpenAirTwin; upstream release history is preserved below. This pro
 - Added a viewer-only OpenFreeMap basemap underlay in 3D mode. It is rendered
   in a separate Three.js group, so it is never ray-cast, never sent to Sionna RT
   and never affects scene bounds or calculations.
+
+### Fixed
+
+- Fixed the PMNet Tx surface pick not writing the picked X/Y/Z coordinates into
+  the precision fields, which also left the Run action disabled after a pick.
+- Fixed low-contrast result-dock metric sections for Radio Map and PMNet by
+  scoping the dark dock surface to the heatmap budget sections.
 
 ### Changed
 

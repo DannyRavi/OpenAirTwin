@@ -142,7 +142,7 @@ test("release soak returns UI resources and heap to their stable bounds", async 
         resultCycles: resultCycleCount,
       },
     );
-  const modes = ["link", "mobility", "radiomap", "deepmimo", "radar"];
+  const modes = ["link", "mobility", "radiomap", "deepmimo", "radar", "pmnet"];
   for (const mode of modes) await activateMode(page, mode);
   await activateMode(page, "link");
   await exerciseResultCycles(1, 1);

@@ -243,6 +243,30 @@ export function getRadiomapResult(jobId, options = {}) {
   });
 }
 
+export function createPmnetJob(payload, options = {}) {
+  return requestJson("/api/pmnet/jobs", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(payload),
+    signal: options.signal,
+    timeoutMs: API_TIMEOUTS.action,
+  });
+}
+
+export function getPmnetJob(jobId, options = {}) {
+  return requestJson(`/api/pmnet/jobs/${encodeURIComponent(jobId)}`, {
+    signal: options.signal,
+    timeoutMs: API_TIMEOUTS.metadata,
+  });
+}
+
+export function getPmnetResult(jobId, options = {}) {
+  return requestJson(`/api/pmnet/jobs/${encodeURIComponent(jobId)}/result`, {
+    signal: options.signal,
+    timeoutMs: API_TIMEOUTS.metadata,
+  });
+}
+
 export function createMobilityJob(payload, options = {}) {
   return requestJson("/api/mobility/jobs", {
     method: "POST",

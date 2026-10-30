@@ -29,9 +29,10 @@ digital twins, wireless network planning and radio propagation. This repository
 is an independent derivative of the open-source
 [OpenAirTwin](https://github.com/HKUOpenSource/OpenAirTwin) research platform.
 It retains the Python/Sionna RT backend, the tile-based Three.js city viewer and
-all existing Link, Mobility, Radio Map, DeepMIMO and Radar workflows, and adds a
-map-first workspace plus persistent offline regions that reopen without
-internet access.
+all existing Link, Mobility, Radio Map, DeepMIMO and Radar workflows, adds a
+PMNet pathloss-map predictor that renders predictions over the map and its
+buildings, and adds a map-first workspace plus persistent offline regions that
+reopen without internet access.
 
 <p align="center">
   <img src="backend/static/assets/hammurabi_workspace.png" alt="Hammurabi 3D geospatial workspace" width="100%">
@@ -86,6 +87,7 @@ installation. The upstream tutorial remains useful for the shared workflows:
 | Radar sensing | Place monostatic or bistatic Radar Tx/Rx, add moving drone targets, and configure OFDM, CA-CFAR and propagation parameters | Range–Doppler and range-profile plots, detections, target truth and classified propagation paths |
 | Mobility | Define Rx waypoints, speed and sampling parameters | Trajectory, sample markers and time-varying channel results |
 | Radio map | Configure a receiver patch, resolution and display range | Scalar heatmap over the 3D scene |
+| PMNet pathloss | Pick a Tx, set the prediction window, grid and wall loss, and predict without path tracing | Ground pathloss heatmap plus a rooftop and facade building envelope |
 | DeepMIMO export | Draw a receiver ROI and configure the receiver grid | Downloadable DeepMIMO-compatible dataset |
 
 
@@ -99,6 +101,8 @@ installation. The upstream tutorial remains useful for the shared workflows:
 - [Changelog](CHANGELOG.md) and [release checklist](docs/release-checklist.md):
   the v1.1.0 release record, production gates and maintainer
   publication sequence.
+- [PMNet pathloss maps](docs/pmnet.md): prediction engines, checkpoint setup,
+  building extraction, request/result contracts and limitations.
 - [Offline maps and persistent scenes](docs/offline-maps.md): storage layout,
   connectivity modes, download pipeline and what remains online-only.
 - [Scene data and third-party terms](docs/data-licenses.md): Open3Dhk/CSDI data

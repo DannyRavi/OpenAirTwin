@@ -29,6 +29,7 @@ The current production catalog order is:
 3. Radiomap
 4. DeepMIMO
 5. Radar Sensing
+6. PMNet Pathloss
 
 ## Main Extension Points
 
@@ -276,6 +277,15 @@ the independent Radar propagation solver followed by OFDM sensing processing.
 The frontend owns Radar-specific target, path and detection Viewer Layers and
 loads the four CC BY 4.0 drone assets through the shared Asset Manager. Radar
 results remain in memory and have no download route or generated result files.
+
+PMNet Pathloss exposes three asynchronous routes under `/api/pmnet/jobs` for
+creation, status polling and result retrieval. It is a static surrogate: it
+reads the already-loaded Sionna RT scene once, rasterizes ground and building
+triangles into a 2.5D grid, and predicts a path-gain field with either a PMNet
+checkpoint (PyTorch is optional) or a deterministic multi-wall and knife-edge
+model. The frontend owns the `pmnet` ground and building Viewer Layers and
+builds both meshes from the result contract. See
+[`pmnet.md`](pmnet.md) for the engine, normalization and limit details.
 
 ## Adding a Feature
 

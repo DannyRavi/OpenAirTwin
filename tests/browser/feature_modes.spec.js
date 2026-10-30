@@ -143,7 +143,7 @@ test("UI assets load and mode switching releases owned resources", async ({
   await enableRealViewer(page);
   await configureMainDeviceFixture(page);
 
-  const modes = ["link", "mobility", "radiomap", "deepmimo", "radar"];
+  const modes = ["link", "mobility", "radiomap", "deepmimo", "radar", "pmnet"];
   for (const mode of modes) await activateMode(page, mode);
   await activateMode(page, "link");
   const resourcesBefore = await capturePhase0ResourceSnapshot(page);
@@ -372,6 +372,7 @@ test("all feature modes start without Tx or Rx devices", async ({ page }) => {
       },
       radiomap: { tx: state.radiomap.tx, txVisual: state.radiomap.txVisual },
       deepmimo: { tx: state.deepmimo.tx, txVisual: state.deepmimo.txVisual },
+      pmnet: { tx: state.pmnet.tx, txVisual: state.pmnet.txVisual },
       txMarkerVisible: viewerRef.current.txMarker.visible,
       rxMarkerVisible: viewerRef.current.rxMarker.visible,
     };
@@ -381,6 +382,7 @@ test("all feature modes start without Tx or Rx devices", async ({ page }) => {
     mobility: { tx: null, rx: null, txVisual: null, rxVisual: null },
     radiomap: { tx: null, txVisual: null },
     deepmimo: { tx: null, txVisual: null },
+    pmnet: { tx: null, txVisual: null },
     txMarkerVisible: false,
     rxMarkerVisible: false,
   });
@@ -417,6 +419,13 @@ test("all feature modes start without Tx or Rx devices", async ({ page }) => {
     "title",
     "Place DeepMIMO Tx before exporting data.",
   );
+
+  await activateMode(page, "pmnet");
+  await expect(page.locator("#btnRunPmnet")).toBeDisabled();
+  await expect(page.locator("#btnRunPmnet")).toHaveAttribute(
+    "title",
+    "Place a PMNet Tx before predicting the pathloss map.",
+  );
 });
 
 test("five modes, dialog and error states pass the release accessibility gate", async ({
@@ -429,7 +438,7 @@ test("five modes, dialog and error states pass the release accessibility gate", 
   await configureMainDeviceFixture(page);
   await configureRadarFixture(page);
 
-  for (const mode of ["link", "mobility", "radiomap", "deepmimo", "radar"]) {
+  for (const mode of ["link", "mobility", "radiomap", "deepmimo", "radar", "pmnet"]) {
     await activateMode(page, mode);
     await expectNoSeriousAccessibilityViolations(page, `${mode} mode`);
   }
@@ -1069,7 +1078,14 @@ test("catalog order and five mode control snapshots stay stable", async ({
     await page
       .locator("#modeMenu [data-mode]")
       .evaluateAll((nodes) => nodes.map((node) => node.dataset.mode)),
-  ).toEqual(["link", "mobility", "radiomap", "deepmimo", "radar"]);
+  ).toEqual([
+    "link",
+    "mobility",
+    "radiomap",
+    "deepmimo",
+    "radar",
+    "pmnet",
+  ]);
 
   for (const [mode, title] of [
     ["link", "Link Analysis"],
@@ -1077,6 +1093,7 @@ test("catalog order and five mode control snapshots stay stable", async ({
     ["radiomap", "Radio Map"],
     ["deepmimo", "DeepMIMO"],
     ["radar", "Radar Sensing"],
+    ["pmnet", "PMNet Pathloss"],
   ]) {
     await page.evaluate((nextMode) => {
       document.getElementById("modeSelector").open = true;

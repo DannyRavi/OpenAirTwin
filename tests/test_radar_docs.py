@@ -47,8 +47,8 @@ class RadarDocumentationTests(unittest.TestCase):
             'from: "feature-core", to: "radar-front"',
             'from: "radar-exec", to: "rt-scene"',
             "/api/radar/jobs",
-            "shared by all five analysis Features",
-            "visual snapshots for all five modes",
+            "shared by the analysis Features",
+            "visual snapshots for every mode",
         ):
             with self.subTest(expected=expected):
                 self.assertIn(expected, architecture)

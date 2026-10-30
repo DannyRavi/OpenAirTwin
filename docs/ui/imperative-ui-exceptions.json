@@ -7,7 +7,8 @@
     "backend/static/js/features/radar/renderer.js",
     "backend/static/js/ui/link_result_view.js",
     "backend/static/js/ui/mobility_result_view.js",
-    "backend/static/js/ui/result_formatters.js"
+    "backend/static/js/ui/result_formatters.js",
+    "backend/static/js/viewer/basemap.js"
   ],
   "inlineRuntimeStyleFiles": [
     "backend/static/js/app.js",

@@ -1514,6 +1514,417 @@ function ControlForm({
             </div>
           </div>
         </details>
+        <details className="paramGroup pmnetOnlyParam hidden">
+          <summary className="paramGroupSummary">PMNet Pathloss Map</summary>
+          <div className="paramGroupBody">
+            <div className="paramGrid">
+              <label className="paramField" htmlFor="pmnetSizeX">
+                <span className="paramLabel">
+                  {"ROI Size X"}
+                  <span
+                    className="infoTip"
+                    tabIndex={0}
+                    aria-label="ROI size X details"
+                  >
+                    {"i"}
+                    <span className="tipBubble" role="tooltip">
+                      {
+                        "Square prediction window centred on the PMNet Tx. Larger windows cover more buildings at the same grid size."
+                      }
+                    </span>
+                  </span>
+                </span>
+                <span className="unitInput">
+                  <SurfaceField
+                    id="pmnetSizeX"
+                    initial={{
+                      kind: "number",
+                      value: "200.0",
+                      defaultValue: "200.0",
+                      checked: false,
+                      defaultChecked: false,
+                      disabled: false,
+                      readOnly: false,
+                      min: "10",
+                      max: "2000",
+                      step: "10",
+                    }}
+                    snapshot={snapshot}
+                  />
+                  <span className="unitSuffix" aria-hidden="true">
+                    {"m"}
+                  </span>
+                </span>
+              </label>
+              <label className="paramField" htmlFor="pmnetSizeY">
+                <span className="paramLabel">
+                  {"ROI Size Y"}
+                  <span
+                    className="infoTip"
+                    tabIndex={0}
+                    aria-label="ROI size Y details"
+                  >
+                    {"i"}
+                    <span className="tipBubble" role="tooltip">
+                      {
+                        "Cross-street extent of the prediction window in scene meters."
+                      }
+                    </span>
+                  </span>
+                </span>
+                <span className="unitInput">
+                  <SurfaceField
+                    id="pmnetSizeY"
+                    initial={{
+                      kind: "number",
+                      value: "200.0",
+                      defaultValue: "200.0",
+                      checked: false,
+                      defaultChecked: false,
+                      disabled: false,
+                      readOnly: false,
+                      min: "10",
+                      max: "2000",
+                      step: "10",
+                    }}
+                    snapshot={snapshot}
+                  />
+                  <span className="unitSuffix" aria-hidden="true">
+                    {"m"}
+                  </span>
+                </span>
+              </label>
+              <label className="paramField" htmlFor="pmnetGrid">
+                <span className="paramLabel">
+                  {"Grid Cells"}
+                  <span
+                    className="infoTip"
+                    tabIndex={0}
+                    aria-label="Grid details"
+                  >
+                    {"i"}
+                    <span className="tipBubble" role="tooltip">
+                      {
+                        "Cells per side of the square prediction grid. PMNet inference cost grows with the square of this value."
+                      }
+                    </span>
+                  </span>
+                </span>
+                <SurfaceField
+                  id="pmnetGrid"
+                  initial={{
+                    kind: "number",
+                    value: "128",
+                    defaultValue: "128",
+                    checked: false,
+                    defaultChecked: false,
+                    disabled: false,
+                    readOnly: false,
+                    min: "16",
+                    max: "256",
+                    step: "16",
+                  }}
+                  snapshot={snapshot}
+                />
+              </label>
+              <label className="paramField" htmlFor="pmnetHeightOffset">
+                <span className="paramLabel">
+                  {"Receiver Height"}
+                  <span
+                    className="infoTip"
+                    tabIndex={0}
+                    aria-label="Receiver height details"
+                  >
+                    {"i"}
+                    <span className="tipBubble" role="tooltip">
+                      {
+                        "Height of the street-level prediction plane above the terrain. Building rooftops are predicted separately."
+                      }
+                    </span>
+                  </span>
+                </span>
+                <span className="unitInput">
+                  <SurfaceField
+                    id="pmnetHeightOffset"
+                    initial={{
+                      kind: "number",
+                      value: "1.5",
+                      defaultValue: "1.5",
+                      checked: false,
+                      defaultChecked: false,
+                      disabled: false,
+                      readOnly: false,
+                      min: "0",
+                      max: "200",
+                      step: "0.1",
+                    }}
+                    snapshot={snapshot}
+                  />
+                  <span className="unitSuffix" aria-hidden="true">
+                    {"m"}
+                  </span>
+                </span>
+              </label>
+              <label className="paramField" htmlFor="pmnetWallLoss">
+                <span className="paramLabel">
+                  {"Wall Loss"}
+                  <span
+                    className="infoTip"
+                    tabIndex={0}
+                    aria-label="Wall loss details"
+                  >
+                    {"i"}
+                    <span className="tipBubble" role="tooltip">
+                      {
+                        "Loss added for every building wall the surrogate path crosses."
+                      }
+                    </span>
+                  </span>
+                </span>
+                <span className="unitInput">
+                  <SurfaceField
+                    id="pmnetWallLoss"
+                    initial={{
+                      kind: "number",
+                      value: "6.0",
+                      defaultValue: "6.0",
+                      checked: false,
+                      defaultChecked: false,
+                      disabled: false,
+                      readOnly: false,
+                      min: "0",
+                      max: "60",
+                      step: "0.5",
+                    }}
+                    snapshot={snapshot}
+                  />
+                  <span className="unitSuffix" aria-hidden="true">
+                    {"dB"}
+                  </span>
+                </span>
+              </label>
+              <label className="paramField" htmlFor="pmnetEngine">
+                <span className="paramLabel">
+                  {"Model"}
+                  <span
+                    className="infoTip"
+                    tabIndex={0}
+                    aria-label="Model details"
+                  >
+                    {"i"}
+                    <span className="tipBubble" role="tooltip">
+                      {
+                        "Auto uses a PMNet checkpoint when one is configured and falls back to the deterministic geometry surrogate."
+                      }
+                    </span>
+                  </span>
+                </span>
+                <SurfaceField
+                  id="pmnetEngine"
+                  initial={{
+                    kind: "select",
+                    value: "auto",
+                    defaultValue: "auto",
+                    defaultSelectedValue: "auto",
+                    separateOptions: true,
+                    disabled: false,
+                    options: [
+                      { label: "Auto", value: "auto", disabled: false },
+                      {
+                        label: "PMNet checkpoint",
+                        value: "checkpoint",
+                        disabled: false,
+                      },
+                      {
+                        label: "Geometry surrogate",
+                        value: "physics",
+                        disabled: false,
+                      },
+                    ],
+                  }}
+                  snapshot={snapshot}
+                />
+              </label>
+              <label className="paramField" htmlFor="pmnetTxPower">
+                <span className="paramLabel">
+                  {"Tx Power"}
+                  <span
+                    className="infoTip"
+                    tabIndex={0}
+                    aria-label="Tx power details"
+                  >
+                    {"i"}
+                    <span className="tipBubble" role="tooltip">
+                      {
+                        "Transmit power used to convert propagation loss into received power."
+                      }
+                    </span>
+                  </span>
+                </span>
+                <span className="unitInput">
+                  <SurfaceField
+                    id="pmnetTxPower"
+                    initial={{
+                      kind: "number",
+                      value: "30.0",
+                      defaultValue: "30.0",
+                      checked: false,
+                      defaultChecked: false,
+                      disabled: false,
+                      readOnly: false,
+                      min: "-40",
+                      max: "80",
+                      step: "1",
+                    }}
+                    snapshot={snapshot}
+                  />
+                  <span className="unitSuffix" aria-hidden="true">
+                    {"dBm"}
+                  </span>
+                </span>
+              </label>
+              <label className="paramField" htmlFor="pmnetColormap">
+                <span className="paramLabel">
+                  {"Colormap"}
+                  <span
+                    className="infoTip"
+                    tabIndex={0}
+                    aria-label="Colormap details"
+                  >
+                    {"i"}
+                    <span className="tipBubble" role="tooltip">
+                      {
+                        "Display color scale for the ground and building layers."
+                      }
+                    </span>
+                  </span>
+                </span>
+                <SurfaceField
+                  id="pmnetColormap"
+                  initial={{
+                    kind: "select",
+                    value: "jet",
+                    defaultValue: "jet",
+                    defaultSelectedValue: "jet",
+                    separateOptions: true,
+                    disabled: false,
+                    options: [
+                      { label: "viridis", value: "viridis", disabled: false },
+                      { label: "plasma", value: "plasma", disabled: false },
+                      { label: "turbo", value: "turbo", disabled: false },
+                      { label: "jet", value: "jet", disabled: false },
+                    ],
+                  }}
+                  snapshot={snapshot}
+                />
+              </label>
+              <label className="paramField" htmlFor="pmnetColorMin">
+                <span className="paramLabel">
+                  {"Color Min"}
+                  <span
+                    className="infoTip"
+                    tabIndex={0}
+                    aria-label="Color minimum details"
+                  >
+                    {"i"}
+                    <span className="tipBubble" role="tooltip">
+                      {
+                        "Lower display bound for the pathloss overlay. Display-only; no recompute."
+                      }
+                    </span>
+                  </span>
+                </span>
+                <span className="unitInput">
+                  <SurfaceField
+                    id="pmnetColorMin"
+                    initial={{
+                      kind: "number",
+                      value: "-140",
+                      defaultValue: "-140",
+                      checked: false,
+                      defaultChecked: false,
+                      disabled: false,
+                      readOnly: false,
+                      step: "1",
+                    }}
+                    snapshot={snapshot}
+                  />
+                  <span className="unitSuffix" aria-hidden="true">
+                    {"dB"}
+                  </span>
+                </span>
+              </label>
+              <label className="paramField" htmlFor="pmnetColorMax">
+                <span className="paramLabel">
+                  {"Color Max"}
+                  <span
+                    className="infoTip"
+                    tabIndex={0}
+                    aria-label="Color maximum details"
+                  >
+                    {"i"}
+                    <span className="tipBubble" role="tooltip">
+                      {
+                        "Upper display bound for the pathloss overlay. Display-only; no recompute."
+                      }
+                    </span>
+                  </span>
+                </span>
+                <span className="unitInput">
+                  <SurfaceField
+                    id="pmnetColorMax"
+                    initial={{
+                      kind: "number",
+                      value: "-60",
+                      defaultValue: "-60",
+                      checked: false,
+                      defaultChecked: false,
+                      disabled: false,
+                      readOnly: false,
+                      step: "1",
+                    }}
+                    snapshot={snapshot}
+                  />
+                  <span className="unitSuffix" aria-hidden="true">
+                    {"dB"}
+                  </span>
+                </span>
+              </label>
+            </div>
+            <div className="paramGrid">
+              <label className="paramCheck computeCheck">
+                <SurfaceField
+                  id="pmnetShowBuildings"
+                  initial={{
+                    kind: "checkbox",
+                    value: "on",
+                    defaultValue: "",
+                    checked: true,
+                    defaultChecked: true,
+                    disabled: false,
+                    readOnly: false,
+                  }}
+                  snapshot={snapshot}
+                />
+                <span>
+                  {"Building envelope overlay "}
+                  <span
+                    className="infoTip"
+                    tabIndex={0}
+                    aria-label="Building envelope details"
+                  >
+                    i
+                    <span className="tipBubble" role="tooltip">
+                      {
+                        "Shades rooftop and facade cells with the predicted signal reaching each building surface."
+                      }
+                    </span>
+                  </span>
+                </span>
+              </label>
+            </div>
+          </div>
+        </details>
         <details className="paramGroup radiomapOnlyParam hidden">
           <summary className="paramGroupSummary">{"Terrain Patch"}</summary>
           <div className="paramGroupBody">
@@ -2271,6 +2682,13 @@ function ControlForm({
       ></SurfaceNode>
       <SurfaceNode
         id="mobilityPanel"
+        tag="section"
+        staticProps={{ className: "modePanel hidden" }}
+        snapshot={snapshot}
+        leaf
+      ></SurfaceNode>
+      <SurfaceNode
+        id="pmnetPanel"
         tag="section"
         staticProps={{ className: "modePanel hidden" }}
         snapshot={snapshot}
@@ -4400,6 +4818,84 @@ function DeviceControls({
             </div>
           </SurfaceNode>
           <SurfaceNode
+            id="pmnetTxDeviceCard"
+            tag="section"
+            staticProps={{ className: "deviceCoordPanel hidden" }}
+            snapshot={snapshot}
+          >
+            <div className="deviceCoordGrid">
+              <label>
+                {"X "}
+                <span className="unitInput">
+                  <SurfaceField
+                    id="pmnetTxX"
+                    initial={{
+                      kind: "number",
+                      value: "",
+                      defaultValue: "",
+                      checked: false,
+                      defaultChecked: false,
+                      disabled: false,
+                      readOnly: false,
+                      step: "1.0",
+                      placeholder: "—",
+                    }}
+                    snapshot={snapshot}
+                  />
+                  <span className="unitSuffix" aria-hidden="true">
+                    {"m"}
+                  </span>
+                </span>
+              </label>
+              <label>
+                {"Y "}
+                <span className="unitInput">
+                  <SurfaceField
+                    id="pmnetTxY"
+                    initial={{
+                      kind: "number",
+                      value: "",
+                      defaultValue: "",
+                      checked: false,
+                      defaultChecked: false,
+                      disabled: false,
+                      readOnly: false,
+                      step: "1.0",
+                      placeholder: "—",
+                    }}
+                    snapshot={snapshot}
+                  />
+                  <span className="unitSuffix" aria-hidden="true">
+                    {"m"}
+                  </span>
+                </span>
+              </label>
+              <label>
+                {"Z "}
+                <span className="unitInput">
+                  <SurfaceField
+                    id="pmnetTxZ"
+                    initial={{
+                      kind: "number",
+                      value: "",
+                      defaultValue: "",
+                      checked: false,
+                      defaultChecked: false,
+                      disabled: false,
+                      readOnly: false,
+                      step: "1.0",
+                      placeholder: "—",
+                    }}
+                    snapshot={snapshot}
+                  />
+                  <span className="unitSuffix" aria-hidden="true">
+                    {"m"}
+                  </span>
+                </span>
+              </label>
+            </div>
+          </SurfaceNode>
+          <SurfaceNode
             id="deepMimoTxDeviceCard"
             tag="section"
             staticProps={{ className: "deviceCoordPanel hidden" }}
@@ -4780,6 +5276,26 @@ function DeviceControls({
           <span className="deviceActionText">{"Tx"}</span>
         </SurfaceAction>
         <SurfaceAction
+          id="btnPickPmnetTx"
+          tag="button"
+          staticProps={{
+            className: "deviceActionBtn hidden",
+            type: "button",
+            "aria-label": "Pick PMNet transmitter",
+          }}
+          snapshot={snapshot}
+        >
+          <span className="deviceActionIcon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 19v-7"></path>
+              <path d="M7 9a5 5 0 0 1 10 0"></path>
+              <path d="M4 6a9 9 0 0 1 16 0"></path>
+              <path d="M10 21h4"></path>
+            </svg>
+          </span>
+          <span className="deviceActionText">{"Tx"}</span>
+        </SurfaceAction>
+        <SurfaceAction
           id="btnDeepMimoPickTx"
           tag="button"
           staticProps={{
@@ -4912,6 +5428,25 @@ function DeviceControls({
             </svg>
           </span>
           <span className="deviceActionText">{"Run Map"}</span>
+        </SurfaceAction>
+        <SurfaceAction
+          id="btnRunPmnet"
+          tag="button"
+          staticProps={{
+            className: "deviceActionBtn solve hidden",
+            type: "button",
+          }}
+          snapshot={snapshot}
+        >
+          <span className="deviceActionIcon" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M4 18c4-4 12 4 16 0"></path>
+              <path d="M4 12c4-4 12 4 16 0"></path>
+              <path d="M4 6c4-4 12 4 16 0"></path>
+              <path d="m15 18 4-6-4-6"></path>
+            </svg>
+          </span>
+          <span className="deviceActionText">{"Predict Map"}</span>
         </SurfaceAction>
         <SurfaceAction
           id="btnRunDeepMimo"

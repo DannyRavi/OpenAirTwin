@@ -67,7 +67,14 @@ const BUDGETS = {
   basemapJavaScriptRaw: 1100 * 1024,
   basemapCssGzip: 12 * 1024,
 };
-const FEATURE_IDS = ["link", "mobility", "radiomap", "deepmimo", "radar"];
+const FEATURE_IDS = [
+  "link",
+  "mobility",
+  "radiomap",
+  "deepmimo",
+  "radar",
+  "pmnet",
+];
 
 const workbenchRoot = fileURLToPath(new URL("..", import.meta.url));
 const outputRoot = resolve(workbenchRoot, "../backend/static/workbench");

@@ -537,6 +537,7 @@ async function configureMainDeviceFixture(page) {
       mobility: { tx: [72, 37, 40], rx: [90, 52, 1.5] },
       radiomap: { tx: [72, 37, 40] },
       deepmimo: { tx: [72, 37, 40] },
+      pmnet: { tx: [72, 37, 40] },
     };
     const inputGroups = {
       link: {
@@ -549,6 +550,7 @@ async function configureMainDeviceFixture(page) {
       },
       radiomap: { tx: ["rmTxX", "rmTxY", "rmTxZ"] },
       deepmimo: { tx: ["deepMimoTxX", "deepMimoTxY", "deepMimoTxZ"] },
+      pmnet: { tx: ["pmnetTxX", "pmnetTxY", "pmnetTxZ"] },
     };
     for (const [mode, roles] of Object.entries(devices)) {
       for (const [role, position] of Object.entries(roles)) {

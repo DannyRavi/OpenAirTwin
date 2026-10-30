@@ -16,6 +16,18 @@ OpenAirTwin is distributed under the Apache License 2.0. The application uses or
 
 DeepMIMO is an optional-domain runtime dependency installed as a separate Python package. It is retained to preserve the published DeepMIMO workflow and is not copied into the OpenAirTwin application archive. Redistributors must review its GPL terms for their distribution model.
 
+## Referenced Model Architectures
+
+| Component | License | Project |
+| --- | --- | --- |
+| PMNet (pathloss map prediction) | MIT | https://github.com/abman23/pmnet |
+
+The PMNet network definition in `backend/pmnet/model.py` follows the published
+`pmnet_v1`/`pmnet_v3` architecture and its dataloader contract. No upstream
+code, dataset or checkpoint is bundled with Hammurabi; checkpoints are supplied
+by the operator. Cite Lee and Molisch, "A Scalable and Generalizable Pathloss
+Map Prediction" (IEEE TWC) when publishing results that use PMNet inference.
+
 ## Browser Runtime Dependencies
 
 | Component | License | Project |

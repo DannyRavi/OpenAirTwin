@@ -164,6 +164,35 @@ class RealRuntimeSmokeTests(unittest.TestCase):
         self.assertEqual(list(runtime.scene.transmitters), [])
         self.assertEqual(list(runtime.scene.receivers), [])
 
+    def test_real_pmnet_pathloss_prediction(self) -> None:
+        from backend.pmnet.solver import solve_pmnet
+
+        runtime = self.ready_runtime()
+        result = solve_pmnet(
+            runtime,
+            {
+                "tx": {"position": [-1.0, -1.0, 1.0]},
+                "roi": {"size": [10.0, 10.0], "grid": 16, "height_offset": 0.5},
+                "solver": {"frequency_hz": 3.5e9},
+                "model": {"engine": "physics", "wall_loss_db": 6.0},
+                "signal": {"tx_power_dbm": 30.0},
+            },
+        )
+
+        self.assertEqual(result["metric"], "path_gain_db")
+        self.assertEqual(result["engine"]["id"], "physics")
+        self.assertEqual(result["values"]["count"], 16 * 16)
+        self.assertEqual(result["grid"]["nx"], 16)
+        self.assertEqual(result["grid"]["ny"], 16)
+        self.assertEqual(len(result["grid"]["vertex_z"]), 17 * 17)
+        self.assertTrue(
+            all(value is None or math.isfinite(value) for value in result["values"]["data"])
+        )
+        self.assertLessEqual(result["range"]["max"], 0.0)
+        self.assertEqual(result["buildings"]["cell_count"], 0)
+        self.assertEqual(list(runtime.scene.transmitters), [])
+        self.assertEqual(list(runtime.scene.receivers), [])
+
     def test_real_deepmimo_export_worker(self) -> None:
         from backend import config
         from backend.rt.deepmimo_export_worker import run

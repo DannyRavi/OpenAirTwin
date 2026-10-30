@@ -353,7 +353,10 @@ function RadioMapSections({
       />
       <div
         id="radiomapResolutionSection"
-        className={classNames("linkDockSection", !model.visible && "hidden")}
+        className={classNames(
+          "linkDockSection heatmapStats",
+          !model.visible && "hidden",
+        )}
         aria-hidden={!model.visible}
       >
         <div className="sectionTitle">Resolution &amp; Budget</div>
@@ -383,6 +386,65 @@ function RadioMapSections({
         <div className="rmColorbarTicks">
           <span id="rmColorbarMin">{model.colorbar.minLabel}</span>
           <span id="rmColorbarMax">{model.colorbar.maxLabel}</span>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function PmnetSections({
+  model,
+}: {
+  readonly model: ResultDockSnapshot["pmnet"];
+}) {
+  return (
+    <>
+      <Summary
+        id="pmnetResult"
+        visible={model.visible}
+        metrics={model.summary}
+      />
+      <div
+        id="pmnetResolutionSection"
+        className={classNames(
+          "linkDockSection heatmapStats",
+          !model.visible && "hidden",
+        )}
+        aria-hidden={!model.visible}
+      >
+        <div className="sectionTitle">Prediction Budget</div>
+        <MetricGrid
+          className="channelStats"
+          items={metricItems(model.resolution)}
+        />
+        <p
+          id="pmEngineNote"
+          className="channelAnalysisMiniTitle pmnetEngineNote"
+        >
+          {model.engineDetail}
+        </p>
+      </div>
+      <div
+        id="pmnetColorbarSection"
+        className={classNames(
+          "linkDockSection rmColorbarSection",
+          !model.colorbar.visible && "hidden",
+        )}
+        aria-hidden={!model.colorbar.visible}
+      >
+        <div className="sectionTitle">Display Scale</div>
+        <div className="rmColorbarHead">
+          <span id="pmnetColormapLabel">{model.colorbar.colormapLabel}</span>
+          <span id="pmnetColorbarRange">{model.colorbar.rangeLabel}</span>
+        </div>
+        <div
+          id="pmnetColorbar"
+          className="rmColorbar"
+          style={{ background: model.colorbar.gradient || undefined }}
+        />
+        <div className="rmColorbarTicks">
+          <span id="pmnetColorbarMin">{model.colorbar.minLabel}</span>
+          <span id="pmnetColorbarMax">{model.colorbar.maxLabel}</span>
         </div>
       </div>
     </>
@@ -711,6 +773,7 @@ export function ResultDockContent({ store }: ResultDockContentProps) {
   const radioMapActive =
     snapshot.activeMode === "radiomap" && snapshot.radiomap.visible;
   const radarActive = snapshot.activeMode === "radar" && snapshot.radar.visible;
+  const pmnetActive = snapshot.activeMode === "pmnet" && snapshot.pmnet.visible;
   const paths = mobilityActive ? snapshot.mobility.paths : snapshot.link.paths;
   const channel = mobilityActive
     ? snapshot.mobility.channel
@@ -730,6 +793,7 @@ export function ResultDockContent({ store }: ResultDockContentProps) {
       <RadioMapSections
         model={{ ...snapshot.radiomap, visible: radioMapActive }}
       />
+      <PmnetSections model={{ ...snapshot.pmnet, visible: pmnetActive }} />
       <MobilityTimeline
         model={{ ...snapshot.mobility, visible: mobilityActive }}
       />

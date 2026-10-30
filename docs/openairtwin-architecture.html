@@ -1140,6 +1140,7 @@ html&gt;body{padding:0}&lt;/style&gt;
         &lt;option value=&quot;radiomap&quot;&gt;Radiomap call flow&lt;/option&gt;
         &lt;option value=&quot;deepmimo&quot;&gt;DeepMIMO call flow&lt;/option&gt;
         &lt;option value=&quot;radar&quot;&gt;Radar Sensing call flow&lt;/option&gt;
+        &lt;option value=&quot;pmnet&quot;&gt;PMNet call flow&lt;/option&gt;
       &lt;/select&gt;
     &lt;/div&gt;
     &lt;div class=&quot;arch-index-state text-small&quot; aria-label=&quot;CodeGraph index summary&quot;&gt;
@@ -1245,6 +1246,13 @@ html&gt;body{padding:0}&lt;/style&gt;
             &lt;td&gt;Bounded in-memory job, polling, result and cancellation&lt;/td&gt;
             &lt;td&gt;target, path and detection layers&lt;/td&gt;
           &lt;/tr&gt;
+          &lt;tr class=&quot;feature-row&quot; data-feature-row=&quot;pmnet&quot;&gt;
+            &lt;td&gt;&lt;button type=&quot;button&quot; class=&quot;btn btn-ghost feature-jump&quot; data-view=&quot;pmnet&quot;&gt;PMNet Pathloss&lt;/button&gt;&lt;/td&gt;
+            &lt;td&gt;Reads the loaded RT scene without path tracing&lt;/td&gt;
+            &lt;td&gt;&lt;code&gt;/api/pmnet/jobs&lt;/code&gt;&lt;/td&gt;
+            &lt;td&gt;Shared bounded queue, polling and in-memory results&lt;/td&gt;
+            &lt;td&gt;ground heatmap + building envelope layers&lt;/td&gt;
+          &lt;/tr&gt;
         &lt;/tbody&gt;
       &lt;/table&gt;
     &lt;/div&gt;
@@ -1276,21 +1284,21 @@ html&gt;body{padding:0}&lt;/style&gt;
         },
         {
           id: &quot;feature-core&quot;, label: &quot;UI Bridge + Feature Core&quot;, shortLabel: &quot;UI / Feature Bridge&quot;, category: &quot;core&quot;, x: 42, y: 10,
-          scopes: [&quot;frontend&quot;, &quot;link&quot;, &quot;mobility&quot;, &quot;radiomap&quot;, &quot;deepmimo&quot;, &quot;radar&quot;],
+          scopes: [&quot;frontend&quot;, &quot;link&quot;, &quot;mobility&quot;, &quot;radiomap&quot;, &quot;deepmimo&quot;, &quot;radar&quot;, &quot;pmnet&quot;],
           summary: &quot;Typed commands and observable models bridge React-owned UI to domain Feature lifecycles.&quot;,
           responsibilities: [&quot;CommandBus and observable models synchronize React controls, results, datasets, and shell collections&quot;, &quot;FeatureRegistry registers, initializes, activates, and disposes domain Features&quot;, &quot;Feature modules retain isolated state, transport, controller adapters, picking, and scene renderers&quot;],
           files: [&quot;workbench/src/runtime/ui-command.ts&quot;, &quot;workbench/src/features/controls/control-surface-model.ts&quot;, &quot;workbench/src/features/results/result-dock-model.ts&quot;, &quot;backend/static/js/core/feature_registry.js&quot;, &quot;backend/static/js/features/feature_catalog.js&quot;],
         },
         {
           id: &quot;viewer-core&quot;, label: &quot;Viewer Core&quot;, category: &quot;frontend&quot;, x: 70, y: 10,
-          scopes: [&quot;frontend&quot;, &quot;link&quot;, &quot;mobility&quot;, &quot;radiomap&quot;, &quot;deepmimo&quot;, &quot;radar&quot;],
+          scopes: [&quot;frontend&quot;, &quot;link&quot;, &quot;mobility&quot;, &quot;radiomap&quot;, &quot;deepmimo&quot;, &quot;radar&quot;, &quot;pmnet&quot;],
           summary: &quot;Three.js scene runtime with Layer, Primitive, and Asset extension points.&quot;,
           responsibilities: [&quot;SceneLayerManager isolates Feature layers&quot;, &quot;PrimitiveRenderer draws paths, trajectories, heatmap meshes, and ROIs&quot;, &quot;AssetManager loads GLB/PLY assets and manages reference release&quot;],
           files: [&quot;backend/static/js/viewer.js&quot;, &quot;backend/static/js/viewer/layer_manager.js&quot;, &quot;backend/static/js/viewer/primitives.js&quot;, &quot;backend/static/js/viewer/asset_manager.js&quot;],
         },
         {
           id: &quot;backend-core&quot;, label: &quot;Backend Core&quot;, category: &quot;core&quot;, x: 89, y: 10,
-          scopes: [&quot;backend&quot;, &quot;link&quot;, &quot;mobility&quot;, &quot;radiomap&quot;, &quot;deepmimo&quot;, &quot;radar&quot;],
+          scopes: [&quot;backend&quot;, &quot;link&quot;, &quot;mobility&quot;, &quot;radiomap&quot;, &quot;deepmimo&quot;, &quot;radar&quot;, &quot;pmnet&quot;],
           summary: &quot;Core HTTP handling, Feature route dispatch, and service dependency injection.&quot;,
           responsibilities: [&quot;RouteRegistry matches static routes and path parameters&quot;, &quot;FeatureServiceRegistry injects resources such as the RT Runtime&quot;, &quot;AppState keeps legacy manager properties as compatibility facades&quot;],
           files: [&quot;backend/server.py&quot;, &quot;backend/features/core.py&quot;, &quot;backend/features/catalog.py&quot;],
@@ -1436,6 +1444,34 @@ html&gt;body{padding:0}&lt;/style&gt;
           files: [&quot;backend/jobs/radar_jobs.py&quot;, &quot;backend/rt/solve_radar.py&quot;, &quot;backend/rt/process_radar.py&quot;],
         },
         {
+          id: &quot;pmnet-front&quot;, label: &quot;PMNet Pathloss Feature&quot;, shortLabel: &quot;PMNet Feature&quot;, category: &quot;frontend&quot;, feature: &quot;pmnet&quot;, x: 14, y: 89,
+          scopes: [&quot;frontend&quot;, &quot;pmnet&quot;],
+          summary: &quot;Independent pathloss prediction module with its own ground and building Viewer Layers.&quot;,
+          responsibilities: [&quot;Owns Tx, ROI, grid, wall-loss and display state&quot;, &quot;Submits and polls bounded PMNet jobs&quot;, &quot;Builds the ground drape and rooftop/facade envelope meshes from the result contract&quot;],
+          files: [&quot;backend/static/js/features/pmnet/index.js&quot;, &quot;backend/static/js/features/pmnet/renderer.js&quot;, &quot;backend/static/js/features/pmnet/transport.js&quot;, &quot;backend/static/js/ui/pmnet_result_view.js&quot;],
+        },
+        {
+          id: &quot;pmnet-api&quot;, label: &quot;/api/pmnet/jobs&quot;, category: &quot;transport&quot;, feature: &quot;pmnet&quot;, x: 42, y: 89,
+          scopes: [&quot;pmnet&quot;],
+          summary: &quot;Shared bounded asynchronous creation, status and result contract.&quot;,
+          responsibilities: [&quot;POST validates the payload and captures the scene generation&quot;, &quot;GET polls immutable job status&quot;, &quot;GET returns the in-memory pathloss map once succeeded&quot;],
+          files: [&quot;backend/static/js/features/pmnet/transport.js&quot;, &quot;backend/features/pmnet.py&quot;],
+        },
+        {
+          id: &quot;pmnet-back&quot;, label: &quot;PMNet Service&quot;, category: &quot;backend&quot;, feature: &quot;pmnet&quot;, x: 70, y: 89,
+          scopes: [&quot;backend&quot;, &quot;pmnet&quot;],
+          summary: &quot;Registers PMNet job routes through the shared in-process service adapter.&quot;,
+          responsibilities: [&quot;Injects rt_runtime&quot;, &quot;Creates PmnetJobManager with queue and TTL limits&quot;, &quot;Validates payload bounds and scene readiness&quot;],
+          files: [&quot;backend/features/pmnet.py&quot;, &quot;backend/jobs/pmnet_jobs.py&quot;, &quot;backend/pmnet/params.py&quot;],
+        },
+        {
+          id: &quot;pmnet-exec&quot;, label: &quot;Rasterize + Predict&quot;, shortLabel: &quot;PMNet Worker&quot;, category: &quot;execution&quot;, feature: &quot;pmnet&quot;, x: 89, y: 89,
+          scopes: [&quot;backend&quot;, &quot;pmnet&quot;],
+          summary: &quot;Static surrogate that rasterizes scene triangles and predicts pathloss without path tracing.&quot;,
+          responsibilities: [&quot;Splits ground and obstacle triangles from the loaded scene&quot;, &quot;Builds the 2.5D building-height grid&quot;, &quot;Runs a checkpoint or the deterministic multi-wall and knife-edge model&quot;],
+          files: [&quot;backend/pmnet/geometry.py&quot;, &quot;backend/pmnet/predictor.py&quot;, &quot;backend/pmnet/model.py&quot;, &quot;backend/pmnet/solver.py&quot;],
+        },
+        {
           id: &quot;workbench-build&quot;, label: &quot;Vite Workbench Build&quot;, shortLabel: &quot;Workbench Build&quot;, category: &quot;core&quot;, x: 14, y: 95,
           scopes: [&quot;delivery&quot;],
           summary: &quot;Compiles the React application and framework-independent runtime modules into one content-addressed production Workbench.&quot;,
@@ -1451,16 +1487,16 @@ html&gt;body{padding:0}&lt;/style&gt;
         },
         {
           id: &quot;rt-scene&quot;, label: &quot;RT Runtime + Scene Core&quot;, shortLabel: &quot;RT / Scene Core&quot;, category: &quot;execution&quot;, x: 62, y: 95,
-          scopes: [&quot;backend&quot;, &quot;link&quot;, &quot;mobility&quot;, &quot;radiomap&quot;, &quot;deepmimo&quot;, &quot;radar&quot;],
-          summary: &quot;Ray-tracing runtime and scene generation shared by all five analysis Features.&quot;,
+          scopes: [&quot;backend&quot;, &quot;link&quot;, &quot;mobility&quot;, &quot;radiomap&quot;, &quot;deepmimo&quot;, &quot;radar&quot;, &quot;pmnet&quot;],
+          summary: &quot;Ray-tracing runtime and scene generation shared by the analysis Features, including the PMNet geometry source.&quot;,
           responsibilities: [&quot;Loads the RT scene for the currently selected tiles&quot;, &quot;Maintains scene generation and the runtime lock&quot;, &quot;Keeps static assets, scene endpoints, and tile downloads in Core&quot;],
           files: [&quot;backend/rt/runtime.py&quot;, &quot;backend/scene/tile_scene_xml.py&quot;, &quot;backend/scene/tile_bundles.py&quot;, &quot;backend/server.py&quot;],
         },
         {
           id: &quot;regression&quot;, label: &quot;Regression Baseline&quot;, category: &quot;core&quot;, x: 88, y: 95,
-          scopes: [&quot;frontend&quot;, &quot;backend&quot;, &quot;link&quot;, &quot;mobility&quot;, &quot;radiomap&quot;, &quot;deepmimo&quot;, &quot;radar&quot;],
+          scopes: [&quot;frontend&quot;, &quot;backend&quot;, &quot;link&quot;, &quot;mobility&quot;, &quot;radiomap&quot;, &quot;deepmimo&quot;, &quot;radar&quot;, &quot;pmnet&quot;],
           summary: &quot;Regression boundary for protocols, DOM structure, interactions, layers, and visual output.&quot;,
-          responsibilities: [&quot;Python REST and job contracts&quot;, &quot;Playwright behavior and visual snapshots for all five modes&quot;, &quot;Dummy Feature, Layer, and Asset capability validation&quot;],
+          responsibilities: [&quot;Python REST and job contracts&quot;, &quot;Playwright behavior and visual snapshots for every mode&quot;, &quot;Dummy Feature, Layer, and Asset capability validation&quot;],
           files: [&quot;tests/test_feature_architecture.py&quot;, &quot;tests/test_frontend_regressions.py&quot;, &quot;tests/browser/feature_modes.spec.js&quot;],
         },
       ];
@@ -1496,6 +1532,13 @@ html&gt;body{padding:0}&lt;/style&gt;
         {from: &quot;radar-api&quot;, to: &quot;radar-back&quot;, type: &quot;http&quot;, scopes: [&quot;radar&quot;]},
         {from: &quot;radar-back&quot;, to: &quot;radar-exec&quot;, type: &quot;runtime&quot;, scopes: [&quot;radar&quot;]},
         {from: &quot;radar-front&quot;, to: &quot;viewer-core&quot;, type: &quot;render&quot;, scopes: [&quot;radar&quot;]},
+        {from: &quot;feature-core&quot;, to: &quot;pmnet-front&quot;, type: &quot;registry&quot;, scopes: [&quot;pmnet&quot;]},
+        {from: &quot;pmnet-front&quot;, to: &quot;pmnet-api&quot;, type: &quot;http&quot;, scopes: [&quot;pmnet&quot;]},
+        {from: &quot;pmnet-api&quot;, to: &quot;pmnet-back&quot;, type: &quot;http&quot;, scopes: [&quot;pmnet&quot;]},
+        {from: &quot;pmnet-back&quot;, to: &quot;pmnet-exec&quot;, type: &quot;runtime&quot;, scopes: [&quot;pmnet&quot;]},
+        {from: &quot;pmnet-front&quot;, to: &quot;viewer-core&quot;, type: &quot;render&quot;, scopes: [&quot;pmnet&quot;]},
+        {from: &quot;backend-core&quot;, to: &quot;pmnet-back&quot;, type: &quot;registry&quot;, scopes: [&quot;pmnet&quot;, &quot;backend&quot;]},
+        {from: &quot;pmnet-exec&quot;, to: &quot;rt-scene&quot;, type: &quot;runtime&quot;, scopes: [&quot;pmnet&quot;, &quot;backend&quot;]},
         {from: &quot;link-front&quot;, to: &quot;mobility-front&quot;, type: &quot;capability&quot;, scopes: [&quot;link&quot;, &quot;mobility&quot;]},
         {from: &quot;link-front&quot;, to: &quot;deepmimo-front&quot;, type: &quot;capability&quot;, scopes: [&quot;link&quot;, &quot;deepmimo&quot;]},
         {from: &quot;backend-core&quot;, to: &quot;link-back&quot;, type: &quot;registry&quot;, scopes: [&quot;link&quot;, &quot;backend&quot;]},
@@ -1522,6 +1565,7 @@ html&gt;body{padding:0}&lt;/style&gt;
         mobility: &quot;&lt;strong&gt;Mobility:&lt;/strong&gt; Consume Link capabilities → create job → poll status → InProcess Worker → trajectory + markers + paths.&quot;,
         radiomap: &quot;&lt;strong&gt;Radiomap:&lt;/strong&gt; Create job → poll status → InProcess Worker → scalar-triangle-mesh + color scale.&quot;,
         deepmimo: &quot;&lt;strong&gt;DeepMIMO:&lt;/strong&gt; ROI / Tx → dedicated job → subprocess → cancellation or ZIP lease download; the ROI uses polygon-overlay.&quot;,
+        pmnet: &quot;&lt;strong&gt;PMNet Pathloss:&lt;/strong&gt; Tx + ROI / grid → bounded job → ground/building rasterization from the loaded RT scene → checkpoint or deterministic surrogate → in-memory path-gain map → ground heatmap plus rooftop and facade envelope.&quot;,
         radar: &quot;&lt;strong&gt;Radar Sensing:&lt;/strong&gt; Configure Tx/Rx and drone targets → create job → poll progress → independent propagation + OFDM processing → bounded results and isolated Viewer Layers.&quot;,
       };
 

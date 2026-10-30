@@ -174,6 +174,35 @@ export function radiomapJobPayload({state, inputs} = {}) {
   };
 }
 
+export const PMNET_ENGINES = Object.freeze(["auto", "checkpoint", "physics"]);
+
+export function normalizePmnetEngine(value) {
+  const token = String(value || "").trim().toLowerCase();
+  return PMNET_ENGINES.includes(token) ? token : "auto";
+}
+
+export function pmnetJobPayload({state, inputs} = {}) {
+  const txPosition = requireDevicePosition(
+    state.pmnet.tx,
+    "Place a PMNet Tx before predicting the pathloss map.",
+  );
+  const solver = commonSolverConfig({state, inputs, includeTxArray: false});
+  return {
+    tx: {position: txPosition, orientation: [0, 0, 0]},
+    roi: {
+      size: [Number(state.pmnet.roi.size[0]), Number(state.pmnet.roi.size[1])],
+      grid: Number(state.pmnet.roi.grid),
+      height_offset: Number(state.pmnet.roi.heightOffset),
+    },
+    solver: {frequency_hz: Number(solver.frequency_hz)},
+    model: {
+      engine: normalizePmnetEngine(state.pmnet.model.engine),
+      wall_loss_db: Number(state.pmnet.model.wallLossDb),
+    },
+    signal: {tx_power_dbm: Number(state.pmnet.signal.txPowerDbm)},
+  };
+}
+
 export function mobilityJobPayload({state, inputs, linkDomain = null} = {}) {
   const txPosition = requireDevicePosition(
     state.mobility.tx,
